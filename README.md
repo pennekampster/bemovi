@@ -6,7 +6,7 @@ microbes, with methods to visualising and check the results.
 
 There are three folders:
 
-1. Automation
+=== Automation ===
 
 We want to be able to supply a collection of videos of aquatic
 microbes, and get back the number of individuals of each species, and
@@ -29,14 +29,14 @@ code on.
 
 
 
-2. Morphological analysis
+=== Morphological analysis ===
 
 Example of what one can do with morphology, using an ANN to
 discriminate species.
 
 
 
-3. Merge morphology and trajectory
+=== Merge morphology and trajectory ===
 Example of merging morphological data acquired with the particle
 analyser of imagej, and trajector data acquired with the MOSAIC
 particle tracker.
