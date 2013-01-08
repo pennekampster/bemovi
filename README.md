@@ -12,12 +12,12 @@ microbes, and get back the number of individuals of each species, and
 also some of their traits (size, speed, etc.).
 We use R to write and run macros for imageJ, to read in the data
 imageJ produces, and then process this data.
-We use imageJ to preporcess the videos, get morphological
+We use imageJ to preprocess the videos, get morphological
 characteristics of individuals, and to link particles (i.e., produce
 particle trajectories through time). The aim is that all of this can
 be done automatically, directed by R, but at present we can only do
 the morphological characteristics automatically, since the particle
-linker in imageJ is not working well in batch mode, at present.
+linker in imageJ is not working well in batch mode.
 Look at the file eg.worker.R for an example of functionality.
 We need an agreed folder of fixed test videos that we can develop and test the
 code on.
