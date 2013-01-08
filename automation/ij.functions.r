@@ -1,5 +1,4 @@
 
-
 ### This function takes the directory where the video files are stored
 ### and makes a imagej macro for each of the video.
 ### At the moment, the macro does image differencing, thresholding, and particle analysis.
@@ -29,6 +28,7 @@ MakeIJMacros <- function(vid.dir, difference.lag) {
 
 # 6. Make a check for the operating system and then writes appropriate paths in the imagej macro code.
 # At the moment the code can write only for a mac
+# In R, .Platform$OS.type returns the operating system, so use if(.Platform$OS.type=="unix")...
 
 	
 	## the video file names
