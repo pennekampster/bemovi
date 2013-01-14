@@ -46,6 +46,8 @@ final <- final[c(-4,-5,-6,-7,-8,-9,-10)]
 final$trajectory <- final$trajectory
 names(final) <- c("frame","X","Y", "trajectory")
 
+
+
 #calculate summary stats (count of frames) and merge with original data for trajectory selection
 count <- tapply(final$frame, final$trajectory, function(x) length(unique(x)))
 count <- as.data.frame(cbind(count,unique(final$trajectory)))
