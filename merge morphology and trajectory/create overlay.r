@@ -17,7 +17,6 @@ saveVideo({
     brownian.motion(pch = 21, cex = 5, col = "red", bg = "yellow")
 }, video.name = "BM.avi", other.opts = "-b 300k")
 
-?dir.create
 
 ## So I created a pdf of the trajectories and made it transparent in the Keynote presentation.
 ## Very clunky, but it worked.
@@ -35,14 +34,19 @@ dev.off()
 # creates a folder containing one jpeg plot containing all the positions till the respective frame
 # for the moment colour not assigned by species identity but that's easy to add 
 create_overlay_plots <- function(path,duration){ #should be taken automatically from the file containing the position and frame data
-  
-dir.create(path)
+trajectory.data <- as.data.frame(read.table(paste(path,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
+file_names <- unique(trajectory.data$file)  
+for (i in 1:length(file_names)){
+dir.create(paste(path,substr(file_names[i],6,11),sep="/"))
 duration <- duration
-i<- 0
-while(i < duration){
-jpeg(paste(path,"/mygraph_",i,".jpg",sep=""))
+trajectory.data_tmp <- subset(trajectory.data,file == file_names[i])
+j<- 0
+while(j < duration){
+jpeg(paste(path,substr(file_names[i],6,11),"/frame_",j,".jpg",sep=""), width = 2048, height = 2048, quality = 100)
 par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
-print <- subset(final_summary,final_summary$frame <= i, select=c("X","Y","trajectory"))
-plot(print$X, print$Y, xlim=c(0,-2048), ylim=c(0,2048), col="#0000ff22", pch=19, cex=0.5, asp=1)
+print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame <= j, select=c("X","Y","trajectory"))
+plot(print$Y, print$X+2048, xlim=c(0,2048), ylim=c(0,2048), col="#FFFF00", pch=15, cex=1, asp=1)
 dev.off()
-i <- i+1}}
+j <- j+1}}}
+
+create_overlay_plots("C:/Users/Frank/Documents/PhD/Programming/franco/videos/",101)
