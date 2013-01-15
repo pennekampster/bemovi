@@ -1,15 +1,18 @@
 # code to batch process videos by ImageJ and ParticleTracker plugin
-
+# provide directory where raw videos are stored
 video_to_trajectory <- function(video.dir) {
 # copy master copy of ImageJ macro there for treatment
 text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_to_trajectory.ijm")
 
 # use regular expression to insert input and output directory
 text[3] <- sub(text, "dir_input = ", paste("dir_input = ","'", video.dir,"';", sep = ""))
-text[4] <- sub(text, "dir_output = ", paste("dir_output = ","'", video.dir,"';", sep = ""))
+text[4] <- sub(text, "dir_output = ", paste("dir_output = ","'",sub("1 - raw/","1 - raw tmp/",video.dir),"';", sep = ""))
 
 # re-create ImageJ macro for batch processing of video files with ParticleTracker
 writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_to_trajectory_tmp.ijm",sep=""),sep="\n")
+
+#create directory to temporarily store information
+dir.create(sub("1 - raw","1 - raw tmp",video.dir))
 
 # run to process video files by calling ImageJ / needs fixing for Mac
 if(.Platform$OS.type == "unix"){
@@ -18,11 +21,24 @@ if(.Platform$OS.type == "windows"){
 cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_to_trajectory_tmp.ijm')}
 system(cmd)
 
-#delete temporary file after execution
-file.remove("C:/Program Files/Fiji.app/macros/Video_to_trajectory_tmp.ijm")
+# delete temporary file after execution
+#file.remove("C:/Program Files/Fiji.app/macros/Video_to_trajectory_tmp.ijm")
+
+#copy files produced by ParticleTracker to "2 - trajectory data" directory
+dir.create(sub("1 - raw","2 - trajectory data",video.dir))
+all.files <- dir(sub("1 - raw/","1 - raw tmp/",video.dir))
+ijout.files <- all.files[grep("Traj_", all.files)]
+file.copy(paste(sub("1 - raw/","1 - raw tmp/",video.dir),ijout.files, sep = ""),sub("1 - raw","2 - trajectory data",video.dir))
+#file.remove(sub("1 - raw/","1 - raw tmp/",video.dir))
 }
 
+video_to_trajectory("C:/Users/Frank/Documents/PhD/Programming/franco/data/1 - raw/")
+
+
+
+
 ## This function gets the output files produced by the Imagej ParticleTracker
+# specify the path where the files which contain the trajectory data are stored
 LoadIJ_Traj_Outs <- function(video.dir) {
   
 # function to create a unique trajectory ID with each processed result file of the ParticleTracker
@@ -87,4 +103,5 @@ assign("trajectory.data",dd,envir = .GlobalEnv)
 write.table(trajectory.data, file = paste(video.dir,"trajectory.data.txt", sep = "/"), sep = "\t")
 }
 
+LoadIJ_Traj_Outs("C:/Users/Frank/Documents/PhD/Programming/franco/data/2 - trajectory data/")
 
