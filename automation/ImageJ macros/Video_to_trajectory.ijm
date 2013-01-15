@@ -1,4 +1,4 @@
-setBatchMode(true);
+setBatchMode(false);
 
 dir_input = "C:/tmp - video convert/avi - png/";
 dir_output = "C:/tmp - video convert/diff_video - png/";
@@ -64,7 +64,7 @@ run("AVI...", "select=["+dir_output+replace(list[k],".cxd",".avi")+"] first=1 la
 
 
 run("Properties...", "channels=1 slices=1 frames=101 unit=pixel pixel_width=1.0000 pixel_height=1.0000 voxel_depth=1.0000 frame=[0 sec] origin=0,0");
-run("Particle Tracker 2D/3D", "radius=1 cutoff=0 percentile=0.01 link=2 displacement=10");
+run("Particle Tracker 2D/3D", "radius=1 cutoff=0 percentile=0.01 link=5 displacement=20");
 close();
 setBatchMode(true);
 }
