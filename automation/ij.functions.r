@@ -103,16 +103,6 @@ MakeIJMacros <- function(vid.dir, difference.lag) {
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
 ## This function runs the imagej macros that are in the specified directory
 RunIJMacros <- function(vid.dir) {
 
@@ -136,12 +126,6 @@ RunIJMacros <- function(vid.dir) {
 	
 	}
 }
-
-
-
-
-
-
 
 ## This function gets the output files produced by the imagej macros previously created (by function MakeIJMacros)
 ## and run by function RunIJMacros

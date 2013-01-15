@@ -28,3 +28,4 @@ close();
 close();
 close();
 }
+exit();

@@ -1,20 +1,23 @@
-setBatchMode(false);
+setBatchMode(true);
 
-dir_input = "C:/tmp - video convert/avi - png/";
-dir_output = "C:/tmp - video convert/diff_video - png/";
+dir_input = 'C:/Users/Frank/Documents/PhD/Programming/franco/data/1 - raw/';
+dir_output = 'C:/Users/Frank/Documents/PhD/Programming/franco/data/1 - raw tmp/';
 
 list = getFileList(dir_input);
 for (k=0; k<list.length; k++) {
 
 run("AVI...", "select=["+dir_input+list[k]+"] first=1 last=125 convert");
-selectWindow(list[k]);
+original = getTitle();
 run("Make Substack...", "  slices=1-101");
-selectWindow(list[k]);
+vid1 = getTitle();
+selectWindow(original);
 run("Make Substack...", "  slices=25-125");
-selectWindow(list[k]);
+vid2 = getTitle();
+selectWindow(original);
 close();
-imageCalculator("Subtract create stack", "Substack (1-101)","Substack (25-125)");
-selectWindow("Result of Substack (1-101)");
+imageCalculator("Subtract create stack", vid1, vid2);
+vid3 = getTitle();
+selectWindow(vid3);
 setThreshold(10, 255);
 run("Convert to Mask", "  black");
 run("Median...", "radius=4 stack");
@@ -48,8 +51,9 @@ run("Median...", "radius=4 stack");
        run("Paste");
     }
   }
-
-selectWindow("Result of Substack (1-101)(1) Maxima");
+vid4 = getTitle();
+  
+selectWindow(vid4);
 run("AVI... ", "compression=JPEG frame=26 save=["+dir_output+replace(list[k],".cxd",".avi")+"]");
 close();
 close();
@@ -68,4 +72,5 @@ run("Particle Tracker 2D/3D", "radius=1 cutoff=0 percentile=0.01 link=5 displace
 close();
 setBatchMode(true);
 }
+exit();
 
