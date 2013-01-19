@@ -67,23 +67,16 @@ lag <- dataset[2:nrow(dataset),1]
 lag <- append(lag,1)
 dataset <- cbind(dataset,lag)
 
-trajectory <- 1
-counter <- function(value){value <- value+1
-return(value)}
-
-
-dataset$trajectory <- ifelse(dataset$V1 <= dataset$lag,trajectory,counter(trajectory))
-
 # assign a counter creating a unique trajectory
-#trajectory <- 1
-#for (i in 1:nrow(dataset)){
-#    if (dataset[i,12]>dataset[i,1]){
-#        dataset[i,"trajectory"] <- trajectory}
-#      
-#    if (dataset[i,12]<=dataset[i,1]){
-#        dataset[i,"trajectory"] <- trajectory
-#        trajectory <- trajectory+1}
-#    }
+trajectory <- 1
+for (i in 1:nrow(dataset)){
+    if (dataset[i,12]>dataset[i,1]){
+        dataset[i,"trajectory"] <- trajectory}
+      
+    if (dataset[i,12]<=dataset[i,1]){
+        dataset[i,"trajectory"] <- trajectory
+        trajectory <- trajectory+1}
+    }
 
 dataset$lag <- NULL
 # function to convert object name into character string
@@ -142,69 +135,56 @@ LoadIJ_Traj_Outs(trackdata.dir)
 # for the moment colour not assigned by species identity but that's easy to add 
 # provide path of " 2 - trajectory data", and the width and height of the original video (I use cropped videos to increase speed while troubleshooting)
 create_overlay_plots <- function(path,width,height){ 
-  trajectory.data <- as.data.frame(read.table(paste(path,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
-  file_names <- unique(trajectory.data$file)  
-  # change path for output
-  dir.create(sub("2 - trajectory data/","3 - overlay plots/",path))
-  for (i in 1:length(file_names)){
-<<<<<<< HEAD
-  dir.create(paste(sub("2 - trajectory data/","3 - overlay plots/",path),substr(file_names[i],6,11),sep="/"))
-  trajectory.data_tmp <- subset(trajectory.data,file == file_names[i])
-  j<- 0
-  while(j < max(trajectory.data$frame)+1){
-  jpeg(paste(sub("2 - trajectory data/","3 - overlay plots/",path),substr(file_names[i],6,11),"/frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
-  par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
-  print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame <= j, select=c("X","Y","trajectory"))
-  plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="#FFFF00", pch=15, cex=1, asp=1)
-  dev.off()
-  j <- j+1}}
-=======
-    dir.create(paste(sub("2 - trajectory data/","3 - overlay plots/",path),substr(file_names[i],6,11),sep="/"))
-    trajectory.data_tmp <- subset(trajectory.data,file == file_names[i])
-    j<- 0
-    while(j < max(trajectory.data$frame)+1){
-      jpeg(paste(sub("2 - trajectory data/","3 - overlay plots/",path),substr(file_names[i],6,11),"/frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
+trajectory.data <- as.data.frame(read.table(paste(path,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
+file_names <- unique(trajectory.data$file)  
+# change path for output
+dir.create(sub("2 - trajectory data/","3 - overlay plots/",path))
+for (i in 1:length(file_names)){
+   #split filename into name and ending for creating directories according to video name
+   filename_split <- strsplit(paste(file_names[i]),"\\.")
+   filename <- filename_split[[1]]
+   dir.create(paste(sub("2 - trajectory data/","3 - overlay plots/",path),sub("Traj_","",filename[1]),sep="/"))
+   trajectory.data_tmp <- subset(trajectory.data,file == file_names[i])
+   j<- 0
+   while(j < max(trajectory.data$frame)+1){
+      jpeg(paste(sub("2 - trajectory data/","3 - overlay plots/",path),sub("Traj_","",filename[1]),"/frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
       par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
       print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame <= j, select=c("X","Y","trajectory"))
       plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="#FFFF00", pch=15, cex=1, asp=1)
       dev.off()
-      j <- j+1
-    }
-  }
->>>>>>> de2f0738c5397a8df49602320f834d4b20b25e03
-  
-  # copy master copy of ImageJ macro there for treatment
-  if(.Platform$OS.type == "windows")
-    text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_overlay.ijm")
-  if(.Platform$OS.type == "unix")
+      j <- j+1}
+}
+# copy master copy of ImageJ macro there for treatment
+if(.Platform$OS.type == "windows")
+  text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_overlay.ijm",warn = FALSE)
+if(.Platform$OS.type == "unix")
 	text <- readLines("/Users/owenpetchey/work/git/franco/automation/ImageJ macros/Video_overlay.ijm")
 
+# use regular expression to insert input and output directory
+text[3] <- sub(text, "avi_input = ", paste("avi_input = ","'", sub("2 - trajectory data/","1 - raw/",path),"';", sep = ""))
+text[4] <- sub(text, "overlay_input = ", paste("overlay_input = ","'", sub("2 - trajectory data/","3 - overlay plots/",path),"';", sep = ""))
+text[5] <- sub(text, "overlay_output = ", paste("overlay_output = ","'", sub("2 - trajectory data/","4 - overlays/",path),"';", sep = ""))
   
-  # use regular expression to insert input and output directory
-  text[3] <- sub(text, "avi_input = ", paste("avi_input = ","'", sub("2 - trajectory data/","1 - raw/",path),"';", sep = ""))
-  text[4] <- sub(text, "overlay_input = ", paste("overlay_input = ","'", sub("2 - trajectory data/","3 - overlay plots/",path),"';", sep = ""))
-  text[5] <- sub(text, "overlay_output = ", paste("overlay_output = ","'", sub("2 - trajectory data/","4 - overlays/",path),"';", sep = ""))
-  
-  # re-create ImageJ macro for batch processing of video files with ParticleTracker
-  if(.Platform$OS.type == "windows")
-    writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm",sep=""),sep="\n")
-  if(.Platform$OS.type == "unix") {
-    writeLines(text,con=paste(sub("1 - raw","ijmacs",video.dir), "/Video_overlay_tmp.ijm",sep=""))
+# re-create ImageJ macro for batch processing of video files with ParticleTracker
+if(.Platform$OS.type == "windows")
+  writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm",sep=""),sep="\n")
+if(.Platform$OS.type == "unix") {
+  writeLines(text,con=paste(sub("1 - raw","ijmacs",video.dir), "/Video_overlay_tmp.ijm",sep=""))
 }
   
+# create directory to store overlays
+dir.create(sub("2 - trajectory data/","4 - overlays/",path))
   
-  # create directory to store overlays
-  dir.create(sub("2 - trajectory data/","4 - overlays/",path))
-  
-  #call IJ macro to merge original video with the trajectory data
-  if(.Platform$OS.type == "unix"){
-    cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub("1 - raw","ijmacs",video.dir), "Video_overlay_tmp.ijm",sep=""))
-  if(.Platform$OS.type == "windows"){
-    cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_overlay_tmp.ijm')}
-  system(cmd)
-  
-  # delete temporary file after execution
-  file.remove("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm")
+#call IJ macro to merge original video with the trajectory data
+if(.Platform$OS.type == "unix"){
+  cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub("1 - raw","ijmacs",video.dir), "Video_overlay_tmp.ijm",sep=""))}
+if(.Platform$OS.type == "windows"){cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_overlay_tmp.ijm')}
+
+# run ImageJ macro
+system(cmd)
+
+# delete temporary file after execution
+file.remove("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm")
 }
 
 trajdata.dir <- "/Users/owenpetchey/work/git/franco/data/2 - trajectory data/"
