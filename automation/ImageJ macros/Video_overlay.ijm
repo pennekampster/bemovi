@@ -27,5 +27,4 @@ run("AVI... ", "compression=JPEG frame=26 save=["+overlay_output+list[i]+"]");
 close();
 close();
 close();
-}
-exit();
+}run("Quit");

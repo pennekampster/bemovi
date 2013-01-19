@@ -72,5 +72,5 @@ run("Particle Tracker 2D/3D", "radius=1 cutoff=0 percentile=0.01 link=5 displace
 close();
 setBatchMode(true);
 }
-exit();
+run("Quit");
 
