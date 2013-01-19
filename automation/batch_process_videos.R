@@ -1,6 +1,7 @@
 # code to batch process videos by ImageJ and ParticleTracker plugin
 # provide directory where raw videos are stored
 video_to_trajectory <- function(video.dir) {
+
 # copy master copy of ImageJ macro there for treatment
 text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_to_trajectory.ijm")
 
@@ -44,17 +45,25 @@ unique_traj_ID <- function(dataset){
 lag <- dataset[2:nrow(dataset),1]
 lag <- append(lag,1)
 dataset <- cbind(dataset,lag)
-    
-# assign a counter creating a unique trajectory
+
 trajectory <- 1
-for (i in 1:nrow(dataset)){
-    if (dataset[i,12]>dataset[i,1]){
-        dataset[i,"trajectory"] <- trajectory}
-      
-    if (dataset[i,12]<=dataset[i,1]){
-        dataset[i,"trajectory"] <- trajectory
-        trajectory <- trajectory+1}
-    } 
+counter <- function(value){value <- value+1
+return(value)}
+
+
+dataset$trajectory <- ifelse(dataset$V1 <= dataset$lag,trajectory,counter(trajectory))
+
+# assign a counter creating a unique trajectory
+#trajectory <- 1
+#for (i in 1:nrow(dataset)){
+#    if (dataset[i,12]>dataset[i,1]){
+#        dataset[i,"trajectory"] <- trajectory}
+#      
+#    if (dataset[i,12]<=dataset[i,1]){
+#        dataset[i,"trajectory"] <- trajectory
+#        trajectory <- trajectory+1}
+#    }
+
 dataset$lag <- NULL
 # function to convert object name into character string
 myfun <- function(x) deparse(substitute(x)) 
@@ -112,16 +121,16 @@ create_overlay_plots <- function(path,width,height){
   # change path for output
   dir.create(sub("2 - trajectory data/","3 - overlay plots/",path))
   for (i in 1:length(file_names)){
-    dir.create(paste(sub("2 - trajectory data/","3 - overlay plots/",path),substr(file_names[i],6,11),sep="/"))
-    trajectory.data_tmp <- subset(trajectory.data,file == file_names[i])
-    j<- 0
-    while(j < max(trajectory.data$frame)+1){
-      jpeg(paste(sub("2 - trajectory data/","3 - overlay plots/",path),substr(file_names[i],6,11),"/frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
-      par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
-      print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame <= j, select=c("X","Y","trajectory"))
-      plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="#FFFF00", pch=15, cex=1, asp=1)
-      dev.off()
-      j <- j+1}}
+  dir.create(paste(sub("2 - trajectory data/","3 - overlay plots/",path),substr(file_names[i],6,11),sep="/"))
+  trajectory.data_tmp <- subset(trajectory.data,file == file_names[i])
+  j<- 0
+  while(j < max(trajectory.data$frame)+1){
+  jpeg(paste(sub("2 - trajectory data/","3 - overlay plots/",path),substr(file_names[i],6,11),"/frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
+  par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
+  print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame <= j, select=c("X","Y","trajectory"))
+  plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="#FFFF00", pch=15, cex=1, asp=1)
+  dev.off()
+  j <- j+1}}
   
   # copy master copy of ImageJ macro there for treatment
   text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_overlay.ijm")
