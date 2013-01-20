@@ -8,7 +8,7 @@
 rm(list=ls())
 
 ## specify difference.lag for both Particle Analyzer as well as Tracker
-difference.lag <- 20
+difference.lag <- 25
 
 # load functions to call ImageJ from R
 if(.Platform$OS.type == "unix"){

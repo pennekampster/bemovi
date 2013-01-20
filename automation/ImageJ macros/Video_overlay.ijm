@@ -9,7 +9,7 @@ list = getFileList(avi_input);
 for (i=0; i<lengthOf(list); i++) {
 if (endsWith(list[i],"avi")){
 // Open stack with trajectories from folder (incrementing positions through time)
-run("Image Sequence...", "open=["+overlay_input+replace(list[i],".avi","")+"]");
+run("Image Sequence...", "open=["+overlay_input+replace(list[i],".avi","")+"] sort");
 getDimensions(width, height, channels, slices, frames);
 run("RGB Color");
 vid1 = getTitle();

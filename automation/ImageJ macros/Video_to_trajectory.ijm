@@ -17,7 +17,7 @@ run("Make Substack...", "  slices=1-"+slices-(lag-1)+"");
 vid2 = getTitle();
 selectWindow(original);
 close();
-imageCalculator("Subtract create stack", vid1, vid2);
+imageCalculator("Subtract create stack", vid2, vid1);
 vid3 = getTitle();
 selectWindow(vid3);
 setThreshold(10, 255);
