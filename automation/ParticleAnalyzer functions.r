@@ -35,7 +35,6 @@ if(.Platform$OS.type == "windows")
   file.remove("C:/Program Files/Fiji.app/macros/Video_to_morphology.ijm")
 
 }
-MakeIJMacros("C:/Users/Frank/Documents/PhD/Programming/franco/data/1 - raw/",20)
 
 ## This function gets the output files produced by the imagej macros previously created (by function MakeIJMacros)
 ## and run by function RunIJMacros
@@ -59,4 +58,3 @@ assign("morphology.data",dd,envir = .GlobalEnv)
 write.table(morphology.data, file = paste(IJ_output.dir,"morphology.data.txt", sep = "/"), sep = "\t")
 }
 
-LoadIJOuts("C:/Users/Frank/Documents/PhD/Programming/franco/data/5 - Particle Analyzer data/")

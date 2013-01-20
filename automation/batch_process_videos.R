@@ -1,6 +1,6 @@
 # code to batch process videos by ImageJ and ParticleTracker plugin
 # provide directory where raw videos are stored
-video_to_trajectory <- function(video.dir) {
+video_to_trajectory <- function(video.dir,difference.lag) {
 
 # copy master copy of ImageJ macro there for treatment
 if(.Platform$OS.type == "unix")
@@ -11,6 +11,8 @@ if(.Platform$OS.type == "windows")
 # use regular expression to insert input and output directory
 text[3] <- sub(text, "dir_input = ", paste("dir_input = ","'", video.dir,"';", sep = ""))
 text[4] <- sub(text, "dir_output = ", paste("dir_output = ","'",sub("1 - raw/","1 - raw tmp/",video.dir),"';", sep = ""))
+text[5] <- sub(text, "lag = ", paste("lag = ",difference.lag,";", sep = ""))
+
 
 # re-create ImageJ macro for batch processing of video files with ParticleTracker
 ## perhaps put this in a subdirectory of the data folder?
@@ -44,15 +46,6 @@ file.copy(paste(sub("1 - raw/","1 - raw tmp/",video.dir),ijout.files, sep = ""),
 #file.remove(sub("1 - raw/","1 - raw tmp/",video.dir))
 }
 
-video_to_trajectory("C:/Users/Frank/Documents/PhD/Programming/franco/data/1 - raw/")
-
-OR
-
-## Windows directory
-video.dir <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/1 - raw/"
-## OSX / Unix directory (note: imageJ does not like ~)
-video.dir <- "/Users/owenpetchey/work/git/franco/data/1 - raw/"
-video_to_trajectory(video.dir)
 
 
 
@@ -123,10 +116,7 @@ assign("trajectory.data",dd,envir = .GlobalEnv)
 write.table(trajectory.data, file = paste(trajdata.dir,"trajectory.data.txt", sep = "/"), sep = "\t")
 }
 
-LoadIJ_Traj_Outs("C:/Users/Frank/Documents/PhD/Programming/franco/data/2 - trajectory data/")
 
-trajdata.dir <- "/Users/owenpetchey/work/git/franco/data/2 - trajectory data/"
-LoadIJ_Traj_Outs(trackdata.dir)
 
 
 
@@ -134,7 +124,7 @@ LoadIJ_Traj_Outs(trackdata.dir)
 # creates a folder containing one jpeg plot containing all the positions till the respective frame
 # for the moment colour not assigned by species identity but that's easy to add 
 # provide path of " 2 - trajectory data", and the width and height of the original video (I use cropped videos to increase speed while troubleshooting)
-create_overlay_plots <- function(path,width,height){ 
+create_overlay_plots <- function(path,width,height,difference.lag){ 
 trajectory.data <- as.data.frame(read.table(paste(path,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
 file_names <- unique(trajectory.data$file)  
 # change path for output
@@ -164,7 +154,8 @@ if(.Platform$OS.type == "unix")
 text[3] <- sub(text, "avi_input = ", paste("avi_input = ","'", sub("2 - trajectory data/","1 - raw/",path),"';", sep = ""))
 text[4] <- sub(text, "overlay_input = ", paste("overlay_input = ","'", sub("2 - trajectory data/","3 - overlay plots/",path),"';", sep = ""))
 text[5] <- sub(text, "overlay_output = ", paste("overlay_output = ","'", sub("2 - trajectory data/","4 - overlays/",path),"';", sep = ""))
-  
+text[6] <- sub(text, "lag = ", paste("lag = ",difference.lag,";", sep = ""))
+
 # re-create ImageJ macro for batch processing of video files with ParticleTracker
 if(.Platform$OS.type == "windows")
   writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm",sep=""),sep="\n")
@@ -187,9 +178,4 @@ system(cmd)
 file.remove("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm")
 }
 
-trajdata.dir <- "/Users/owenpetchey/work/git/franco/data/2 - trajectory data/"
-path <- trajdata.dir
-width <- 2048
-height <- 2048
 
-create_overlay_plots("C:/Users/Frank/Documents/PhD/Programming/franco/data/2 - trajectory data/",735,690)
