@@ -13,7 +13,7 @@ difference.lag <- 25
 
 ## Owen's paths
 to.code.owen <- "/Users/owenpetchey/work/git/franco/automation/"
-to.data.owen <- "/Users/owenpetchey/Desktop/sub.test1/"
+to.data.owen <- "/Users/owenpetchey/Desktop/franco.test.vids/"
 
 ## Frank's paths
 to.code.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/automation/"
@@ -45,7 +45,7 @@ source(paste(to.code, "ParticleAnalyzer functions.r", sep=""))
 
 
 # read the file that gives the important information about each video
-sample.dir <- paste(to.data.owen, sample.description.folder, sep="")
+sample.dir <- paste(to.data, sample.description.folder, sep="")
 file.sample.info <- read.table(paste(sample.dir, sample.description.file, sep=""), sep= "\t", header = TRUE)
 
 
@@ -58,12 +58,9 @@ LoadIJOuts(IJ_output.dir)
 
 
 # run ParticleTracker, merge results and produce overlays
-if(.Platform$OS.type == "windows"){
-  video.dir <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/1 - raw/"}
-if(.Platform$OS.type == "unix"){
-  video.dir <- "/Users/owenpetchey/work/git/franco/data/1 - raw/"}
-#specify directory
+video.dir <- paste(to.data, raw.video.folder, sep="")
 video_to_trajectory(video.dir,difference.lag)
+
 
 # merge trajectory data into database
 if(.Platform$OS.type == "windows"){
