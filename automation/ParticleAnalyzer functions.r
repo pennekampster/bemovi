@@ -18,7 +18,7 @@ if(.Platform$OS.type == "unix") {
 }
 
 #create directory to store Particle Analyzer data
-dir.create(sub("1 - raw","5 - Particle Analyzer data",video.dir),showWarnings = FALSE)
+dir.create(sub(raw.video.folder,"5 - Particle Analyzer data",video.dir),showWarnings = FALSE)
 
 # run to process video files by calling ImageJ
 if(.Platform$OS.type == "unix")
