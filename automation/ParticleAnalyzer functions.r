@@ -1,10 +1,7 @@
 MakeIJMacros <- function(video.dir, difference.lag) {
 
 # copy master copy of ImageJ macro there for treatment
-if(.Platform$OS.type == "unix")
-  text <- readLines("/Users/owenpetchey/work/git/franco/automation/ImageJ macros/Video_to_morphology.ijm")
-if(.Platform$OS.type == "windows")
-  text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_to_morphology.ijm")
+text <- readLines(paste(to.code, "ImageJ macros/Video_to_morphology.ijm", sep=""))
 
 # use regular expression to insert input & output directory as well as difference lag
 text[3] <- sub(text, "avi_input = ", paste("avi_input = ","'", video.dir,"';", sep = ""))
