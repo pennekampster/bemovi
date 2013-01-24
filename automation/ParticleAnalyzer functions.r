@@ -23,7 +23,7 @@ if(.Platform$OS.type == "unix") {
 #create directory to store Particle Analyzer data
 dir.create(sub("1 - raw","5 - Particle Analyzer data",video.dir),showWarnings = FALSE)
 
-# run to process video files by calling ImageJ / needs fixing for Mac
+# run to process video files by calling ImageJ
 if(.Platform$OS.type == "unix")
   cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub("1 - raw","ijmacs",video.dir), "Video_to_morphology.ijm",sep=""))
 if(.Platform$OS.type == "windows")
