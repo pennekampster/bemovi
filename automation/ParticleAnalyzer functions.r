@@ -13,8 +13,8 @@ text[5] <- sub(text, "lag = ", paste("lag = ",difference.lag,";", sep = ""))
 if(.Platform$OS.type == "windows") 
   writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_to_morphology.ijm",sep=""),sep="\n")
 if(.Platform$OS.type == "unix") {
-  dir.create(sub("1 - raw","ijmacs",video.dir))	
-  writeLines(text,con=paste(sub("1 - raw","ijmacs",video.dir), "/Video_to_morphology.ijm",sep=""))
+  dir.create(sub(raw.video.folder,"ijmacs",video.dir))	
+  writeLines(text,con=paste(sub(raw.video.folder,"ijmacs",video.dir), "/Video_to_morphology.ijm",sep=""))
 }
 
 #create directory to store Particle Analyzer data
@@ -32,6 +32,7 @@ if(.Platform$OS.type == "windows")
   file.remove("C:/Program Files/Fiji.app/macros/Video_to_morphology.ijm")
 
 }
+
 
 ## This function gets the output files produced by the imagej macros previously created (by function MakeIJMacros)
 ## and run by function RunIJMacros
