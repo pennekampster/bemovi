@@ -63,10 +63,7 @@ video_to_trajectory(video.dir,difference.lag)
 
 
 # merge trajectory data into database
-if(.Platform$OS.type == "windows"){
-  trackdata.dir <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/2 - trajectory data/"}
-if(.Platform$OS.type == "unix"){
-  trackdata.dir <- "/Users/owenpetchey/work/git/franco/data/2 - trajectory data/"}
+trackdata.dir <- paste(to.data, "2 - trajectory data/", sep="")
 #specify directory
 LoadIJ_Traj_Outs(trackdata.dir)
 
