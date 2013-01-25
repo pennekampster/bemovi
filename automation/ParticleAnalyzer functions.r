@@ -1,10 +1,7 @@
 MakeIJMacros <- function(video.dir, difference.lag) {
 
 # copy master copy of ImageJ macro there for treatment
-if(.Platform$OS.type == "unix")
-  text <- readLines("/Users/owenpetchey/work/git/franco/automation/ImageJ macros/Video_to_morphology.ijm")
-if(.Platform$OS.type == "windows")
-  text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_to_morphology.ijm")
+text <- readLines(paste(to.code, "ImageJ macros/Video_to_morphology.ijm", sep=""))
 
 # use regular expression to insert input & output directory as well as difference lag
 text[3] <- sub(text, "avi_input = ", paste("avi_input = ","'", video.dir,"';", sep = ""))
@@ -16,14 +13,14 @@ text[5] <- sub(text, "lag = ", paste("lag = ",difference.lag,";", sep = ""))
 if(.Platform$OS.type == "windows") 
   writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_to_morphology.ijm",sep=""),sep="\n")
 if(.Platform$OS.type == "unix") {
-  dir.create(sub("1 - raw","ijmacs",video.dir))	
-  writeLines(text,con=paste(sub("1 - raw","ijmacs",video.dir), "/Video_to_morphology.ijm",sep=""))
+  dir.create(sub(raw.video.folder,"ijmacs",video.dir))	
+  writeLines(text,con=paste(sub(raw.video.folder,"ijmacs",video.dir), "/Video_to_morphology.ijm",sep=""))
 }
 
 #create directory to store Particle Analyzer data
-dir.create(sub("1 - raw","5 - Particle Analyzer data",video.dir),showWarnings = FALSE)
+dir.create(sub(raw.video.folder,"5 - Particle Analyzer data",video.dir),showWarnings = FALSE)
 
-# run to process video files by calling ImageJ / needs fixing for Mac
+# run to process video files by calling ImageJ
 if(.Platform$OS.type == "unix")
   cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub("1 - raw","ijmacs",video.dir), "Video_to_morphology.ijm",sep=""))
 if(.Platform$OS.type == "windows")
@@ -35,6 +32,7 @@ if(.Platform$OS.type == "windows")
   file.remove("C:/Program Files/Fiji.app/macros/Video_to_morphology.ijm")
 
 }
+
 
 ## This function gets the output files produced by the imagej macros previously created (by function MakeIJMacros)
 ## and run by function RunIJMacros

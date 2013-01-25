@@ -10,42 +10,57 @@ rm(list=ls())
 ## specify difference.lag for both Particle Analyzer as well as Tracker
 difference.lag <- 25
 
-# load functions to call ImageJ from R
-if(.Platform$OS.type == "unix"){
-  source('~/work/git/franco/automation/batch_process_videos.r.r')
-  source('~/work/git/franco/automation/ParticleAnalyzer functions.r')}
+
+## Owen's paths
+to.code.owen <- "/Users/owenpetchey/work/git/franco/automation/"
+to.data.owen <- "/Users/owenpetchey/Desktop/franco.test.vids/"
+
+## Frank's paths
+to.code.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/automation/"
+to.data.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/"
+
+## General folders
+sample.description.folder <- "0 - sample description/"
+sample.description.file <- "frank.video.description.txt"
+raw.video.folder <- "1 - raw/"
+particle.analyzer.folder <- "5 - Particle Analyzer data/"
+
+
+
+## what OS are we on?
+OS <- .Platform$OS.type
+## if on windows, use Frank's paths
 if(.Platform$OS.type == "windows"){
-  source('C:/Users/Frank/Documents/PhD/Programming/franco/automation/batch_process_videos.r')
-  source('C:/Users/Frank/Documents/PhD/Programming/franco/automation/ParticleAnalyzer functions.r')}
+	to.code <- to.code.frank
+	to.data <- to.data.frank}
+## otherwise use Owen's
+if(.Platform$OS.type == "unix"){
+	to.code <- to.code.owen
+	to.data <- to.data.owen}
+	
+
+# load functions to call ImageJ from R
+source(paste(to.code, "batch_process_videos.r", sep=""))
+source(paste(to.code, "ParticleAnalyzer functions.r", sep=""))
+
 
 # read the file that gives the important information about each video
-if(.Platform$OS.type == "windows"){
-  sample.dir <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/0 - sample description/"}
-if(.Platform$OS.type == "unix"){
-  sample.dir <- "/Users/owenpetchey/work/git/franco/data/0 - sample description/"}
-#specify filename
-file.sample.info <- read.table(paste(sample.dir, "frank.video.description.txt", sep=""), sep= "\t", header = TRUE)
+sample.dir <- paste(to.data, sample.description.folder, sep="")
+file.sample.info <- read.table(paste(sample.dir, sample.description.file, sep=""), sep= "\t", header = TRUE)
 
 
 # run Particle Analyzer and merge result files into morphology database
-if(.Platform$OS.type == "windows"){
-   video.dir <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/1 - raw/"
-   IJ_output.dir <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/5 - Particle Analyzer data/"}
-if(.Platform$OS.type == "unix"){
-   video.dir <- "~/work/git/franco/data/1 - raw/"
-   IJ_output.dir <- "~/work/git/franco/data/5 - Particle Analyzer data/"}
+video.dir <- paste(to.data, raw.video.folder, sep="")
+IJ_output.dir <- paste(to.data, particle.analyzer.folder, sep="")
 #specify directory and difference.lag
-MakeIJMacros(video.dir,difference.lag)
-LoadIJOuts(IJ_output.dir)
+## MakeIJMacros(video.dir,difference.lag)
+## LoadIJOuts(IJ_output.dir)
 
 
 # run ParticleTracker, merge results and produce overlays
-if(.Platform$OS.type == "windows"){
-  video.dir <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/1 - raw/"}
-if(.Platform$OS.type == "unix"){
-  video.dir <- "/Users/owenpetchey/work/git/franco/data/1 - raw/"}
-#specify directory
+video.dir <- paste(to.data, raw.video.folder, sep="")
 video_to_trajectory(video.dir,difference.lag)
+
 
 # merge trajectory data into database
 if(.Platform$OS.type == "windows"){

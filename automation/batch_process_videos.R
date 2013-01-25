@@ -2,15 +2,21 @@
 # provide directory where raw videos are stored
 video_to_trajectory <- function(video.dir,difference.lag) {
 
+## generate the folders...
+ijmacs.folder <- sub(raw.video.folder,"ijmacs/",video.dir)
+dir.create(ijmacs.folder, showWarnings = FALSE)	
+tmp.raw.folder <- sub(substr(raw.video.folder, 1, nchar(raw.video.folder)-1),"1 - raw tmp",video.dir)
+dir.create(tmp.raw.folder, showWarnings = FALSE)
+trajdata.folder <- sub(raw.video.folder,"2 - trajectory data/",video.dir)
+dir.create(trajdata.folder, showWarnings = FALSE)
+
+
 # copy master copy of ImageJ macro there for treatment
-if(.Platform$OS.type == "unix")
-	text <- readLines("/Users/owenpetchey/work/git/franco/automation/ImageJ macros/Video_to_trajectory.ijm")
-if(.Platform$OS.type == "windows")
-	text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_to_trajectory.ijm")
+text <- readLines(paste(to.code, "ImageJ macros/Video_to_trajectory.ijm", sep=""))
 
 # use regular expression to insert input and output directory
 text[3] <- sub(text, "dir_input = ", paste("dir_input = ","'", video.dir,"';", sep = ""))
-text[4] <- sub(text, "dir_output = ", paste("dir_output = ","'",sub("1 - raw/","1 - raw tmp/",video.dir),"';", sep = ""))
+text[4] <- sub(text, "dir_output = ", paste("dir_output = ","'",sub(raw.video.folder, paste(substr(raw.video.folder, 1, nchar(raw.video.folder)-1),  "tmp/"),video.dir),"';", sep = ""))
 text[5] <- sub(text, "lag = ", paste("lag = ",difference.lag,";", sep = ""))
 
 
@@ -19,17 +25,13 @@ text[5] <- sub(text, "lag = ", paste("lag = ",difference.lag,";", sep = ""))
 ## This is implemented in OSX but not windows, which is as you wrote it
 if(.Platform$OS.type == "windows") 
 	writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_to_trajectory_tmp.ijm",sep=""),sep="\n")
-if(.Platform$OS.type == "unix") {
-	dir.create(sub("1 - raw","ijmacs",video.dir))	
-    writeLines(text,con=paste(sub("1 - raw","ijmacs",video.dir), "/Video_to_trajectory_tmp.ijm",sep=""))
-}
+if(.Platform$OS.type == "unix") 
+    writeLines(text,con=paste(ijmacs.folder, "/Video_to_trajectory_tmp.ijm",sep=""))
 
-#create directory to temporarily store information
-dir.create(sub("1 - raw","1 - raw tmp",video.dir),showWarnings = FALSE)
 
 # run to process video files by calling ImageJ / needs fixing for Mac
 if(.Platform$OS.type == "unix")
-    cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub("1 - raw","ijmacs",video.dir), "Video_to_trajectory_tmp.ijm",sep=""))
+    cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(ijmacs.folder, "Video_to_trajectory_tmp.ijm",sep=""))
 if(.Platform$OS.type == "windows")
     cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_to_trajectory_tmp.ijm')
 system(cmd)
@@ -39,8 +41,7 @@ if(.Platform$OS.type == "windows")
     file.remove("C:/Program Files/Fiji.app/macros/Video_to_trajectory_tmp.ijm")
 
 #copy files produced by ParticleTracker to "2 - trajectory data" directory
-dir.create(sub("1 - raw","2 - trajectory data",video.dir))
-all.files <- dir(sub("1 - raw/","1 - raw tmp/",video.dir))
+all.files <- dir(tmp.raw.folder)
 ijout.files <- all.files[grep("Traj_", all.files)]
 file.copy(paste(sub("1 - raw/","1 - raw tmp/",video.dir),ijout.files, sep = ""),sub("1 - raw","2 - trajectory data",video.dir))
 #file.remove(sub("1 - raw/","1 - raw tmp/",video.dir))
