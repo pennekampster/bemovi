@@ -54,30 +54,6 @@ file.copy(paste(sub("1 - raw/","1 - raw tmp/",video.dir),ijout.files, sep = ""),
 # specify the path where the files which contain the trajectory data are stored
 LoadIJ_Traj_Outs <- function(trajdata.dir) {
   
-# function to create a unique trajectory ID with each processed result file of the ParticleTracker
-unique_traj_ID <- function(dataset){
-    
-lag <- dataset[2:nrow(dataset),1]
-lag <- append(lag,1)
-dataset <- cbind(dataset,lag)
-
-# assign a counter creating a unique trajectory
-trajectory <- 1
-for (i in 1:nrow(dataset)){
-    if (dataset[i,12]>dataset[i,1]){
-        dataset[i,"trajectory"] <- trajectory}
-      
-    if (dataset[i,12]<=dataset[i,1]){
-        dataset[i,"trajectory"] <- trajectory
-        trajectory <- trajectory+1}
-    }
-
-dataset$lag <- NULL
-# function to convert object name into character string
-myfun <- function(x) deparse(substitute(x)) 
-assign(paste(myfun(dataset)),dataset,envir = .GlobalEnv)
-}
-  
 ## the macro file names
 all.files <- dir(path=trajdata.dir)
 ijout.files <- all.files[grep("Traj_", all.files)]
@@ -90,19 +66,40 @@ string <- "(^[[:digit:]]+)"
 txtsubset <-  grep(string, text) 
 #subset the original file by only retaining lines that matched the string
 out <- text[txtsubset]
-  
+
+# find lines that mark start of trajectories
+pattern <- c("%% Trajectory [0_9]*")
+list <- grep(pattern,text)
+
+# add the end line of the last block and increase the line number by one to match the pattern of the other records
+list_tmp <- append(list,length(text))
+list_tmp[length(list)+1]<-as.integer(list_tmp[length(list)+1]+1)
+
+# produce vector with unique trajectory ids
+difference <- numeric(0)
+for (k in 1:length(list))
+{diff <- rep(k,(list_tmp[k+1]-3-list_tmp[k]+1))
+ difference <- append(difference,diff)}
+
+myfun <- function(x) deparse(substitute(x)) 
+assign(paste(myfun(ijout.files[i])),ijout.files[i],envir = .GlobalEnv)
+
+
 if (i == 1){
 dd <- as.data.frame(read.table(textConnection(out)))
 dd$file <- rep(ijout.files[1], length(dd$V1))
-dd <- unique_traj_ID(dd)
+# merge unique trajectory_ID with the original data
+dd <- cbind(dd,difference)
 }
-  
+
 if (i > 1){
 for(j in 2:length(ijout.files)) {
     
 dd.t <- as.data.frame(read.table(textConnection(out)))
 dd.t$file <- rep(ijout.files[i], length(dd.t$V1))
-dd.t <- unique_traj_ID(dd.t)
+# merge unique trajectory_ID with the original data
+dd.t <- cbind(dd.t,difference)
+
 dd <- rbind(dd, dd.t)}
 }}
 
@@ -116,9 +113,6 @@ names(dd) <- c("frame","X","Y","file","trajectory")
 assign("trajectory.data",dd,envir = .GlobalEnv)
 write.table(trajectory.data, file = paste(trajdata.dir,"trajectory.data.txt", sep = "/"), sep = "\t")
 }
-
-
-
 
 
 # function to plot trajectories for overlay (must be merged with original video by ImageJ macro)
