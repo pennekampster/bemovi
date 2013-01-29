@@ -23,6 +23,9 @@ to.data.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/"
 sample.description.folder <- "0 - sample description/"
 sample.description.file <- "frank.video.description.txt"
 raw.video.folder <- "1 - raw/"
+trajectory.data.folder <- "2 - trajectory data/"
+overlay.folder <- "3 - overlay plots/"
+overlay.folder2 <- "4 - overlays"
 particle.analyzer.folder <- "5 - Particle Analyzer data/"
 
 
@@ -59,21 +62,20 @@ IJ_output.dir <- paste(to.data, particle.analyzer.folder, sep="")
 
 # run ParticleTracker, merge results and produce overlays
 video.dir <- paste(to.data, raw.video.folder, sep="")
-video_to_trajectory(video.dir,difference.lag)
+##video_to_trajectory(video.dir,difference.lag)
 
 
 # merge trajectory data into database
-trackdata.dir <- paste(to.data, "2 - trajectory data/", sep="")
+trackdata.dir <- paste(to.data, trajectory.data.folder, sep="")
 #specify directory
 LoadIJ_Traj_Outs(trackdata.dir)
 
+
 # create overlay videos
 if(.Platform$OS.type == "windows"){
-  trackdata.dir <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/2 - trajectory data/"
   width <- 735
   height <- 690}
 if(.Platform$OS.type == "unix"){
-  trackdata.dir <- "/Users/owenpetchey/work/git/franco/data/2 - trajectory data/"
   width <- 2048
   height <- 2048}
 #specify directory

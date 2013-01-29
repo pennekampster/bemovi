@@ -123,54 +123,62 @@ create_overlay_plots <- function(path,width,height,difference.lag){
 trajectory.data <- as.data.frame(read.table(paste(path,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
 file_names <- unique(trajectory.data$file)  
 # change path for output
-dir.create(sub("2 - trajectory data/","3 - overlay plots/",path))
+dir.create(sub(trajectory.data.folder,overlay.folder,path))
 for (i in 1:length(file_names)){
    #split filename into name and ending for creating directories according to video name
    filename_split <- strsplit(paste(file_names[i]),"\\.")
    filename <- filename_split[[1]]
-   dir.create(paste(sub("2 - trajectory data/","3 - overlay plots/",path),sub("Traj_","",filename[1]),sep="/"))
+   dir.create(paste(sub(trajectory.data.folder,overlay.folder,path),sub("Traj_","",filename[1]),sep="/"))
    trajectory.data_tmp <- subset(trajectory.data,file == file_names[i])
    j<- 0
    while(j < max(trajectory.data$frame)+1){
-      jpeg(paste(sub("2 - trajectory data/","3 - overlay plots/",path),sub("Traj_","",filename[1]),"/frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
+      jpeg(paste(sub(trajectory.data.folder,overlay.folder,path),sub("Traj_","",filename[1]),"/frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
       par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
       print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame <= j, select=c("X","Y","trajectory"))
       plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="#FFFF00", pch=15, cex=1, asp=1)
       dev.off()
       j <- j+1}
 }
+
 # copy master copy of ImageJ macro there for treatment
 if(.Platform$OS.type == "windows")
   text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_overlay.ijm",warn = FALSE)
 if(.Platform$OS.type == "unix")
 	text <- readLines("/Users/owenpetchey/work/git/franco/automation/ImageJ macros/Video_overlay.ijm")
 
+text <- readLines(paste(to.code, "ImageJ macros/Video_overlay.ijm", sep=""))
+
+
 # use regular expression to insert input and output directory
-text[3] <- sub(text, "avi_input = ", paste("avi_input = ","'", sub("2 - trajectory data/","1 - raw/",path),"';", sep = ""))
-text[4] <- sub(text, "overlay_input = ", paste("overlay_input = ","'", sub("2 - trajectory data/","3 - overlay plots/",path),"';", sep = ""))
-text[5] <- sub(text, "overlay_output = ", paste("overlay_output = ","'", sub("2 - trajectory data/","4 - overlays/",path),"';", sep = ""))
+text[3] <- sub(text, "avi_input = ", paste("avi_input = ","'", sub(trajectory.data.folder,raw.video.folder,path),"';", sep = ""))
+text[4] <- sub(text, "overlay_input = ", paste("overlay_input = ","'", sub(trajectory.data.folder,overlay.folder,path),"';", sep = ""))
+text[5] <- sub(text, "overlay_output = ", paste("overlay_output = ","'", sub(trajectory.data.folder,overlay.folder2,path),"';", sep = ""))
 text[6] <- sub(text, "lag = ", paste("lag = ",difference.lag,";", sep = ""))
 
 # re-create ImageJ macro for batch processing of video files with ParticleTracker
 if(.Platform$OS.type == "windows")
   writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm",sep=""),sep="\n")
 if(.Platform$OS.type == "unix") {
-  writeLines(text,con=paste(sub("1 - raw","ijmacs",video.dir), "/Video_overlay_tmp.ijm",sep=""))
+  ijmacs.folder <- sub(raw.video.folder,"ijmacs/",video.dir)
+  writeLines(text,con=paste(ijmacs.folder, "/Video_overlay_tmp.ijm",sep=""))
+  ##writeLines(text,con=paste(sub("1 - raw","ijmacs",video.dir), "/Video_overlay_tmp.ijm",sep=""))
 }
   
 # create directory to store overlays
-dir.create(sub("2 - trajectory data/","4 - overlays/",path))
+dir.create(sub(trajectory.data.folder,overlay.folder2,path))
   
 #call IJ macro to merge original video with the trajectory data
 if(.Platform$OS.type == "unix"){
-  cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub("1 - raw","ijmacs",video.dir), "Video_overlay_tmp.ijm",sep=""))}
-if(.Platform$OS.type == "windows"){cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_overlay_tmp.ijm')}
+  cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub(raw.video.folder,"ijmacs",video.dir), "/Video_overlay_tmp.ijm",sep=""))}
+if(.Platform$OS.type == "windows"){
+	cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_overlay_tmp.ijm')}
 
 # run ImageJ macro
 system(cmd)
 
 # delete temporary file after execution
-file.remove("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm")
+if(.Platform$OS.type == "windows")
+  file.remove("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm")
 }
 
 
