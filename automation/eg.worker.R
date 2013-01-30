@@ -25,7 +25,7 @@ sample.description.file <- "frank.video.description.txt"
 raw.video.folder <- "1 - raw/"
 trajectory.data.folder <- "2 - trajectory data/"
 overlay.folder <- "3 - overlay plots/"
-overlay.folder2 <- "4 - overlays"
+overlay.folder2 <- "4 - overlays/"
 particle.analyzer.folder <- "5 - Particle Analyzer data/"
 
 
@@ -80,6 +80,9 @@ if(.Platform$OS.type == "unix"){
   height <- 2048}
 #specify directory
 create_overlay_plots(trackdata.dir,width,height,difference.lag)
+
+
+
 
 '''
 ## NOT WORKING PROPERLY FROM HERE ONWARDS
