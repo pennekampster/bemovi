@@ -93,15 +93,13 @@ dd <- cbind(dd,difference)
 }
 
 if (i > 1){
-for(j in 2:length(ijout.files)) {
-    
 dd.t <- as.data.frame(read.table(textConnection(out)))
 dd.t$file <- rep(ijout.files[i], length(dd.t$V1))
 # merge unique trajectory_ID with the original data
 dd.t <- cbind(dd.t,difference)
 
 dd <- rbind(dd, dd.t)}
-}}
+}
 
 # invert Y-axis to account for origin in upper-left corner
 dd$V2 <- -dd$V2

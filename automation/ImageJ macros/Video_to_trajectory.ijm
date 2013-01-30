@@ -38,13 +38,13 @@ vid3 = getTitle();
 selectWindow(vid3);
 
 // perhaps use autothreshold?
-setAutoThreshold("Default light");
-//run("Threshold...");
-run("Convert to Mask", " ");
+// setAutoThreshold("Default light");
+// run("Threshold...");
+// run("Convert to Mask", " ");
 
 
-//setThreshold(10, 255);
-//run("Convert to Mask", "  black");
+setThreshold(10, 255);
+run("Convert to Mask", "  black");
 
 run("Median...", "radius=4 stack");
 

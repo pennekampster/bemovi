@@ -53,8 +53,8 @@ file.sample.info <- read.table(paste(sample.dir, sample.description.file, sep=""
 video.dir <- paste(to.data, raw.video.folder, sep="")
 IJ_output.dir <- paste(to.data, particle.analyzer.folder, sep="")
 #specify directory and difference.lag
-## MakeIJMacros(video.dir,difference.lag)
-## LoadIJOuts(IJ_output.dir)
+MakeIJMacros(video.dir,difference.lag)
+LoadIJOuts(IJ_output.dir)
 
 
 # run ParticleTracker, merge results and produce overlays
