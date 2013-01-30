@@ -1,6 +1,6 @@
 Being done:
 
-1. Owen is working through Frank's code for particle linking, overlay production, and then movement analysis. Mostly for himself, but also some streamlining. At present there is a problem with the created overlay plots...
+1. Owen is working through Frank's code for particle linking, overlay production, and then movement analysis. Mostly for himself, but also some streamlining. All seems to be working up to and including production of overlay plots. Nice. (Well, the thresholding still needs work, as quite a few particles are missed.)
 
 2. Owen is working on batch processing of xy data by the particle linker of mosaic.
 
@@ -18,6 +18,9 @@ To do:
 4. In the R code that modifies the imagej macros, make this immune to changes in the line numbering of the template imagej macro.
 
 5. On OSX at least, figure out why imagej continuously increases its used memory. (up to 8GB, for example).
+
+6. The particle analyser macro seems to not be working for Owen, at least.
+
 
 Ideas:
 When an individual reverses direction (or changes sharply), its shape changes (think of Paramecium side on while swimming, versus end on when reversing). This, or perhaps just shape variation, could be used to help quantify three dimensional morphology, possibly useful for id and biovolume.
