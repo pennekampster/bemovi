@@ -11,7 +11,8 @@ rm(list=ls())
 difference.lag <- 25
 ## specify threshold values
 thresholds = c(0,999)
-
+## background for stack maxima
+stack.max.background = "light" ## any other values results in dark background
 
 
 ## Owen's paths
