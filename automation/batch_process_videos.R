@@ -1,6 +1,6 @@
 # code to batch process videos by ImageJ and ParticleTracker plugin
 # provide directory where raw videos are stored
-video_to_trajectory <- function(video.dir,difference.lag) {
+video_to_trajectory <- function(video.dir,difference.lag, thresholds=c(0,1000)) {
 
 ## generate the folders...
 ijmacs.folder <- sub(raw.video.folder,"ijmacs/",video.dir)
@@ -18,6 +18,9 @@ text <- readLines(paste(to.code, "ImageJ macros/Video_to_trajectory.ijm", sep=""
 text[3] <- sub(text, "dir_input = ", paste("dir_input = ","'", video.dir,"';", sep = ""))
 text[4] <- sub(text, "dir_output = ", paste("dir_output = ","'",sub(raw.video.folder, paste(substr(raw.video.folder, 1, nchar(raw.video.folder)-1),  "tmp/"),video.dir),"';", sep = ""))
 text[5] <- sub(text, "lag = ", paste("lag = ",difference.lag,";", sep = ""))
+text[46] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep="")
+
+
 
 
 # re-create ImageJ macro for batch processing of video files with ParticleTracker
@@ -167,7 +170,8 @@ dir.create(sub(trajectory.data.folder,overlay.folder2,path))
   
 #call IJ macro to merge original video with the trajectory data
 if(.Platform$OS.type == "unix"){
-  cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub(raw.video.folder,"ijmacs",video.dir), "/Video_overlay_tmp.ijm",sep=""))}
+  cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub(raw.video.folder,"ijmacs",video.dir), "/Video_overlay_tmp.ijm",sep=""))
+  }
 if(.Platform$OS.type == "windows"){
 	cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_overlay_tmp.ijm')}
 

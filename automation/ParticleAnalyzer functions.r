@@ -1,4 +1,4 @@
-MakeIJMacros <- function(video.dir, difference.lag) {
+video_to_morphology <- function(video.dir, difference.lag, thresholds=c(0,1000)) {
 
 # copy master copy of ImageJ macro there for treatment
 text <- readLines(paste(to.code, "ImageJ macros/Video_to_morphology.ijm", sep=""))
@@ -7,6 +7,9 @@ text <- readLines(paste(to.code, "ImageJ macros/Video_to_morphology.ijm", sep=""
 text[3] <- sub(text, "avi_input = ", paste("avi_input = ","'", video.dir,"';", sep = ""))
 text[4] <- sub(text, "avi_output = ", paste("avi_output = ","'",sub("1 - raw/","5 - Particle Analyzer data/",video.dir),"';", sep = ""))
 text[5] <- sub(text, "lag = ", paste("lag = ",difference.lag,";", sep = ""))
+text[31] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep="")
+text[60] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep="")
+
 
 
 # re-create ImageJ macro for batch processing of video files with Particle Analyzer
@@ -36,7 +39,7 @@ if(.Platform$OS.type == "windows")
 
 ## This function gets the output files produced by the imagej macros previously created (by function MakeIJMacros)
 ## and run by function RunIJMacros
-LoadIJOuts <- function(IJ_output.dir) {
+LoadIJ_morph_outs <- function(IJ_output.dir) {
 
 ## the macro file names
 all.files <- dir(path=IJ_output.dir)

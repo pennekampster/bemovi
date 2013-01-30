@@ -9,6 +9,9 @@ rm(list=ls())
 
 ## specify difference.lag for both Particle Analyzer as well as Tracker
 difference.lag <- 25
+## specify threshold values
+thresholds = c(0,999)
+
 
 
 ## Owen's paths
@@ -25,7 +28,7 @@ sample.description.file <- "frank.video.description.txt"
 raw.video.folder <- "1 - raw/"
 trajectory.data.folder <- "2 - trajectory data/"
 overlay.folder <- "3 - overlay plots/"
-overlay.folder2 <- "4 - overlays"
+overlay.folder2 <- "4 - overlays/"
 particle.analyzer.folder <- "5 - Particle Analyzer data/"
 
 
@@ -56,13 +59,18 @@ file.sample.info <- read.table(paste(sample.dir, sample.description.file, sep=""
 video.dir <- paste(to.data, raw.video.folder, sep="")
 IJ_output.dir <- paste(to.data, particle.analyzer.folder, sep="")
 #specify directory and difference.lag
+<<<<<<< HEAD
 MakeIJMacros(video.dir,difference.lag)
 LoadIJOuts(IJ_output.dir)
+=======
+video_to_morphology(video.dir,difference.lag,thresholds)
+LoadIJ_morph_outs(IJ_output.dir)
+>>>>>>> c1fb6cf84d173de807eea9ee4299ff57075b7b64
 
 
 # run ParticleTracker, merge results and produce overlays
 video.dir <- paste(to.data, raw.video.folder, sep="")
-##video_to_trajectory(video.dir,difference.lag)
+video_to_trajectory(video.dir,difference.lag)
 
 
 # merge trajectory data into database
@@ -80,6 +88,9 @@ if(.Platform$OS.type == "unix"){
   height <- 2048}
 #specify directory
 create_overlay_plots(trackdata.dir,width,height,difference.lag)
+
+
+
 
 '''
 ## NOT WORKING PROPERLY FROM HERE ONWARDS
