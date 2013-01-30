@@ -46,12 +46,17 @@ all.files <- dir(path=IJ_output.dir)
 ijout.files <- all.files[grep("ijout", all.files)]
 	
 dd <- read.delim(paste(IJ_output.dir, ijout.files[1], sep="//"))
-dd$file <- rep(ijout.files[1], length(dd$X))
-	
+dd$file <- rep(ijout.files[1], length(dd[,1]))
+
+# change column names because R is replacing missing header with X causing confusion with real X and Y positions
+colnames(dd) <- c("obs","Area","Mean","Min","Max","X","Y","Perimeter","Major","Minor","Angle","Circ.","Slice","AR","Round","Solidity","file")
+
 for(i in 2:length(ijout.files)) {
 
 	dd.t <- read.delim(paste(IJ_output.dir, ijout.files[i], sep="//"))
-	dd.t$file <- rep(ijout.files[i], length(dd.t$X))
+	dd.t$file <- rep(ijout.files[i], length(dd.t[,1]))
+# change column names because R is replacing missing header with X causing confusion with real X and Y positions
+  colnames(dd.t) <- c("obs","Area","Mean","Min","Max","X","Y","Perimeter","Major","Minor","Angle","Circ.","Slice","AR","Round","Solidity","file")
 	dd <- rbind(dd, dd.t)
 }
 

@@ -39,9 +39,6 @@ selectWindow(vid3);
 
 // perhaps use autothreshold?
 // setAutoThreshold("Default light");
-//run("Threshold...");
-//run("Convert to Mask", " ");
-
 
 setThreshold(0, 1000);
 run("Convert to Mask", "  black");
