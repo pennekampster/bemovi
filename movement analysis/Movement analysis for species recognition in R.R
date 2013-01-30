@@ -1,9 +1,12 @@
+rm(list=ls())
+
 # code to extract movement characteristics from the results files of the ParticleTracker
 # still contains code to extract positions from raw text file
 # uses the adehabitatLT package to calculate movement metrics (and trials to explore functionality of the package)
 library(adehabitatLT)
 library(grid)
 library(plyr)
+library(ggplot2)
 
 # load trajectory data
 trajectory.data <- read.table("C:/Users/Frank/Documents/PhD/Programming/franco/data/2 - trajectory data/trajectory.data.txt", header=TRUE, sep="\t")
@@ -23,41 +26,62 @@ net_disp_summary <- net_disp[c(1,2,9,10,11)]
 #merge summary data with original trajectories
 trajectory.data.summary <- merge(trajectory.data,net_disp_summary,by=c("trajectory","file"))
 
-#subset data for movement analysis
-trajectory.data.summary.test <- subset(trajectory.data.summary, file == "Traj_Data34.avi.txt" & trajectory == 73)
-trajectory.data.summary.test
-trajectory.data.summary <- subset(trajectory.data.summary, (net_speed > 50 &  net_speed < 300) & net_disp > 50)
-unique(trajectory.data.summary.test$trajectory)
+# prepare data for analysis with adehabitat package
+# create unique ID consisting of trajectory ID and file
+id <- paste(trajectory.data.summary$file,trajectory.data.summary$trajectory,sep="-")
+trajectory.data.summary <- cbind(trajectory.data.summary,id)
 
-attach(trajectory.data.summary.test)
-plot(Y, X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), pch=15, cex=0.5, asp=1, col=net_speed)
-detach(trajectory.data.summary_subset)
+# filter very short trajectories out, otherwise problems when rediscretizing based on distance
+trajectory.data.summary <- subset(trajectory.data.summary,net_disp >= 100)
 
+# 1. convert frame into time class (each frame representing a time step of a second)
 trajectory.data.summary$sec <- trajectory.data.summary$frame  
 trajectory.data.summary$datetime <- as.POSIXct(trajectory.data.summary$sec, origin = "1900-01-01", format = "%OS")
 trajectory.data.summary$sec <- NULL
 options(digits.secs=2)
 
-# convert raw data in ltraj class (typeII=FALSE meaning that no time was recorded)
-mvt_data <- as.ltraj(xy = trajectory.data.summary[,c("X","Y")], date = trajectory.data.summary$datetime, typeII=TRUE, id = trajectory.data.summary$trajectory)
+# 2. convert raw data in ltraj class (typeII=FALSE meaning that no time was recorded)
+mvt_data <- as.ltraj(xy = trajectory.data.summary[,c("X","Y")], date = trajectory.data.summary$datetime, typeII=TRUE, id = trajectory.data.summary$id)
 
-# add positions where locations should have been measured, but have not due to detection problems ..
+# 3. add positions where locations should have been measured (i.e. each second), but have not due to e.g. detection problems...
 mvt_data <- setNA(mvt_data, date.ref = trajectory.data.summary$datetime, dt=1, units=c("sec"))
 
-#check whether adding positions rendered trajectory regular
-is.regular(mvt_data)
+# otpional: check whether adding positions rendered trajectory regular
+# is.regular(mvt_data)
 
-#to interpolate the positions which are missing, put the time interval (dt) to 1 
+# 4. interpolate the positions which are missing (added as missing values before [see 3.]) by putting the time interval (dt) to 1 
 mvt_data <- redisltraj(na.omit(mvt_data), 1, type="time")
 
-#rediscretize the trajectory in space to analyze geometrical properties of the trajectory
+# get gross displacement and merge with original data
+mvt_gross <- ld(mvt_data)
+sum <- ddply(mvt_gross,.(id),summarize, gross_disp=sum(dist, na.rm=T))
+mvt_gross_summary <- cbind(sum,file,trajectory)
+
+trajectory.data.summary <- merge(trajectory.data.summary,mvt_gross_summary,by=c("id"))
+trajectory.data.summary$NGDR <- trajectory.data.summary$net_disp/trajectory.data.summary$gross_disp
+
+trajectory.data.summary$file.y <- NULL
+trajectory.data.summary$trajectory.y <- NULL
+
+# 5. rediscretize the trajectory in space to analyze geometrical properties of the trajectory
 redis_space <- redisltraj(mvt_data, 25)
 
+# 6. transform ltraj object into dataframe to extract movement metrics
+mvt_summary <- ld(redis_space)
 
-#extract cosine of the relative angles for further analysis
-cosrelangle <- redis_space[[2]]$rel.angle
-layout(matrix(c(1,1,2,2), 2, 2, byrow = TRUE), widths=c(1,1), heights=c(1,1))
-plot(cosrelangle, type="l", )
-plot(mvt_data[[2]]$x,mvt_data[[2]]$y)
+# split unique ID string into trajectory and file data for remerge with trajectory data
+sum_mat <- as.matrix(sum[,1]) 
+id_to_original <- t(as.data.frame(lapply(sum_mat[,1],function(x)strsplit(x,"-"))))
+colnames(id_to_original) <- c("file","trajectory")
 
 
+
+# analysis of turning angles time series
+# extract cosine of the relative angles for further analysis
+# cosrelangle <- redis_space[[2]]$rel.angle
+# layout(matrix(c(1,1,2,2), 2, 2, byrow = TRUE), widths=c(1,1), heights=c(1,1))
+# plot(cosrelangle, type="l", )
+# plot(mvt_data[[2]]$x,mvt_data[[2]]$y)
+
+# temporary plotting
+ggplot(trajectory.data.summary, aes(x=trajectory.data.summary$NGDR, color=as.factor(trajectory.data.summary$file))) + geom_density()
