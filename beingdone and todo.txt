@@ -1,0 +1,19 @@
+Being done:
+
+1. Owen is working through Frank's code for particle linking, overlay production, and then movement analysis. Mostly for himself, but also some streamlining.
+
+2. Owen is working on batch processing of xy data by the particle linker of mosaic.
+
+
+
+To do:
+1. Think about and work on how to make the thresholding more robust. At least add the possibility to pass threshold values to video_to_trajectory() and make_ij_macros().
+
+2. It would be good to make the code as parellelisable as possible. One constraint may be the possibility of running multiple instances of imagej -- I don't know if this is possible. Otherwise multiple instances of R functions can be run in parallel, using a package like multicore and function such as mclapply().
+
+3. Use the particle analyser to detect particles and return morphology and xy coords. Feed these xy coords into the particle linker of mosaic. Merge the morphology and trajectory data. This requires some work on the mosaic plugin, or source code for the plugin
+
+
+
+Ideas:
+When an individual reverses direction (or changes sharply), its shape changes (think of Paramecium side on while swimming, versus end on when reversing). This, or perhaps just shape variation, could be used to help quantify three dimensional morphology, possibly useful for id and biovolume.
