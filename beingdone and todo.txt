@@ -9,6 +9,8 @@ Being done:
 To do:
 1. Think about and work on how to make the thresholding more robust. Owen just made the possibility to pass threshold values to video_to_trajectory() and video_to_morphology().
 
+1a. The thresholding can result in a dark or light background. This needs to match what is expected by the particle analyser, and by the stack maxima macro. So far this is not well implemented.
+
 2. It would be good to make the code as parellelisable as possible. One constraint may be the possibility of running multiple instances of imagej -- I don't know if this is possible. Otherwise multiple instances of R functions can be run in parallel, using a package like multicore and function such as mclapply().
 
 3. Use the particle analyser to detect particles and return morphology and xy coords. Feed these xy coords into the particle linker of mosaic. Merge the morphology and trajectory data. This requires some work on the mosaic plugin, or source code for the plugin
