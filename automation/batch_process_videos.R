@@ -19,7 +19,8 @@ text[3] <- sub(text, "dir_input = ", paste("dir_input = ","'", video.dir,"';", s
 text[4] <- sub(text, "dir_output = ", paste("dir_output = ","'",sub(raw.video.folder, paste(substr(raw.video.folder, 1, nchar(raw.video.folder)-1),  "tmp/"),video.dir),"';", sep = ""))
 text[5] <- sub(text, "lag = ", paste("lag = ",difference.lag,";", sep = ""))
 text[46] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep="")
-
+if(stack.max.background=="light")
+	text[58] = paste(" light = true;")
 
 
 
