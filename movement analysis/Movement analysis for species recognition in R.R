@@ -46,7 +46,7 @@ mvt_data <- as.ltraj(xy = trajectory.data.summary[,c("X","Y")], date = trajector
 # 3. add positions where locations should have been measured (i.e. each second), but have not due to e.g. detection problems...
 mvt_data <- setNA(mvt_data, date.ref = trajectory.data.summary$datetime, dt=1, units=c("sec"))
 
-# otpional: check whether adding positions rendered trajectory regular
+# optional: check whether adding positions rendered trajectory regular
 # is.regular(mvt_data)
 
 # 4. interpolate the positions which are missing (added as missing values before [see 3.]) by putting the time interval (dt) to 1 
