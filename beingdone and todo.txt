@@ -4,7 +4,7 @@ Being done:
 
 2. Owen is working on batch processing of xy data by the particle linker of mosaic.
 
-
+3. Frank is taking care of the movement analysis: so far summary statistics are calculated for each trajectory which will be used for classification.
 
 To do:
 1. Think about and work on how to make the thresholding more robust. Owen just made the possibility to pass threshold values to video_to_trajectory() and video_to_morphology().
