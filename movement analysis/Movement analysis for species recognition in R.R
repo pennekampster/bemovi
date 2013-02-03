@@ -22,7 +22,7 @@ net_disp$net_disp <- round(sqrt((net_disp$X_end - net_disp$X_start)^2 + (net_dis
 net_disp$duration <- (net_disp$end_frame - net_disp$start_frame)/27
 net_disp$net_speed <- net_disp$net_disp/net_disp$duration
 net_disp_summary <- net_disp[c(1,2,9,10,11)]
-
+ 
 #merge summary data with original trajectories
 trajectory.data.summary <- merge(trajectory.data,net_disp_summary,by=c("trajectory","file"))
 
@@ -32,7 +32,7 @@ id <- paste(trajectory.data.summary$file,trajectory.data.summary$trajectory,sep=
 trajectory.data.summary <- cbind(trajectory.data.summary,id)
 
 # filter very short trajectories out, otherwise problems when rediscretizing based on distance
-trajectory.data.summary <- subset(trajectory.data.summary,net_disp >= 100)
+trajectory.data.summary <- subset(trajectory.data.summary,net_disp >= 1000)
 
 # 1. convert frame into time class (each frame representing a time step of a second)
 trajectory.data.summary$sec <- trajectory.data.summary$frame  
@@ -54,8 +54,15 @@ mvt_data <- redisltraj(na.omit(mvt_data), 1, type="time")
 
 # get gross displacement and merge with original data
 mvt_gross <- ld(mvt_data)
-sum <- ddply(mvt_gross,.(id),summarize, gross_disp=sum(dist, na.rm=T))
-mvt_gross_summary <- cbind(sum,file,trajectory)
+sum <- ddply(mvt_gross, .(id), summarize, gross_disp=sum(dist, na.rm=T))
+
+# split unique ID string into trajectory and file data for remerge with trajectory data
+sum_mat <- as.matrix(sum[,1:2]) 
+id_to_original <- t(as.data.frame(lapply(sum_mat[,1],function(x)strsplit(x,"-"))))
+id <- paste(id_to_original[, 1],id_to_original[, 2],sep="-")
+id_to_original <- cbind(id_to_original,id)
+colnames(id_to_original) <- c("file","trajectory","id")
+mvt_gross_summary <- merge(sum,id_to_original,by=c("id"))
 
 trajectory.data.summary <- merge(trajectory.data.summary,mvt_gross_summary,by=c("id"))
 trajectory.data.summary$NGDR <- trajectory.data.summary$net_disp/trajectory.data.summary$gross_disp
@@ -68,20 +75,17 @@ redis_space <- redisltraj(mvt_data, 25)
 
 # 6. transform ltraj object into dataframe to extract movement metrics
 mvt_summary <- ld(redis_space)
+turning <- ddply(mvt_summary, .(id), summarize, mean_turning=mean(rel.angle, na.rm=T))
 
-# split unique ID string into trajectory and file data for remerge with trajectory data
-sum_mat <- as.matrix(sum[,1]) 
-id_to_original <- t(as.data.frame(lapply(sum_mat[,1],function(x)strsplit(x,"-"))))
-colnames(id_to_original) <- c("file","trajectory")
-
-
+# 7. extracting autocorrelation structure
+autocorr_out <- acfang.ltraj(mvt_data, lag=5)
 
 # analysis of turning angles time series
 # extract cosine of the relative angles for further analysis
-# cosrelangle <- redis_space[[2]]$rel.angle
-# layout(matrix(c(1,1,2,2), 2, 2, byrow = TRUE), widths=c(1,1), heights=c(1,1))
-# plot(cosrelangle, type="l", )
-# plot(mvt_data[[2]]$x,mvt_data[[2]]$y)
+cosrelangle <- redis_space[[2]]$rel.angle
+layout(matrix(c(1,1,2,2), 2, 2, byrow = TRUE), widths=c(1,1), heights=c(1,1))
+plot(cosrelangle, type="l", )
+plot(mvt_data[[2]]$x,mvt_data[[2]]$y)
 
 # temporary plotting
-ggplot(trajectory.data.summary, aes(x=trajectory.data.summary$NGDR, color=as.factor(trajectory.data.summary$file))) + geom_density()
+ggplot(trajectory.data.summary, aes(x=trajectory.data.summary$net_speed, color=as.factor(trajectory.data.summary$file))) + geom_density()
