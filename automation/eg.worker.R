@@ -10,7 +10,7 @@ rm(list=ls())
 ## specify difference.lag for both Particle Analyzer as well as Tracker
 difference.lag <- 25
 ## specify threshold values
-thresholds = c(0,999)
+thresholds = c(10,255)
 ## background for stack maxima
 stack.max.background = "light" ## any other values results in dark background
 
@@ -77,8 +77,8 @@ LoadIJ_Traj_Outs(trackdata.dir)
 
 # create overlay videos
 if(.Platform$OS.type == "windows"){
-  width <- 735
-  height <- 690}
+  width <- 2048
+  height <- 2048}
 if(.Platform$OS.type == "unix"){
   width <- 2048
   height <- 2048}

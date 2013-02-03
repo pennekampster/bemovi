@@ -1,6 +1,6 @@
 # code to batch process videos by ImageJ and ParticleTracker plugin
 # provide directory where raw videos are stored
-video_to_trajectory <- function(video.dir,difference.lag, thresholds=c(0,1000)) {
+video_to_trajectory <- function(video.dir,difference.lag, thresholds=c(10,255)) {
 
 ## generate the folders...
 ijmacs.folder <- sub(raw.video.folder,"ijmacs/",video.dir)
