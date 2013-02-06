@@ -1,6 +1,6 @@
 # code to batch process videos by ImageJ and ParticleTracker plugin
 # provide directory where raw videos are stored
-video_to_trajectory <- function(video.dir,difference.lag, thresholds=c(10,255)) {
+video_to_trajectory <- function(video.dir,difference.lag, thresholds=c(10,255), stackmax.background="false") {
 
 ## generate the folders...
 ijmacs.folder <- sub(raw.video.folder,"ijmacs/",video.dir)
@@ -15,12 +15,12 @@ dir.create(trajdata.folder, showWarnings = FALSE)
 text <- readLines(paste(to.code, "ImageJ macros/Video_to_trajectory.ijm", sep=""))
 
 # use regular expression to insert input and output directory
-text[3] <- sub(text, "dir_input = ", paste("dir_input = ","'", video.dir,"';", sep = ""))
-text[4] <- sub(text, "dir_output = ", paste("dir_output = ","'",sub(raw.video.folder, paste(substr(raw.video.folder, 1, nchar(raw.video.folder)-1),  "tmp/"),video.dir),"';", sep = ""))
-text[5] <- sub(text, "lag = ", paste("lag = ",difference.lag,";", sep = ""))
-text[46] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep="")
+text[grep("dir_input =", text)] <- paste("dir_input = ","'", video.dir,"';", sep = "")
+text[grep("dir_output =", text)] <- paste("dir_output = ","'",sub(raw.video.folder, paste(substr(raw.video.folder, 1, nchar(raw.video.folder)-1),  "tmp/"),video.dir),"';", sep = "")
+text[grep("lag =", text)] <- paste("lag = ",difference.lag,";", sep = "")
+text[grep("setThreshold", text)] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep="")
 if(stack.max.background=="light")
-	text[58] = paste(" light = true;")
+	text[grep("light =", text)] = paste("  light = ", stackmax.background, ";", sep="")
 
 
 
@@ -152,10 +152,11 @@ text <- readLines(paste(to.code, "ImageJ macros/Video_overlay.ijm", sep=""))
 
 
 # use regular expression to insert input and output directory
-text[3] <- sub(text, "avi_input = ", paste("avi_input = ","'", sub(trajectory.data.folder,raw.video.folder,path),"';", sep = ""))
-text[4] <- sub(text, "overlay_input = ", paste("overlay_input = ","'", sub(trajectory.data.folder,overlay.folder,path),"';", sep = ""))
-text[5] <- sub(text, "overlay_output = ", paste("overlay_output = ","'", sub(trajectory.data.folder,overlay.folder2,path),"';", sep = ""))
-text[6] <- sub(text, "lag = ", paste("lag = ",difference.lag,";", sep = ""))
+text[grep("avi_input = ", text)] <- paste("avi_input = ","'", sub(trajectory.data.folder,raw.video.folder,path),"';", sep = "")
+text[grep("overlay_input = ", text)] <- paste("overlay_input = ","'", sub(trajectory.data.folder,overlay.folder,path),"';", sep = "")
+text[grep("overlay_output = ", text)] <- paste("overlay_output = ","'", sub(trajectory.data.folder,overlay.folder2,path),"';", sep = "")
+text[grep("lag =", text)] <- paste("lag = ",difference.lag,";", sep = "")
+
 
 # re-create ImageJ macro for batch processing of video files with ParticleTracker
 if(.Platform$OS.type == "windows")
@@ -184,4 +185,18 @@ if(.Platform$OS.type == "windows")
   file.remove("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm")
 }
 
+
+
+Check.video.files <- function(video.dir) {
+	files <- dir(video.dir)
+	## check for unsupported video file format
+	unsupported.files <- files[-c(grep("\\.avi", files), grep("\\.cxd", files))]
+	if(length(unsupported.files)>0)
+		print(paste("Unsupported video file:", unsupported.files))
+	## check for file with more than one period
+	## I think this previously caused me a problem
+	bad.filenames <- files[unlist(lapply(lapply(strsplit(files, "\\."), length), function(x) x>2))]
+	if(length(bad.filenames)>0)
+		print(paste("Bad video filename (no periods please, except before extension:", bad.filenames))
+}
 

@@ -4,11 +4,10 @@ video_to_morphology <- function(video.dir, difference.lag, thresholds=c(0,1000))
 text <- readLines(paste(to.code, "ImageJ macros/Video_to_morphology.ijm", sep=""))
 
 # use regular expression to insert input & output directory as well as difference lag
-text[3] <- sub(text, "avi_input = ", paste("avi_input = ","'", video.dir,"';", sep = ""))
-text[4] <- sub(text, "avi_output = ", paste("avi_output = ","'",sub("1 - raw/","5 - Particle Analyzer data/",video.dir),"';", sep = ""))
-text[5] <- sub(text, "lag = ", paste("lag = ",difference.lag,";", sep = ""))
-text[31] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep="")
-text[60] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep="")
+text[grep("avi_input = ", text)] <- paste("avi_input = ","'", video.dir,"';", sep = "")
+text[grep("avi_output = ", text)] <- paste("avi_output = ","'",sub("1 - raw/","5 - Particle Analyzer data/",video.dir),"';", sep = "")
+text[grep("lag = ", text)] <- paste("lag = ",difference.lag,";", sep = "")
+text[grep("setThreshold", text)] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep="")
 
 
 
