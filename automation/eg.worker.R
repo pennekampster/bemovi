@@ -33,7 +33,6 @@ overlay.folder2 <- "4 - overlays/"
 particle.analyzer.folder <- "5 - Particle Analyzer data/"
 
 
-
 ## what OS are we on?
 OS <- .Platform$OS.type
 ## if on windows, use Frank's paths
@@ -45,6 +44,13 @@ if(.Platform$OS.type == "unix"){
 	to.code <- to.code.owen
 	to.data <- to.data.owen}
 	
+## set up paths
+sample.dir <- paste(to.data, sample.description.folder, sep="")
+video.dir <- paste(to.data, raw.video.folder, sep="")
+IJ_output.dir <- paste(to.data, particle.analyzer.folder, sep="")
+video.dir <- paste(to.data, raw.video.folder, sep="")
+trackdata.dir <- paste(to.data, trajectory.data.folder, sep="")
+
 
 # load functions to call ImageJ from R
 source(paste(to.code, "batch_process_videos.r", sep=""))
@@ -52,25 +58,24 @@ source(paste(to.code, "ParticleAnalyzer functions.r", sep=""))
 
 
 # read the file that gives the important information about each video
-sample.dir <- paste(to.data, sample.description.folder, sep="")
 file.sample.info <- read.table(paste(sample.dir, sample.description.file, sep=""), sep= "\t", header = TRUE)
 
 
+## check for unsupported file types, and for periods in the file name
+Check.video.files(video.dir)
+
+
 # run Particle Analyzer and merge result files into morphology database
-video.dir <- paste(to.data, raw.video.folder, sep="")
-IJ_output.dir <- paste(to.data, particle.analyzer.folder, sep="")
-#specify directory and difference.lag
+# specify directory, difference.lag, and thresholds
 video_to_morphology(video.dir,difference.lag,thresholds)
 LoadIJ_morph_outs(IJ_output.dir)
 
 
 # run ParticleTracker, merge results and produce overlays
-video.dir <- paste(to.data, raw.video.folder, sep="")
 video_to_trajectory(video.dir,difference.lag)
 
 
 # merge trajectory data into database
-trackdata.dir <- paste(to.data, trajectory.data.folder, sep="")
 #specify directory
 LoadIJ_Traj_Outs(trackdata.dir)
 
@@ -84,7 +89,7 @@ if(.Platform$OS.type == "unix"){
   height <- 2048}
 #specify directory
 create_overlay_plots(trackdata.dir,width,height,difference.lag)
-
+path = trackdata.dir
 
 
 
