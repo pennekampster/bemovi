@@ -1,12 +1,15 @@
 rm(list=ls())
 
-# code to extract movement characteristics from the results files of the ParticleTracker
-# still contains code to extract positions from raw text file
-# uses the adehabitatLT package to calculate movement metrics (and trials to explore functionality of the package)
 library(adehabitatLT)
 library(grid)
 library(plyr)
 library(ggplot2)
+
+# code to extract movement characteristics from the results files of the ParticleTracker
+# uses the adehabitatLT package to calculate movement metrics (and trials to explore functionality of the package)
+# 1. calculates summary statistics on net and gross movement
+# 2. transforms the raw data (X and Y positions in to ltraj object to extract mean and SD of turning angles)
+# 3. aggregates statistics on movement with trajectory ID and file name for species classification
 
 # load trajectory data
 trajectory.data <- read.table("C:/Users/Frank/Documents/PhD/Programming/franco/data/2 - trajectory data/trajectory.data.txt", header=TRUE, sep="\t")
@@ -26,13 +29,13 @@ net_disp_summary <- net_disp[c(1,2,9,10,11)]
 #merge summary data with original trajectories
 trajectory.data.summary <- merge(trajectory.data,net_disp_summary,by=c("trajectory","file"))
 
-# prepare data for analysis with adehabitat package
+# 0. prepare data for analysis with adehabitat package
 # create unique ID consisting of trajectory ID and file
 id <- paste(trajectory.data.summary$file,trajectory.data.summary$trajectory,sep="-")
 trajectory.data.summary <- cbind(trajectory.data.summary,id)
 
 # filter very short trajectories out, otherwise problems when rediscretizing based on distance
-trajectory.data.summary <- subset(trajectory.data.summary,net_disp >= 1000)
+trajectory.data.summary <- subset(trajectory.data.summary,net_disp >= 100)
 
 # 1. convert frame into time class (each frame representing a time step of a second)
 trajectory.data.summary$sec <- trajectory.data.summary$frame  
@@ -52,7 +55,7 @@ mvt_data <- setNA(mvt_data, date.ref = trajectory.data.summary$datetime, dt=1, u
 # 4. interpolate the positions which are missing (added as missing values before [see 3.]) by putting the time interval (dt) to 1 
 mvt_data <- redisltraj(na.omit(mvt_data), 1, type="time")
 
-# get gross displacement and merge with original data
+# get gross displacement and STD of turning angles and merge with original data
 mvt_gross <- ld(mvt_data)
 sum <- ddply(mvt_gross, .(id), summarize, gross_disp=sum(dist, na.rm=T))
 
@@ -64,11 +67,8 @@ id_to_original <- cbind(id_to_original,id)
 colnames(id_to_original) <- c("file","trajectory","id")
 mvt_gross_summary <- merge(sum,id_to_original,by=c("id"))
 
-trajectory.data.summary <- merge(trajectory.data.summary,mvt_gross_summary,by=c("id"))
+trajectory.data.summary <- merge(net_disp_summary,mvt_gross_summary,by=c("file","trajectory"))
 trajectory.data.summary$NGDR <- trajectory.data.summary$net_disp/trajectory.data.summary$gross_disp
-
-trajectory.data.summary$file.y <- NULL
-trajectory.data.summary$trajectory.y <- NULL
 
 # 5. rediscretize the trajectory in space to analyze geometrical properties of the trajectory
 redis_space <- redisltraj(mvt_data, 25)
@@ -76,16 +76,44 @@ redis_space <- redisltraj(mvt_data, 25)
 # 6. transform ltraj object into dataframe to extract movement metrics
 mvt_summary <- ld(redis_space)
 turning <- ddply(mvt_summary, .(id), summarize, mean_turning=mean(rel.angle, na.rm=T))
+sd_ta <- ddply(mvt_summary, .(id), summarize, sd_turning=sd(rel.angle, na.rm=T))
+turning_summary <- cbind(sd_ta,turning)
+turning_summary[,3] <- NULL
+turning_summary <- merge(turning_summary,id_to_original,by=c("id"))
+
+trajectory.data.summary <- merge(trajectory.data.summary,turning_summary,by=c("id"))
+trajectory.data.summary$datetime <- NULL
+
+trajectory.data.summary$file.y <- NULL
+trajectory.data.summary$trajectory.y <- NULL
 
 # 7. extracting autocorrelation structure
-autocorr_out <- acfang.ltraj(mvt_data, lag=5)
+#autocorr_out <- acfang.ltraj(mvt_data, lag=5)
 
 # analysis of turning angles time series
 # extract cosine of the relative angles for further analysis
-cosrelangle <- redis_space[[2]]$rel.angle
+relangle <- redis_space[[2]]$rel.angle
+acf(relangle[2:(length(relangle)-1)],5)
 layout(matrix(c(1,1,2,2), 2, 2, byrow = TRUE), widths=c(1,1), heights=c(1,1))
-plot(cosrelangle, type="l", )
+plot(relangle, type="l", )
 plot(mvt_data[[2]]$x,mvt_data[[2]]$y)
 
+subset <- subset(trajectory.data, trajectory.data$file == "Traj_Data34.avi.txt" |
+                                  trajectory.data$file == "Traj_Data38.avi.txt" |
+                                  trajectory.data$file == "Traj_Data49.avi.txt")
+
+subset34 <- subset(trajectory.data, trajectory.data$file == "Traj_Data34.avi.txt")
+subset38 <- subset(trajectory.data, trajectory.data$file == "Traj_Data38.avi.txt")
+subset49 <- subset(trajectory.data, trajectory.data$file == "Traj_Data49.avi.txt")
+
 # temporary plotting
-ggplot(trajectory.data.summary, aes(x=trajectory.data.summary$net_speed, color=as.factor(trajectory.data.summary$file))) + geom_density()
+ggplot(subset49,aes(x=subset49$Y,y=subset49$X)) + geom_point()
+ggplot(trajectory.data.summary, aes(x=trajectory.data.summary$sd_turning, color=as.factor(trajectory.data.summary$file))) + geom_density()
+
+# use a PCA to visualize whether species can be separated by PCs of movement
+fit <- princomp(trajectory.data.summary[, 4:10], cor=TRUE)
+PC1 <- fit$scores[,1]
+PC2 <- fit$scores[,2]
+
+plot_PCA <- cbind(PC1,PC2,trajectory.data.summary[2:3])
+plot(plot_PCA$PC1,plot_PCA$PC2, col=plot_PCA$file.x)
