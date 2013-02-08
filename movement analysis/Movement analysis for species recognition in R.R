@@ -71,7 +71,7 @@ trajectory.data.summary <- merge(net_disp_summary,mvt_gross_summary,by=c("file",
 trajectory.data.summary$NGDR <- trajectory.data.summary$net_disp/trajectory.data.summary$gross_disp
 
 # 5. rediscretize the trajectory in space to analyze geometrical properties of the trajectory
-redis_space <- redisltraj(mvt_data, 25)
+redis_space <- redisltraj(mvt_data, 10)
 
 # 6. transform ltraj object into dataframe to extract movement metrics
 mvt_summary <- ld(redis_space)
@@ -88,15 +88,28 @@ trajectory.data.summary$file.y <- NULL
 trajectory.data.summary$trajectory.y <- NULL
 
 # 7. extracting autocorrelation structure
-#autocorr_out <- acfang.ltraj(mvt_data, lag=5)
-
 # analysis of turning angles time series
-# extract cosine of the relative angles for further analysis
-relangle <- redis_space[[2]]$rel.angle
-acf(relangle[2:(length(relangle)-1)],5)
-layout(matrix(c(1,1,2,2), 2, 2, byrow = TRUE), widths=c(1,1), heights=c(1,1))
-plot(relangle, type="l", )
-plot(mvt_data[[2]]$x,mvt_data[[2]]$y)
+for (i in 1:length(redis_space)){
+relangle <- redis_space[[i]]$rel.angle
+acf_object <- acf(relangle,na.action=na.pass, plot=FALSE)
+if (i == 1){dd <- as.data.frame(acf_object$acf)
+            dd$lag <- seq(1:length(acf_object$acf))    
+}
+
+if (i> 1){dd.t <- as.data.frame(acf_object$acf)
+          dd.t$lag <- seq(1:length(acf_object$acf))
+dd <- rbind(dd,dd.t)}
+}
+redis_space[[1]]
+
+
+# plotting of autocorrelation function
+#acf(relangle,na.action=na.pass)
+#layout(matrix(c(1,1,2,2), 2, 2, byrow = TRUE), widths=c(1,1), heights=c(1,1))
+#plot(relangle, type="l", )
+#plot(mvt_data[[14]]$x,mvt_data[[14]]$y,asp=1)
+
+
 
 subset <- subset(trajectory.data, trajectory.data$file == "Traj_Data34.avi.txt" |
                                   trajectory.data$file == "Traj_Data38.avi.txt" |
