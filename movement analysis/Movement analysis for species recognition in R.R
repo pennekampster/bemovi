@@ -35,7 +35,19 @@ id <- paste(trajectory.data.summary$file,trajectory.data.summary$trajectory,sep=
 trajectory.data.summary <- cbind(trajectory.data.summary,id)
 
 # filter very short trajectories out, otherwise problems when rediscretizing based on distance
-trajectory.data.summary <- subset(trajectory.data.summary,net_disp >= 100)
+trajectory.data.summary <- subset(trajectory.data.summary,trajectory.data.summary$net_disp >= 100)
+
+# subsetting and plotting to check the effect of filtering
+subset <- subset(trajectory.data.summary, trajectory.data.summary$file == "Traj_Data34.avi.txt" |
+                   trajectory.data.summary$file == "Traj_Data38.avi.txt" |
+                   trajectory.data.summary$file == "Traj_Data49.avi.txt")
+
+subset34 <- subset(trajectory.data.summary, trajectory.data.summary$file == "Traj_Data34.avi.txt")
+subset38 <- subset(trajectory.data.summary, trajectory.data.summary$file == "Traj_Data38.avi.txt")
+subset49 <- subset(trajectory.data.summary, trajectory.data.summary$file == "Traj_Data49.avi.txt")
+
+# plot to check which trajectories were included
+#ggplot(subset34,aes(x=subset34$Y,y=subset34$X)) + geom_point()
 
 # 1. convert frame into time class (each frame representing a time step of a second)
 trajectory.data.summary$sec <- trajectory.data.summary$frame  
@@ -73,6 +85,11 @@ trajectory.data.summary$NGDR <- trajectory.data.summary$net_disp/trajectory.data
 # 5. rediscretize the trajectory in space to analyze geometrical properties of the trajectory
 redis_space <- redisltraj(mvt_data, 10)
 
+# plotting of selected trajectories
+plot(redis_space[[11]]$rel.angle)
+acf(redis_space[[11]]$rel.angle, na.action=na.pass)
+plot(redis_space[[11]]$x,redis_space[[11]]$y,asp=1)
+
 # 6. transform ltraj object into dataframe to extract movement metrics
 mvt_summary <- ld(redis_space)
 turning <- ddply(mvt_summary, .(id), summarize, mean_turning=mean(rel.angle, na.rm=T))
@@ -88,39 +105,37 @@ trajectory.data.summary$file.y <- NULL
 trajectory.data.summary$trajectory.y <- NULL
 
 # 7. extracting autocorrelation structure
-# analysis of turning angles time series
+# a) correlelogram
 for (i in 1:length(redis_space)){
 relangle <- redis_space[[i]]$rel.angle
 acf_object <- acf(relangle,na.action=na.pass, plot=FALSE)
-if (i == 1){dd <- as.data.frame(acf_object$acf)
-            dd$lag <- seq(1:length(acf_object$acf))    
+if (i == 1){ac <- as.data.frame(acf_object$acf)
+            ac$lag <- seq(1:length(acf_object$acf))
+            ac$id  <- rep(attr(redis_space[[i]], c("id")), length(acf_object$acf))}
+
+if (i> 1){ac.t <- as.data.frame(acf_object$acf)
+          ac.t$lag <- seq(1:length(acf_object$acf))
+          ac.t$id  <- rep(attr(redis_space[[i]], c("id")), length(acf_object$acf))
+ac <- rbind(ac,ac.t)
 }
-
-if (i> 1){dd.t <- as.data.frame(acf_object$acf)
-          dd.t$lag <- seq(1:length(acf_object$acf))
-dd <- rbind(dd,dd.t)}
 }
-redis_space[[1]]
+colnames(ac) <- c("ACF","lag","id")
+ac <- subset(ac,ac$lag >= 3)
+# extract time of strongest positive autocorrelation (indicating period)
+max_acf <- ddply(ac, .(id), summarize, max = max(ACF, na.rm=TRUE), max_lag=lag[which.max(ACF)]) 
+# specify threshold that indicates period and set period to lag at strongest autocorrelation
+max_acf$period <- ifelse(max_acf$max>0.4,max_acf$max_lag,0)
+period <- max_acf[c("id","period")]
 
+# b) periodogram
+spec <- redis_space[[1]]$rel.angle
+spec <- na.omit(spec)
+spectrum(spec, log="dB")
 
-# plotting of autocorrelation function
-#acf(relangle,na.action=na.pass)
-#layout(matrix(c(1,1,2,2), 2, 2, byrow = TRUE), widths=c(1,1), heights=c(1,1))
-#plot(relangle, type="l", )
-#plot(mvt_data[[14]]$x,mvt_data[[14]]$y,asp=1)
+#merge with trajectory data summary
+trajectory.data.summary <- merge(trajectory.data.summary,period,by=c("id"))
 
-
-
-subset <- subset(trajectory.data, trajectory.data$file == "Traj_Data34.avi.txt" |
-                                  trajectory.data$file == "Traj_Data38.avi.txt" |
-                                  trajectory.data$file == "Traj_Data49.avi.txt")
-
-subset34 <- subset(trajectory.data, trajectory.data$file == "Traj_Data34.avi.txt")
-subset38 <- subset(trajectory.data, trajectory.data$file == "Traj_Data38.avi.txt")
-subset49 <- subset(trajectory.data, trajectory.data$file == "Traj_Data49.avi.txt")
-
-# temporary plotting
-ggplot(subset49,aes(x=subset49$Y,y=subset49$X)) + geom_point()
+# temporary plotting of aggregate variable
 ggplot(trajectory.data.summary, aes(x=trajectory.data.summary$sd_turning, color=as.factor(trajectory.data.summary$file))) + geom_density()
 
 # use a PCA to visualize whether species can be separated by PCs of movement
