@@ -1,5 +1,8 @@
 rm(list=ls())
 
+library(sqldf)
+library(plyr)
+
 ## Owen's paths
 to.code.owen <- "/Users/owenpetchey/work/git/franco/automation/"
 to.data.owen <- "/Users/owenpetchey/Desktop/franco.test.vids/"
@@ -27,18 +30,17 @@ if(.Platform$OS.type == "unix"){
 trajectory.data <- read.table(paste0(to.data,trajectory.data.folder,"trajectory.data.txt"), row.names=1)
 trajectory.data$file <- gsub("Traj_" ,"",trajectory.data$file)
 trajectory.data$file <- gsub(".avi.txt" ,"",trajectory.data$file)
-trajectory.data$X <- round(-trajectory.data$X, 0)
-trajectory.data$Y <- round(trajectory.data$Y, 0)
+trajectory.data$X <- round_any(-trajectory.data$X, 10)
+trajectory.data$Y <- round_any(trajectory.data$Y, 10)
 
 #load morphological.data
 morphology.data <- read.table(paste0(to.data,particle.analyzer.folder,"morphology.data.txt"), row.names=1)
 morphology.data$frame <- morphology.data$Slice
 morphology.data$Slice <- NULL
 morphology.data$file <- gsub(".ijout.txt" ,"",morphology.data$file)
-morphology.data$X <- round(morphology.data$X, 0)
-morphology.data$Y <- round(morphology.data$Y, 0)
-# subset morphology.data to first 101 frames
-morphology.data <- subset(morphology.data,morphology.data$frame < 101)
+morphology.data$X <- round_any(morphology.data$X, 10)
+morphology.data$Y <- round_any(morphology.data$Y, 10)
+
 
 subset_m <- subset(morphology.data, file == "Data34")
 subset_t <- subset(trajectory.data, file == "Data34")
@@ -48,3 +50,4 @@ par(new=T)
 plot(subset_t$Y,subset_t$X,col="blue",asp=1)
 
 # merge morphological and trajectory data based on frame, file and X and Y
+merge <- sqldf("select * from subset_t t, subset_m m where t.X=m.X and t.Y=m.Y and t.frame=m.frame")
