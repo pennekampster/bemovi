@@ -8,22 +8,22 @@ rm(list=ls())
 
 ## To do: tidy the whole thing!
 
-
-setwd("~/work/git/franco/analysis/example data")
+## Read in the six data files
+setwd("~/Desktop/forJana")
 files <- dir()
 files <- files[grep(".csv", files)]
 
+## Description of the cultures the data in each file comes from
 fnames <- c("Colpidium1", "Colpidium2", "Paramecium1", "Paramecium2", "Both1", "Both2")
 species <- c("Colpidium", "Colpidium", "Paramecium", "Paramecium", "Both1", "Both2")
 colrz1 <- c("blue", "blue", "red", "red", "green", "green")
 
 
-## first file
+## add this information to the data, and merge into one data frame
 tt <- read.csv(files[1])
 tt$Treatment <- rep(fnames[1], length(tt[,1]))
 tt$Species <- rep(species[1], length(tt[,1]))
 dd <- tt
-
 for(i in 2:length(files)) {
 	tt <- read.csv(files[i])
 	tt$Treatment <- rep(fnames[i], length(tt[,1]))
@@ -33,47 +33,64 @@ for(i in 2:length(files)) {
 str(dd)
 
 
-# plot(table(dd$Slice[dd$Treatment=="Colpidium1"]),
-	# xlab="Frame", ylab="Number of particles")
+## Number of particles per frame in the first colpidium video
+plot(table(dd$Slice[dd$Treatment=="Colpidium1"]),
+	xlab="Frame", ylab="Number of particles")
+
+## Number of particles per frame for each of the six videos
+matplot(t(table(dd$Treatment, dd$Slice)),
+	xlab="Frame", ylab="Number of particles",
+	type="b", pch=19)
 
 
-# matplot(t(table(dd$Treatment, dd$Slice)),
-	# xlab="Frame", ylab="Number of particles",
-	# type="b", pch=19)
 
 library(lattice)
 
-# histogram( ~ Area | Species, data=dd, layout=c(1,4))
-
-# layout(matrix(1:4, 2, 2))
-# dd.sub <- subset(dd, !is.na(match(Treatment, c("Colpidium1", "Colpidium2", "Paramecium1", "Paramecium2"))))
-# plot(Major ~ Minor, col=colrz1[match(dd.sub$Treatment, fnames)],
-	# data=dd.sub, pch=19, cex=0.2)
-# legend("topright", legend=c("Colpidium", "Paramecium"), pch=1, col=c("blue", "red"))
-# plot(Major ~ Round, col=colrz1[match(dd.sub$Treatment, fnames)],
-	# data=dd.sub, pch=19, cex=0.2)
-# legend("topright", legend=c("Colpidium", "Paramecium"), pch=1, col=c("blue", "red"))
-# plot(Circ. ~ Round, col=colrz1[match(dd.sub$Treatment, fnames)],
-	# data=dd.sub, pch=19, cex=0.2)
-# legend("topleft", legend=c("Colpidium", "Paramecium"), pch=1, col=c("blue", "red"))
-# plot(Area ~ Round, col=colrz1[match(dd.sub$Treatment, fnames)],
-	# data=dd.sub, pch=19, cex=0.2)
-# legend("topleft", legend=c("Colpidium", "Paramecium"), pch=1, col=c("blue", "red"))
+## Hitogram of area, by species
+histogram( ~ Area | Species, data=dd, layout=c(1,4))
 
 
 
+## Bivariate plots of various dimensions of Colpidium and Paramecium
+## There is some overlap...
+layout(matrix(1:4, 2, 2))
+dd.sub <- subset(dd, !is.na(match(Treatment, c("Colpidium1", "Colpidium2", "Paramecium1", "Paramecium2"))))
+plot(Major ~ Minor, col=colrz1[match(dd.sub$Treatment, fnames)],
+	data=dd.sub, pch=19, cex=0.2)
+legend("topright", legend=c("Colpidium", "Paramecium"), pch=1, col=c("blue", "red"))
+plot(Major ~ Round, col=colrz1[match(dd.sub$Treatment, fnames)],
+	data=dd.sub, pch=19, cex=0.2)
+legend("topright", legend=c("Colpidium", "Paramecium"), pch=1, col=c("blue", "red"))
+plot(Circ. ~ Round, col=colrz1[match(dd.sub$Treatment, fnames)],
+	data=dd.sub, pch=19, cex=0.2)
+legend("topleft", legend=c("Colpidium", "Paramecium"), pch=1, col=c("blue", "red"))
+plot(Area ~ Round, col=colrz1[match(dd.sub$Treatment, fnames)],
+	data=dd.sub, pch=19, cex=0.2)
+legend("topleft", legend=c("Colpidium", "Paramecium"), pch=1, col=c("blue", "red"))
 
-all <- cbind(dd$Major, dd$Minor, dd$Area, dd$Round, dd$Circ.)
-pp <- prcomp(scale(all))
 
 
-
-
+## Some preliminaries
 library(nnet)
 for.nn <- c("Colpidium", "Paramecium")
 fnn <- !is.na(match(dd$Species, for.nn))
 fnn <- dd[fnn,]
 
+
+
+## Do a pca of five morphological variables of the single species data,
+## and plot this. It shows quite nice separation of the species
+all <- cbind(fnn$Major, fnn$Minor, fnn$Area, fnn$Round, fnn$Circ.)
+pp <- prcomp(scale(all))
+summary(pp) ## 95% of variance in first two axes (nice)
+plot(pp$x[,1], pp$x[,2],
+	col=as.numeric(as.factor(dd[,"Species"])),
+	pch=19, cex=0.2,
+	xlab="PCA1", ylab="PCA2")
+
+
+
+## Train artificial neural net on half of single species data, test on the other half
 train <- cbind(fnn$Major, fnn$Minor, fnn$Area, fnn$Round, fnn$Circ.)
 target <- class.ind(fnn[,"Species"])
 samp <- sample(1:length(train[,1]), length(train[,1])/2)
@@ -86,7 +103,10 @@ test.cl <- function(true, pred) {
     table(true, cres)
 }
 test.cl(target[no.samp,], predict(nn, train[no.samp,]))
+## Its works very well... there is a very small proportion of false positives and negatives.
 
+
+## Preliminaries for plotting
 pred <- c("Colpidium", "Paramecium")[max.col(predict(nn, train[no.samp,]))]
 true <- fnn[no.samp,"Species"]
 colr <- ifelse(pred=="Colpidium" & true=="Colpidium", 1,
@@ -95,23 +115,33 @@ colr <- ifelse(pred=="Colpidium" & true=="Colpidium", 1,
 	4)))
 
 
-# layout(matrix(1:2, 1, 2))
-# plot(pp$x[samp,1], pp$x[samp,2],
-	# col=as.numeric(as.factor(dd[samp,"Species"])),
-	# pch=19, cex=0.2,
-	# xlab="PCA1", ylab="PCA2")
-# plot(pp$x[no.samp,1], pp$x[no.samp,2],
-	# col=colr,
-	# pch=19, cex=0.2,
-	# xlab="PCA1", ylab="PCA2")
-# test.cl(target[-samp,], predict(nn, train[-samp,]))
+
+layout(matrix(1:2, 1, 2))
+## The training data
+plot(pp$x[samp,1], pp$x[samp,2],
+	col=as.numeric(as.factor(dd[samp,"Species"])),
+	pch=19, cex=0.3,
+	xlab="PCA1", ylab="PCA2", main="Training data")
+plot(pp$x[no.samp,1], pp$x[no.samp,2],
+	col=colr,
+	pch=19, cex=0.3,
+	xlab="PCA1", ylab="PCA2",
+	main="Test data")
+## You need to add a legend to both of these. You might be able to copy one from below.
 
 
+
+
+
+
+
+
+
+#### From here on is not so relevant. (I was testing the neural net on
+## the two videos that resulted in datasets 5 and 6).
 ## now train again on all of the single species data
 nn <- nnet(train, target, size = 2, rang = 0.1,
             decay = 5e-4, maxit = 200)
-
-
 for.nn2 <- c("Both1", "Both2")
 fnn2 <- !is.na(match(dd$Species, for.nn2))
 fnn2 <- dd[fnn2,]
