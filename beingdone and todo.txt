@@ -17,7 +17,9 @@ To do:
 
 4. On OSX at least, figure out why imagej continuously increases its used memory. (up to 8GB, for example).
 
+5. Get overlay overlay dimensions from the size of the original video.
 
+6. Make a function that allows checking of threshold values.
 
 Ideas:
 When an individual reverses direction (or changes sharply), its shape changes (think of Paramecium side on while swimming, versus end on when reversing). This, or perhaps just shape variation, could be used to help quantify three dimensional morphology, possibly useful for id and biovolume.
