@@ -16,7 +16,7 @@ if(.Platform$OS.type == "windows")
   writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_to_morphology.ijm",sep=""),sep="\n")
 if(.Platform$OS.type == "unix") {
   dir.create(sub(raw.video.folder,"ijmacs",video.dir))	
-  writeLines(text,con=paste(sub(raw.video.folder,"ijmacs",video.dir), "/Video_to_morphology.ijm",sep=""))
+  writeLines(text,con=paste(sub(raw.video.folder,"ijmacs",video.dir), "/Video_to_morphology_tmp.ijm",sep=""))
 }
 
 #create directory to store Particle Analyzer data
@@ -24,14 +24,14 @@ dir.create(sub(raw.video.folder,"5 - Particle Analyzer data",video.dir),showWarn
 
 # run to process video files by calling ImageJ
 if(.Platform$OS.type == "unix")
-  cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub("1 - raw","ijmacs",video.dir), "Video_to_morphology.ijm",sep=""))
+  cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub("1 - raw","ijmacs",video.dir), "Video_to_morphology_tmp.ijm",sep=""))
 if(.Platform$OS.type == "windows")
-  cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_to_morphology.ijm')
+  cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_to_morphology_tmp.ijm')
 system(cmd)
 
 # delete temporary file after execution
 if(.Platform$OS.type == "windows")
-  file.remove("C:/Program Files/Fiji.app/macros/Video_to_morphology.ijm")
+  file.remove("C:/Program Files/Fiji.app/macros/Video_to_morphology_tmp.ijm")
 
 }
 
