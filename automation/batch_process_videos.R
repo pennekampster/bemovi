@@ -1,6 +1,7 @@
 # code to batch process videos by ImageJ and ParticleTracker plugin
 # provide directory where raw videos are stored
-video_to_trajectory <- function(video.dir,difference.lag, thresholds=c(10,255), stackmax.background="false") {
+video_to_trajectory <- function(video.dir, difference.lag, thresholds=c(10,255), stackmax.background="false")
+{
 
 ## generate the folders...
 ijmacs.folder <- sub(raw.video.folder,"ijmacs/",video.dir)
@@ -56,7 +57,8 @@ file.copy(paste(sub("1 - raw/","1 - raw tmp/",video.dir),ijout.files, sep = ""),
 
 ## This function gets the output files produced by the Imagej ParticleTracker
 # specify the path where the files which contain the trajectory data are stored
-LoadIJ_Traj_Outs <- function(trajdata.dir) {
+LoadIJ_Traj_Outs <- function(trajdata.dir)
+{
   
 ## the macro file names
 all.files <- dir(path=trajdata.dir)
@@ -117,11 +119,14 @@ write.table(trajectory.data, file = paste(trajdata.dir,"trajectory.data.txt", se
 }
 
 
+
+
 # function to plot trajectories for overlay (must be merged with original video by ImageJ macro)
 # creates a folder containing one jpeg plot containing all the positions till the respective frame
 # for the moment colour not assigned by species identity but that's easy to add 
 # provide path of " 2 - trajectory data", and the width and height of the original video (I use cropped videos to increase speed while troubleshooting)
-create_overlay_plots <- function(path,width,height,difference.lag){ 
+create_overlay_plots <- function(path,width,height,difference.lag)
+{ 
 trajectory.data <- as.data.frame(read.table(paste(path,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
 file_names <- unique(trajectory.data$file)  
 # change path for output
@@ -187,7 +192,9 @@ if(.Platform$OS.type == "windows")
 
 
 
-Check.video.files <- function(video.dir) {
+## Check to see if there are any unsupported file types, or file names with two periods
+Check.video.files <- function(video.dir)
+{
 	files <- dir(video.dir)
 	## check for unsupported video file format
 	unsupported.files <- files[-c(grep("\\.avi", files), grep("\\.cxd", files))]
@@ -198,5 +205,46 @@ Check.video.files <- function(video.dir) {
 	bad.filenames <- files[unlist(lapply(lapply(strsplit(files, "\\."), length), function(x) x>2))]
 	if(length(bad.filenames)>0)
 		print(paste("Bad video filename (no periods please, except before extension:", bad.filenames))
+}
+
+
+
+# code to batch process videos by ImageJ and ParticleTracker plugin
+# provide directory where raw videos are stored
+Check_threshold <- function(video.dir,difference.lag, thresholds=c(10,255)) {
+
+## generate the folders...
+ijmacs.folder <- sub(raw.video.folder,"ijmacs/",video.dir)
+dir.create(ijmacs.folder, showWarnings = FALSE)	
+checkthresh.folder <- sub(raw.video.folder,raw.checkthreshold.folder,video.dir)
+dir.create(checkthresh.folder, showWarnings = FALSE)
+
+
+# copy master copy of ImageJ macro there for treatment
+text <- readLines(paste(to.code, "ImageJ macros/Check_threshold.ijm", sep=""))
+
+# use regular expression to insert input and output directory
+text[grep("avi_input =", text)] <- paste("avi_input = ","'", video.dir,"';", sep = "")
+text[grep("avi_output =", text)] <- paste("avi_output = ","'",checkthresh.folder,"';", sep = "")
+text[grep("lag =", text)] <- paste("lag = ",difference.lag,";", sep = "")
+text[grep("setThreshold", text)] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep="")
+
+
+
+# re-create ImageJ macro for batch processing of video files with ParticleTracker
+## perhaps put this in a subdirectory of the data folder?
+## This is implemented in OSX but not windows, which is as you wrote it
+if(.Platform$OS.type == "windows") 
+	writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Check_threshold_tmp.ijm",sep=""),sep="\n")
+if(.Platform$OS.type == "unix") 
+    writeLines(text,con=paste(ijmacs.folder, "/Check_threshold_tmp.ijm",sep=""))
+
+
+# run to process video files by calling ImageJ / needs fixing for Mac
+if(.Platform$OS.type == "unix")
+    cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(ijmacs.folder, "Check_threshold_tmp.ijm",sep=""))
+if(.Platform$OS.type == "windows")
+    cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Check_threshold_tmp.ijm')
+system(cmd)
 }
 
