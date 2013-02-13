@@ -8,16 +8,16 @@
 rm(list=ls())
 
 ## specify difference.lag for both Particle Analyzer as well as Tracker
-difference.lag <- 25
+difference.lag <- 10
 ## specify threshold values
-thresholds = c(10,255)
+thresholds = c(800,7245)
 ## background for stack maxima
 stack.max.background = "light" ## any other values results in dark background
 
 
 ## Owen's paths
 to.code.owen <- "/Users/owenpetchey/work/git/franco/automation/"
-to.data.owen <- "/Users/owenpetchey/Desktop/franco.test.vids/"
+to.data.owen <- "/Users/owenpetchey/Desktop/hard.test/"
 
 ## Frank's paths
 to.code.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/automation/"
@@ -27,6 +27,7 @@ to.data.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/"
 sample.description.folder <- "0 - sample description/"
 sample.description.file <- "frank.video.description.txt"
 raw.video.folder <- "1 - raw/"
+raw.checkthreshold.folder <- "1 - raw checkthresh/"
 trajectory.data.folder <- "2 - trajectory data/"
 overlay.folder <- "3 - overlay plots/"
 overlay.folder2 <- "4 - overlays/"
@@ -65,14 +66,18 @@ file.sample.info <- read.table(paste(sample.dir, sample.description.file, sep=""
 Check.video.files(video.dir)
 
 
+##Check_threshold(video.dir,difference.lag, thresholds)
+
+
 # run Particle Analyzer and merge result files into morphology database
 # specify directory, difference.lag, and thresholds
+## particle analyser needs white background
 video_to_morphology(video.dir,difference.lag,thresholds)
 LoadIJ_morph_outs(IJ_output.dir)
 
 
 # run ParticleTracker, merge results and produce overlays
-video_to_trajectory(video.dir,difference.lag)
+video_to_trajectory(video.dir, difference.lag, thresholds, stack.max.background)
 
 
 # merge trajectory data into database
