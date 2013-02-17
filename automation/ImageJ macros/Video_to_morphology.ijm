@@ -21,7 +21,7 @@ run("Make Substack...", "  slices=1-"+slices-(lag-1)+"");
 vid3 = getTitle();
 //selectWindow(vid1);
 //close();
-imageCalculator("Subtract create stack", vid2, vid3);
+imageCalculator("Subtract create stack", vid3, vid2);
 vid4 = getTitle();
 selectWindow(vid2);
 close();

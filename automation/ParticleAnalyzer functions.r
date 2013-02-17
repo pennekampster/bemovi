@@ -13,7 +13,7 @@ text[grep("setThreshold", text)] <- paste("setThreshold(", thresholds[1], ",", t
 
 # re-create ImageJ macro for batch processing of video files with Particle Analyzer
 if(.Platform$OS.type == "windows") 
-  writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_to_morphology.ijm",sep=""),sep="\n")
+  writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_to_morphology_tmp.ijm",sep=""),sep="\n")
 if(.Platform$OS.type == "unix") {
   dir.create(sub(raw.video.folder,"ijmacs",video.dir))	
   writeLines(text,con=paste(sub(raw.video.folder,"ijmacs",video.dir), "/Video_to_morphology_tmp.ijm",sep=""))
