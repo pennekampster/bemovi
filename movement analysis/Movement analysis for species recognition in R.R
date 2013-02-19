@@ -1,3 +1,9 @@
+# code to extract movement characteristics from the results files of the ParticleTracker
+# uses the adehabitatLT package to calculate movement metrics 
+# 1. calculates summary statistics on net and gross movement
+# 2. transforms the raw data (X and Y positions in to ltraj object to extract mean and SD of turning angles)
+# 3. aggregates statistics on movement and stores data for further classification
+
 rm(list=ls())
 
 library(adehabitatLT)
@@ -6,14 +12,30 @@ library(plyr)
 library(ggplot2)
 library(sqldf)
 
-# code to extract movement characteristics from the results files of the ParticleTracker
-# uses the adehabitatLT package to calculate movement metrics (and trials to explore functionality of the package)
-# 1. calculates summary statistics on net and gross movement
-# 2. transforms the raw data (X and Y positions in to ltraj object to extract mean and SD of turning angles)
-# 3. aggregates statistics on movement with trajectory ID and file name for species classification
+## Owen's paths
+to.data.owen <- "/Users/owenpetchey/Desktop/hard.test/"
+
+## Frank's paths
+to.data.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/"
+
+## General folders
+trajectory.data.folder <- "2 - trajectory data/"
+merge.folder <- "merge morphology and trajectory/"
+
+## what OS are we on?
+OS <- .Platform$OS.type
+## if on windows, use Frank's paths
+if(.Platform$OS.type == "windows"){
+  to.data <- to.data.frank}
+## otherwise use Owen's
+if(.Platform$OS.type == "unix"){
+  to.data <- to.data.owen}
 
 # load trajectory data
-trajectory.data <- read.table("C:/Users/Frank/Documents/PhD/Programming/franco/data/2 - trajectory data/trajectory.data.txt", header=TRUE, sep="\t")
+trajectory.data <- read.table(paste0(to.data,trajectory.data.folder,"trajectory.data.txt"), header=TRUE, sep="\t")
+# reduce file name to original
+trajectory.data$file <- gsub("Traj_" ,"",trajectory.data$file)
+trajectory.data$file <- gsub(".avi.txt" ,"",trajectory.data$file)
 
 #calculate summary stats (count of frames) and merge with original data for trajectory selection
 start_frame <- ddply(trajectory.data, .(trajectory,file), .fun = function(a){a[which.min(a$frame), ]})
@@ -132,5 +154,5 @@ period <- max_acf[c("id","period")]
 trajectory.data.summary <- merge(trajectory.data.summary,period,by=c("id"))
 
 # export aggregated data on movement
-write.table(trajectory.data.summary, file = paste("C:/Users/Frank/Documents/PhD/Programming/franco/merge morphology and trajectory","trajectory.data.summary.txt", sep = "/"), sep = "\t")
+write.table(trajectory.data.summary, file = paste(gsub("data/",merge.folder,to.data),"trajectory.data.summary.txt", sep = "/"), sep = "\t")
 

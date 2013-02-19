@@ -1,29 +1,31 @@
+# Code to summarize the morphology of particles
+# 1. For all moving particles morphology is extracted by means of the Particle Analyzer function
+# 2. Morphological information is merged with the trajectories extracted by the Particle tracker on X,Y,frame and file
+# 3. Mean morphology is calculated by aggregating, data stored for classification
+
 rm(list=ls())
 
 library(sqldf)
 library(plyr)
 
 ## Owen's paths
-to.code.owen <- "/Users/owenpetchey/work/git/franco/automation/"
 to.data.owen <- "/Users/owenpetchey/Desktop/franco.test.vids/"
 
 ## Frank's paths
-to.code.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/automation/"
 to.data.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/"
 
 ## General folders
 trajectory.data.folder <- "2 - trajectory data/"
 particle.analyzer.folder <- "5 - Particle Analyzer data/"
+merge.folder <- "merge morphology and trajectory/"
 
 ## what OS are we on?
 OS <- .Platform$OS.type
 ## if on windows, use Frank's paths
 if(.Platform$OS.type == "windows"){
-  to.code <- to.code.frank
   to.data <- to.data.frank}
 ## otherwise use Owen's
 if(.Platform$OS.type == "unix"){
-  to.code <- to.code.owen
   to.data <- to.data.owen}
 
 # load trajectory.data
@@ -75,4 +77,4 @@ morphology_summary <- sqldf("select
                             ")
 
 # export aggregated data on morphology
-write.table(morphology_summary, file = paste("C:/Users/Frank/Documents/PhD/Programming/franco/merge morphology and trajectory","morphology.data.summary.txt", sep = "/"), sep = "\t")
+write.table(morphology_summary, file = paste(gsub("data/",merge.folder,to.data),"morphology.data.summary.txt", sep = "/"), sep = "\t")
