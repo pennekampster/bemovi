@@ -54,7 +54,7 @@ if(length(ijout.files)>2) {
 	for(i in 2:length(ijout.files)) {
 
 		dd.t <- read.delim(paste(IJ_output.dir, ijout.files[i], sep="//"))
-		dd.t$file <- rep(gsub(".ijout.txt","",ijout.files[1]), length(dd.t[,1]))
+		dd.t$file <- rep(gsub(".ijout.txt","",ijout.files[i]), length(dd.t[,1]))
 		# change column names because R is replacing missing header with X causing confusion with real X and Y positions
   		colnames(dd.t) <- c("obs","Area","Mean","Min","Max","X","Y","Perimeter","Major","Minor","Angle","Circ.","Slice","AR","Round","Solidity","file")
 		dd <- rbind(dd, dd.t)
