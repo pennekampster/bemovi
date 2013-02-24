@@ -30,8 +30,6 @@ if(.Platform$OS.type == "unix"){
 
 # load trajectory.data
 trajectory.data <- read.table(paste0(to.data,trajectory.data.folder,"trajectory.data.txt"), row.names=1)
-trajectory.data$file <- gsub("Traj_" ,"",trajectory.data$file)
-trajectory.data$file <- gsub(".avi.txt" ,"",trajectory.data$file)
 trajectory.data$X <- round_any(-trajectory.data$X, 5)
 trajectory.data$Y <- round_any(trajectory.data$Y, 5)
 # trajectory frame starts with 0, therefore add one to adjust to morphology data
@@ -41,7 +39,6 @@ trajectory.data$frame <- trajectory.data$frame+1
 morphology.data <- read.table(paste0(to.data,particle.analyzer.folder,"morphology.data.txt"), row.names=1)
 morphology.data$frame <- morphology.data$Slice
 morphology.data$Slice <- NULL
-morphology.data$file <- gsub(".ijout.txt" ,"",morphology.data$file)
 morphology.data$X <- round_any(morphology.data$X, 5)
 morphology.data$Y <- round_any(morphology.data$Y, 5)
 

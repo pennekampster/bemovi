@@ -33,9 +33,6 @@ if(.Platform$OS.type == "unix"){
 
 # load trajectory data
 trajectory.data <- read.table(paste0(to.data,trajectory.data.folder,"trajectory.data.txt"), header=TRUE, sep="\t")
-# reduce file name to original
-trajectory.data$file <- gsub("Traj_" ,"",trajectory.data$file)
-trajectory.data$file <- gsub(".avi.txt" ,"",trajectory.data$file)
 
 #calculate summary stats (count of frames) and merge with original data for trajectory selection
 start_frame <- ddply(trajectory.data, .(trajectory,file), .fun = function(a){a[which.min(a$frame), ]})

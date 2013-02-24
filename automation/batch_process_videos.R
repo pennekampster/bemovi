@@ -93,14 +93,14 @@ assign(paste(myfun(ijout.files[i])),ijout.files[i],envir = .GlobalEnv)
 
 if (i == 1){
 dd <- as.data.frame(read.table(textConnection(out)))
-dd$file <- rep(ijout.files[1], length(dd$V1))
+dd$file <- rep(gsub(".avi.txt","",gsub("Traj_","",ijout.files[i])), length(dd$V1))
 # merge unique trajectory_ID with the original data
 dd <- cbind(dd,difference)
 }
 
 if (i > 1){
 dd.t <- as.data.frame(read.table(textConnection(out)))
-dd.t$file <- rep(ijout.files[i], length(dd.t$V1))
+dd.t$file <- rep(gsub(".avi.txt","",gsub("Traj_","",ijout.files[i])), length(dd.t$V1))
 # merge unique trajectory_ID with the original data
 dd.t <- cbind(dd.t,difference)
 
@@ -118,28 +118,25 @@ assign("trajectory.data",dd,envir = .GlobalEnv)
 write.table(trajectory.data, file = paste(trajdata.dir,"trajectory.data.txt", sep = "/"), sep = "\t")
 }
 
-
-
-
 # function to plot trajectories for overlay (must be merged with original video by ImageJ macro)
 # creates a folder containing one jpeg plot containing all the positions till the respective frame
 # for the moment colour not assigned by species identity but that's easy to add 
 # provide path of " 2 - trajectory data", and the width and height of the original video (I use cropped videos to increase speed while troubleshooting)
-create_overlay_plots <- function(path,width,height,difference.lag)
-{ 
+create_overlay_plots <- function(path,width,height,difference.lag){ 
 trajectory.data <- as.data.frame(read.table(paste(path,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
 file_names <- unique(trajectory.data$file)  
+
 # change path for output
 dir.create(sub(trajectory.data.folder,overlay.folder,path))
 for (i in 1:length(file_names)){
    #split filename into name and ending for creating directories according to video name
-   filename_split <- strsplit(paste(file_names[i]),"\\.")
-   filename <- filename_split[[1]]
-   dir.create(paste(sub(trajectory.data.folder,overlay.folder,path),sub("Traj_","",filename[1]),sep="/"))
+   #filename_split <- strsplit(paste(file_names[i]),"\\.")
+   #filename <- filename_split[[1]]
+   dir.create(paste0(sub(trajectory.data.folder,overlay.folder,path), file_names[i])) #sub("Traj_","",filename[1]),sep="/"))
    trajectory.data_tmp <- subset(trajectory.data,file == file_names[i])
    j<- 0
    while(j < max(trajectory.data$frame)+1){
-      jpeg(paste(sub(trajectory.data.folder,overlay.folder,path),sub("Traj_","",filename[1]),"/frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
+      jpeg(paste(sub(trajectory.data.folder,overlay.folder,path),file_names[i],"/","frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
       par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
       print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame <= j, select=c("X","Y","trajectory"))
       plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="#FFFF00", pch=15, cex=1, asp=1)
