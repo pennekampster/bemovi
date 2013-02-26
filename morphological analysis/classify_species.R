@@ -70,50 +70,14 @@ ggplot(plot_PCA_morph, aes(x=PC1_morph, y=PC2_morph, color=plot_PCA_morph$specie
 ggplot(plot_PCA_move, aes(x=PC1_move, y=PC2_move, color=plot_PCA_move$species)) + geom_point()
 
 # ANN (based on morphological data)
-# take monocultures of Colpidium and Paramecium
-Colp_vs_Param <- sqldf("select *
-                         from all_data
-                         where species in ('Colpidium', 'Paramecium')")
+# take monocultures of three species and classify by morphology (excluding the grey value for the moment)
+three_moncultures <- sqldf("select *
+                       from all_data
+                       where species in ('Colpidium','Paramecium', 'Loxocephalus')")
 
-train <- cbind(Colp_vs_Param[, c(14,16,17,18,19,20)])
-target <- class.ind(Colp_vs_Param[,"species"])
-target <- target[, c(1,2)]
-samp <- sample(1:length(train[,1]), length(train[,1])/2)
-no.samp <- c(1:length(train[,1]))[-samp]
-nn <- nnet(train[samp,], target[samp,], size = 4, rang = 0.1, decay = 5e-4, maxit = 200)
-test.cl <- function(true, pred) {
-  true <- max.col(true)
-  cres <- max.col(pred)
-  table(true, cres)
-}
-test.cl(target[no.samp,], predict(nn, train[no.samp,]))
-
-# take monocultures of Colpidium and Loxocephalus
-Colp_vs_Loxo <- sqldf("select *
-                         from all_data
-                         where species in ('Colpidium', 'Loxocephalus')")
-
-train <- cbind(Colp_vs_Loxo[, c(14,15,16,17,18,19,20)])
-target <- class.ind(Colp_vs_Loxo[,"species"])
-target <- target[, c(1,4)]
-samp <- sample(1:length(train[,1]), length(train[,1])/2)
-no.samp <- c(1:length(train[,1]))[-samp]
-nn <- nnet(train[samp,], target[samp,], size = 4, rang = 0.1, decay = 5e-4, maxit = 200)
-test.cl <- function(true, pred) {
-  true <- max.col(true)
-  cres <- max.col(pred)
-  table(true, cres)
-}
-test.cl(target[no.samp,], predict(nn, train[no.samp,]))
-
-# take monocultures of Paramecium and Loxocephalus
-Param_vs_Loxo <- sqldf("select *
-                         from all_data
-                         where species in ('Paramecium', 'Loxocephalus')")
-
-train <- cbind(Param_vs_Loxo[, c(14,15,16,17,18,19,20)])
-target <- class.ind(Param_vs_Loxo[,"species"])
-target <- target[, c(2,4)]
+train <- cbind(three_moncultures[, c(14,16,17,18,19,20)])
+target <- class.ind(three_moncultures[,"species"])
+target <- target[, c(1,2,4)]
 samp <- sample(1:length(train[,1]), length(train[,1])/2)
 no.samp <- c(1:length(train[,1]))[-samp]
 nn <- nnet(train[samp,], target[samp,], size = 4, rang = 0.1, decay = 5e-4, maxit = 200)
@@ -125,6 +89,7 @@ test.cl <- function(true, pred) {
 test.cl(target[no.samp,], predict(nn, train[no.samp,]))
 
 # train NN on monocultures and test on mixed cultures (classification without grey value!!!!!)
+# 1. Colpidium vs. Paramecium
 two_monocult <- sqldf("select *
                          from all_data
                          where species in ('Colpidium', 'Paramecium')")
@@ -143,7 +108,7 @@ names(predict_spec) <- c("predict_spec")
 predict <- cbind(mixed_cult[,1:3],predict_spec)
 predict$predict_spec <- as.factor(ifelse(predict$predict_spec == 1,"Colpidum","Paramecium"))
 
-
+# 2. Colpidium vs. Loxocephalus
 two_monocult <- sqldf("select *
                          from all_data
                          where species in ('Colpidium', 'Loxocephalus')")
@@ -161,4 +126,23 @@ predict_spec <- as.data.frame(max.col(classified))
 names(predict_spec) <- c("predict_spec")
 predict <- cbind(mixed_cult[,1:3],predict_spec)
 predict$predict_spec <- as.factor(ifelse(predict$predict_spec == 1,"Colpidum","Loxocephalus"))
+
+# 3. Colpidium vs. Paramecium vs. Loxocephalus
+three_monocult <- sqldf("select *
+                         from all_data
+                         where species in ('Colpidium','Paramecium','Loxocephalus')")
+
+mixed_cult <- sqldf("select *
+                    from all_data
+                    where species in ('Colpidum&Paramecium&Loxocephalus')")
+
+train <- cbind(three_monocult[, c(14,16,17,18,19,20)])
+target <- class.ind(three_monocult[,"species"])
+target <- target[, c(1,2,4)]
+nn <- nnet(train, target, size = 4, rang = 0.1, decay = 5e-4, maxit = 200)
+classified <- round(predict(nn, mixed_cult[, c(14,16,17,18,19,20)]),2)
+predict_spec <- as.data.frame(max.col(classified))
+names(predict_spec) <- c("predict_spec")
+predict <- cbind(mixed_cult[,1:3],predict_spec)
+predict$predict_spec <- as.factor(ifelse(predict$predict_spec == 1,'Colpidum',ifelse(predict$predict_spec == 2,'Paramecium','Loxocephalus')))
 
