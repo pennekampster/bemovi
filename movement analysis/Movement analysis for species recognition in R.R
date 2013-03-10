@@ -107,9 +107,9 @@ trajectory.data.summary <- sqldf("select n.*, round(gross_disp) as gross_disp, n
 redis_space <- redisltraj(mvt_data, 10)
 
 # plotting of selected trajectories
-plot(redis_space[[11]]$rel.angle)
-acf(redis_space[[11]]$rel.angle, na.action=na.pass)
-plot(redis_space[[11]]$x,redis_space[[11]]$y,asp=1)
+#plot(redis_space[[11]]$rel.angle)
+#acf(redis_space[[11]]$rel.angle, na.action=na.pass)
+#plot(redis_space[[11]]$x,redis_space[[11]]$y,asp=1)
 
 # 6. transform ltraj object into dataframe to extract movement metrics (turning angles)
 mvt_summary <- ld(redis_space)

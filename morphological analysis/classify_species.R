@@ -1,6 +1,7 @@
 library(ggplot2)
 library(nnet)
 library(sqldf)
+library(randomForest)
 
 # code to do classification based on both morphology and movement data
 # will integrate all of OWen's previous ideas and re-use available codes
@@ -88,11 +89,24 @@ test.cl <- function(true, pred) {
 }
 test.cl(target[no.samp,], predict(nn, train[no.samp,]))
 
+# try randomForest classification
+# use factor function to only classify species comprised in the dataset
+train_rf <- cbind(three_moncultures[, c(4,5,6,7,8,9,10,11,14,15,16,17,18,19,20,21)])
+samp <- sample(1:length(train_rf[,1]), length(train_rf[,1])/2)
+no.samp <- c(1:length(train_rf[,1]))[-samp]
+rf_fit <- randomForest(factor(species) ~ net_speed + period + NGDR + sd_turning + grey + area + perimeter + major + minor + AR , data=train_rf[samp,], importance=TRUE, proximity=TRUE)
+print(rf_fit)
+plot(rf_fit)
+varImpPlot(rf_fit)
+MDSplot(rf_fit, train_rf[samp,]$species)
+table(factor(train_rf[no.samp,]$species), predict(rf_fit, train_rf[no.samp,]))
+
+
 # train NN on monocultures and test on mixed cultures (classification without grey value!!!!!)
 # 1. Colpidium vs. Paramecium
 two_monocult <- sqldf("select *
                          from all_data
-                         where species in ('Colpidium', 'Paramecium')")
+                         where species in ('Colpidium', 'Colpidium')")
 
 mixed_cult <- sqldf("select *
                          from all_data
@@ -146,3 +160,8 @@ names(predict_spec) <- c("predict_spec")
 predict <- cbind(mixed_cult[,1:3],predict_spec)
 predict$predict_spec <- as.factor(ifelse(predict$predict_spec == 1,'Colpidum',ifelse(predict$predict_spec == 2,'Paramecium','Loxocephalus')))
 
+# classification by randomForest
+train_rf <- cbind(three_monocult[, c(4,5,6,7,8,9,10,11,14,15,16,17,18,19,20,21)])
+rf_fit <- randomForest(factor(species) ~ net_speed + period + NGDR + sd_turning + grey + area + perimeter + major + minor + AR , data=train_rf, importance=TRUE, proximity=TRUE)
+predict_spec <- predict(rf_fit, mixed_cult[, c(4,5,6,7,8,9,10,11,14,15,16,17,18,19,20,21)])
+predict <- cbind(mixed_cult,predict_spec)
