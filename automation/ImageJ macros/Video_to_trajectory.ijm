@@ -77,7 +77,7 @@ run("Median...", "radius=4 stack");
 vid4 = getTitle();
   
 selectWindow(vid4);
-run("AVI... ", "compression=JPEG frame=26 save=["+dir_output+replace(list[k],".cxd",".avi")+"]");
+run("AVI... ", "compression=Uncompressed frame=26 save=["+dir_output+replace(list[k],".cxd",".avi")+"]");
 close();
 close();
 close();
@@ -94,6 +94,12 @@ run("Properties...", "channels=1 slices=1 frames="+slices+" unit=pixel pixel_wid
 run("Particle Tracker 2D/3D", "radius=1 cutoff=0 percentile=0.01 link=5 displacement=20");
 close();
 setBatchMode(true);
+
+
+// delete the temporary video file
+File.delete("+dir_output+replace(list[k],".cxd",".avi")+");
+
+
 }
 run("Quit");
 
