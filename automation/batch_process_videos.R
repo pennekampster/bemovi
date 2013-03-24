@@ -121,8 +121,9 @@ write.table(trajectory.data, file = paste(trajdata.dir,"trajectory.data.txt", se
 # function to plot trajectories for overlay (must be merged with original video by ImageJ macro)
 # creates a folder containing one jpeg plot containing all the positions till the respective frame
 # for the moment colour not assigned by species identity but that's easy to add 
-# provide path of " 2 - trajectory data", and the width and height of the original video (I use cropped videos to increase speed while troubleshooting)
-create_overlay_plots <- function(path,width,height,difference.lag){ 
+# provide path of " 2 - trajectory data", and the width and height of the original video 
+# (I use cropped videos to increase speed while troubleshooting)
+create_overlay_plots <- function(path,width,height,difference.lag,label='no'){ 
 trajectory.data <- as.data.frame(read.table(paste(path,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
 file_names <- unique(trajectory.data$file)  
 
@@ -135,13 +136,24 @@ for (i in 1:length(file_names)){
    dir.create(paste0(sub(trajectory.data.folder,overlay.folder,path), file_names[i])) #sub("Traj_","",filename[1]),sep="/"))
    trajectory.data_tmp <- subset(trajectory.data,file == file_names[i])
    j<- 0
+   if (label == 'no'){
    while(j < max(trajectory.data$frame)+1){
       jpeg(paste(sub(trajectory.data.folder,overlay.folder,path),file_names[i],"/","frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
       par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
       print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame <= j, select=c("X","Y","trajectory"))
       plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="#FFFF00", pch=15, cex=1, asp=1)
       dev.off()
-      j <- j+1}
+      j <- j+1}}
+   if (label == 'yes'){
+   while(j < max(trajectory.data$frame)+1){
+     jpeg(paste(sub(trajectory.data.folder,overlay.folder,path),file_names[i],"/","frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
+     par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
+     print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame == j, select=c("X","Y","trajectory"))
+     plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="blue", pch=1, cex=3, asp=1)
+     text(print$Y, print$X+2048-20,print$traject,cex=2,col="red")
+     dev.off()
+     j <- j+1}}
+
 }
 
 # copy master copy of ImageJ macro there for treatment

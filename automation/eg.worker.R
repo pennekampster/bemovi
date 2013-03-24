@@ -93,7 +93,7 @@ if(.Platform$OS.type == "unix"){
   width <- 2048
   height <- 2048}
 #specify directory
-create_overlay_plots(trackdata.dir,width,height,difference.lag)
+create_overlay_plots(trackdata.dir,width,height,difference.lag,'yes')
 path = trackdata.dir
 
 
