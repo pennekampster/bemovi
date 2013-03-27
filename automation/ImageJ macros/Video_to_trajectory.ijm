@@ -18,7 +18,6 @@ selectWindow(original);
 run("Make Substack...", "  slices=1-"+slices-(lag-1)+"");
 }
 
-
 if (endsWith(list[k],"cxd")){
 run("Bio-Formats", "open=["+dir_input+list[k]+"] autoscale color_mode=Default view=[Standard ImageJ] stack_order=Default");
 original = getTitle();
@@ -77,7 +76,7 @@ run("Median...", "radius=4 stack");
 vid4 = getTitle();
   
 selectWindow(vid4);
-run("AVI... ", "compression=Uncompressed frame=26 save=["+dir_output+replace(list[k],".cxd",".avi")+"]");
+run("AVI... ", "compression=JPEG frame=26 save=["+dir_output+replace(list[k],".cxd",".avi")+"]");
 close();
 close();
 close();
@@ -95,10 +94,9 @@ run("Particle Tracker 2D/3D", "radius=1 cutoff=0 percentile=0.01 link=5 displace
 close();
 setBatchMode(true);
 
-
 // delete the temporary video file
-File.delete("+dir_output+replace(list[k],".cxd",".avi")+");
-
+File.delete(dir_output+replace(list[k],".cxd",".avi"));
+close();
 
 }
 run("Quit");

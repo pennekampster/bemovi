@@ -79,7 +79,6 @@ LoadIJ_morph_outs(IJ_output.dir)
 # run ParticleTracker, merge results and produce overlays
 video_to_trajectory(video.dir, difference.lag, thresholds, stack.max.background)
 
-
 # merge trajectory data into database
 #specify directory
 LoadIJ_Traj_Outs(trackdata.dir)
@@ -93,9 +92,7 @@ if(.Platform$OS.type == "unix"){
   width <- 2048
   height <- 2048}
 #specify directory
-create_overlay_plots(trackdata.dir,width,height,difference.lag,'yes')
-path = trackdata.dir
-
+create_overlay_plots(trackdata.dir,width,height,difference.lag,type='label')
 
 
 '''

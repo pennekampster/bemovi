@@ -49,7 +49,6 @@ if(.Platform$OS.type == "windows")
 all.files <- dir(tmp.raw.folder)
 ijout.files <- all.files[grep("Traj_", all.files)]
 file.copy(paste(sub("1 - raw/","1 - raw tmp/",video.dir),ijout.files, sep = ""),sub("1 - raw","2 - trajectory data",video.dir))
-#file.remove(sub("1 - raw/","1 - raw tmp/",video.dir))
 }
 
 
@@ -123,7 +122,7 @@ write.table(trajectory.data, file = paste(trajdata.dir,"trajectory.data.txt", se
 # for the moment colour not assigned by species identity but that's easy to add 
 # provide path of " 2 - trajectory data", and the width and height of the original video 
 # (I use cropped videos to increase speed while troubleshooting)
-create_overlay_plots <- function(path,width,height,difference.lag,label='no'){ 
+create_overlay_plots <- function(path,width,height,difference.lag,type='traj'){ 
 trajectory.data <- as.data.frame(read.table(paste(path,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
 file_names <- unique(trajectory.data$file)  
 
@@ -136,7 +135,7 @@ for (i in 1:length(file_names)){
    dir.create(paste0(sub(trajectory.data.folder,overlay.folder,path), file_names[i])) #sub("Traj_","",filename[1]),sep="/"))
    trajectory.data_tmp <- subset(trajectory.data,file == file_names[i])
    j<- 0
-   if (label == 'no'){
+   if (type == 'traj'){
    while(j < max(trajectory.data$frame)+1){
       jpeg(paste(sub(trajectory.data.folder,overlay.folder,path),file_names[i],"/","frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
       par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
@@ -144,7 +143,7 @@ for (i in 1:length(file_names)){
       plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="#FFFF00", pch=15, cex=1, asp=1)
       dev.off()
       j <- j+1}}
-   if (label == 'yes'){
+   if (type == 'label'){
    while(j < max(trajectory.data$frame)+1){
      jpeg(paste(sub(trajectory.data.folder,overlay.folder,path),file_names[i],"/","frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
      par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
