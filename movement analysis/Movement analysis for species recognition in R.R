@@ -6,13 +6,6 @@
 
 rm(list=ls())
 
-library(adehabitatLT)
-library(grid)
-library(plyr)
-library(ggplot2)
-library(sqldf)
-library(reshape)
-
 ## Owen's paths
 to.data.owen <- "/Users/owenpetchey/Desktop/hard.test/"
 
@@ -35,16 +28,28 @@ if(.Platform$OS.type == "unix"){
 # load trajectory data
 trajectory.data <- read.table(paste0(to.data,trajectory.data.folder,"trajectory.data.txt"), header=TRUE, sep="\t")
 
+filter_trajects <- function(trajectory.data){
+# function to filter trajectories before analysis
+# importantly, trajectories must comply to minimum net displacement otherwise problems
+# occur later on with trajectory simplification
+
+# required libraries
+library(sqldf)
+library(plyr)
+#library(grid)
+#library(ggplot2)
+#library(reshape)
+  
 # 0. prepare data for analysis with adehabitat package
 # create unique ID consisting of trajectory ID and file
 id <- paste(trajectory.data$file,trajectory.data$trajectory,sep="-")
-trajectory.data.summary <- cbind(trajectory.data,id)
+trajectory.data <- cbind(trajectory.data,id)
 
 #calculate summary stats (count of frames) to perform trajectory selection
 start_frame <- ddply(trajectory.data, .(id), .fun = function(a){a[which.min(a$frame), ]})
 end_frame <- ddply(trajectory.data, .(id), .fun = function(a){a[which.max(a$frame), ]})
-names(start_frame) <- c("id","start_frame","X_start","Y_start","file","trajectory")
-names(end_frame) <- c("id","end_frame","X_end","Y_end","file","trajectory")
+names(start_frame) <- c("start_frame","X_start","Y_start","file","trajectory","id")
+names(end_frame) <- c("end_frame","X_end","Y_end","file","trajectory","id")
 fixes_count <- ddply(trajectory.data, .(id), summarise, count = length(frame))
 
 traject_features <- sqldf("select s.id, 
@@ -61,48 +66,41 @@ traject_features$detection_rate <- traject_features$count/traject_features$frame
 traject_features$detection_rate <- traject_features$count/traject_features$frame_range
 
 # filter very short trajectories out, otherwise problems when rediscretizing based on distance
-select.trajectory.data.summary <- sqldf("select t.*
-                from 'trajectory.data.summary' t, traject_features c
-                where t.id=c.id AND count > 10 AND net_speed > 2 AND detection_rate > 0.9 AND net_disp > 10 AND file = 'Data34'")
+trajectory.data <- sqldf("select t.*
+                from 'trajectory.data' t, traject_features c
+                where t.id=c.id AND count > 0 AND net_speed > 1 AND detection_rate > 0.7 AND net_disp > 50")
 
 # drop factor levels of id
-trajectory.data.summary$id <- factor(trajectory.data.summary$id)
+trajectory.data$id <- factor(trajectory.data$id)
 
-''' plot to calibrate trajectory exclusion
-not.trajectory.data.summary <- sqldf("select t.*
-                from 'trajectory.data.summary' t, traject_features c
-                where t.id=c.id AND count < 10 AND net_speed < 2 AND detection_rate < 0.9 AND net_disp < 10 AND file = 'Data34'")
+assign("trajectory.data",trajectory.data,envir = .GlobalEnv)
+}
 
-select.trajectory.data.plot <- subset(select.trajectory.data.summary, frame%%10==0)
-not.trajectory.data.plot <- subset(not.trajectory.data.summary, frame%%2==0)
+filter_trajects(trajectory.data)
 
-length(unique(not.trajectory.data.summary$id))
+# plot effect of filtering
+#trajectory.data <- subset(trajectory.data)
+#plot(trajectory.data$Y, trajectory.data$X+2048, xlim=c(0,2048), ylim=c(0,2048), col="red", pch=1, cex=1.5, asp=1)
+#par(new=T)
+#plot(trajectory.data.summary$Y, trajectory.data.summary$X+2048, xlim=c(0,2048), ylim=c(0,2048), col="#FFFF00", pch=1, cex=1, asp=1)
 
-plot(select.trajectory.data.summary$Y, select.trajectory.data.summary$X+2048, xlim=c(0,2048), ylim=c(0,2048), col="#FFFF00", pch=1, cex=1, asp=1)
-text(select.trajectory.data.plot$Y, select.trajectory.data.plot$X+2048-20,select.trajectory.data.plot$traject,cex=0.5,col="red")
-par(new=T)
-plot(not.trajectory.data.summary$Y, not.trajectory.data.summary$X+2048, xlim=c(0,2048), ylim=c(0,2048), col="green", pch=1, cex=1, asp=1)
-text(not.trajectory.data.plot$Y, not.trajectory.data.plot$X+2048-20,not.trajectory.data.plot$traject,cex=0.5,col="red")
-'''
+extract_movement <- function(trajectory.data){
+# Function to extract movement metrics from filtered trajectories
 
-# rename df with selected trajectories for further processing
-trajectory.data.summary <- select.trajectory.data.summary
-
-#*****************************************************************************************************************************
-# only extract movement metrics for valid cell movements
-# ***************************************************************************************************************************
+# required libraries
+library(adehabitatLT)
 
 # 1. convert frame into time class (each frame representing a time step of a second)
-trajectory.data.summary$sec <- trajectory.data.summary$frame  
-trajectory.data.summary$datetime <- as.POSIXct(trajectory.data.summary$sec, origin = "1900-01-01", format = "%OS")
-trajectory.data.summary$sec <- NULL
+trajectory.data$sec <- trajectory.data$frame  
+trajectory.data$datetime <- as.POSIXct(trajectory.data$sec, origin = "1900-01-01", format = "%OS")
+trajectory.data$sec <- NULL
 options(digits.secs=2)
 
 # 2. convert raw data in ltraj class (typeII=FALSE meaning that no time was recorded)
-mvt_data <- as.ltraj(xy = trajectory.data.summary[,c("X","Y")], date = trajectory.data.summary$datetime, typeII=TRUE, id = trajectory.data.summary$id)
+mvt_data <- as.ltraj(xy = trajectory.data[,c("X","Y")], date = trajectory.data$datetime, typeII=TRUE, id = trajectory.data$id)
 
 # 3. add positions where locations should have been measured (i.e. each second), but have not due to e.g. detection problems...
-mvt_data <- setNA(mvt_data, date.ref = trajectory.data.summary$datetime, dt=1, units=c("sec"))
+mvt_data <- setNA(mvt_data, date.ref = trajectory.data$datetime, dt=1, units=c("sec"))
 
 # optional: check whether adding positions rendered trajectory regular
 # is.regular(mvt_data)
@@ -119,9 +117,8 @@ net_disp <-   sqldf("select id, sqrt(R2n) as net_disp
                   having date = max(date)")
 disp <- merge(net_disp,gross_disp,by=c('id'))
 
-
 # 5. rediscretize the trajectory in space to analyze geometrical properties of the trajectory
-redis_space <- redisltraj(mvt_data, 5, nnew=8, type="time")
+redis_space <- redisltraj(mvt_data, 10)
 
 # plotting of selected trajectories
 #plot(redis_space[[1]]$rel.angle)
@@ -181,21 +178,16 @@ ta_summary <- merge(turning_summary,period,by=c('id'))
 #spectrum(spec, log="dB")
 
 #merge all movement metrics into one dataframe
-
-
-# sqldf does not support > 2 table merge?!
-
-
-
-trajectory.data.summary <- sqldf("select *,
+trajectory.data.summary <- sqldf("select d.id, d.net_disp, d.gross_disp,
                                   net_disp / gross_disp as NGDR,
                                   t.mean_turning, t.sd_turning,
                                   t.period
                                   from disp d
                                   left join ta_summary t
-                                  on d.id=t.id ")
-
+                                  on d.id=t.id")
 
 # export aggregated data on movement
-#write.table(trajectory.data.summary, file = paste(gsub("data/",merge.folder,to.data),"trajectory.data.summary.txt", sep = "/"), sep = "\t")
+write.table(trajectory.data.summary, file = paste(gsub("data/",merge.folder,to.data),"trajectory.data.summary.txt", sep = "/"), sep = "\t")
+}
 
+extract_movement(trajectory.data)
