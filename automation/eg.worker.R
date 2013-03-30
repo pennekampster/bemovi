@@ -14,7 +14,6 @@ thresholds = c(800,7245)
 ## background for stack maxima
 stack.max.background = "light" ## any other values results in dark background
 
-
 ## Owen's paths
 to.code.owen <- "/Users/owenpetchey/work/git/franco/automation/"
 to.data.owen <- "/Users/owenpetchey/Desktop/hard.test/"
@@ -32,7 +31,7 @@ trajectory.data.folder <- "2 - trajectory data/"
 overlay.folder <- "3 - overlay plots/"
 overlay.folder2 <- "4 - overlays/"
 particle.analyzer.folder <- "5 - Particle Analyzer data/"
-
+merge.folder <- "6 - Classification/"
 
 ## what OS are we on?
 OS <- .Platform$OS.type
@@ -51,16 +50,15 @@ video.dir <- paste(to.data, raw.video.folder, sep="")
 IJ_output.dir <- paste(to.data, particle.analyzer.folder, sep="")
 video.dir <- paste(to.data, raw.video.folder, sep="")
 trackdata.dir <- paste(to.data, trajectory.data.folder, sep="")
-
+class.dir <- paste(to.data, merge.folder, sep="")
 
 # load functions to call ImageJ from R
 source(paste(to.code, "batch_process_videos.r", sep=""))
 source(paste(to.code, "ParticleAnalyzer functions.r", sep=""))
-
+source(paste(to.code, "movement_analysis.r", sep=""))
 
 # read the file that gives the important information about each video
 file.sample.info <- read.table(paste(sample.dir, sample.description.file, sep=""), sep= "\t", header = TRUE)
-
 
 ## check for unsupported file types, and for periods in the file name
 Check.video.files(video.dir)
@@ -86,13 +84,35 @@ LoadIJ_Traj_Outs(trackdata.dir)
 
 # create overlay videos
 if(.Platform$OS.type == "windows"){
-  width <- 2048
-  height <- 2048}
+  width <- 735
+  height <- 690}
 if(.Platform$OS.type == "unix"){
   width <- 2048
   height <- 2048}
 #specify directory
 create_overlay_plots(trackdata.dir,width,height,difference.lag,type='label')
+
+# Feature extraction from data files
+
+#load trajectory data
+trajectory.data <- read.table(paste0(to.data,trajectory.data.folder,"trajectory.data.txt"), header=TRUE, sep="\t")
+
+# filter trajectories to exclude artefacts and very short trajects which do not allow proper extraction
+# of all relevant movement features (e.g. periodic patterns in turning angles)
+filter_trajects(trajectory.data)
+
+# extract movement metrics and save to classification folder
+extract_movement(trajectory.data)
+
+# merge mophology of ParticleAnalyzer on the filtered trajectories for classification
+morphology_movement_merge(trajectory.data)
+
+
+# Classification
+
+
+
+
 
 
 '''

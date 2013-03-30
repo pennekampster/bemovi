@@ -148,8 +148,8 @@ for (i in 1:length(file_names)){
      jpeg(paste(sub(trajectory.data.folder,overlay.folder,path),file_names[i],"/","frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
      par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
      print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame == j, select=c("X","Y","trajectory"))
-     plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="blue", pch=1, cex=3, asp=1)
-     text(print$Y, print$X+2048-20,print$traject,cex=2,col="red")
+     plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="blue", pch=1, cex=6, asp=1)
+     text(print$Y, print$X+as.numeric(height)-20,print$traject,cex=2,col="red")
      dev.off()
      j <- j+1}}
 

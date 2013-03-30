@@ -96,7 +96,7 @@ setBatchMode(true);
 
 // delete the temporary video file
 File.delete(dir_output+replace(list[k],".cxd",".avi"));
-close();
+//close();
 
 }
 run("Quit");
