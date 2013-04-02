@@ -1,9 +1,13 @@
+trajectory_morphology <- function(){
+
 # Code to summarize the morphology of particles
 # 1. For all moving particles morphology is extracted by means of the Particle Analyzer function
 # 2. Morphological information is merged with the trajectories extracted by the Particle tracker on X,Y,frame and file
 # 3. Mean morphology is calculated by aggregating, data stored for classification
 
-morphology_movement_merge <- function(trajectory.data){
+library(plyr)
+library(sqldf)
+
 # load trajectory.data
 trajectory.data <- read.table(paste0(to.data,trajectory.data.folder,"trajectory.data.txt"), row.names=1)
 trajectory.data$X <- round_any(-trajectory.data$X, 5)

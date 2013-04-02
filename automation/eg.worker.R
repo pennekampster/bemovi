@@ -56,6 +56,7 @@ class.dir <- paste(to.data, merge.folder, sep="")
 source(paste(to.code, "batch_process_videos.r", sep=""))
 source(paste(to.code, "ParticleAnalyzer functions.r", sep=""))
 source(paste(to.code, "movement_analysis.r", sep=""))
+source(paste(to.code, "merge.r", sep=""))
 
 # read the file that gives the important information about each video
 file.sample.info <- read.table(paste(sample.dir, sample.description.file, sep=""), sep= "\t", header = TRUE)
@@ -63,9 +64,7 @@ file.sample.info <- read.table(paste(sample.dir, sample.description.file, sep=""
 ## check for unsupported file types, and for periods in the file name
 Check.video.files(video.dir)
 
-
 ##Check_threshold(video.dir,difference.lag, thresholds)
-
 
 # run Particle Analyzer and merge result files into morphology database
 # specify directory, difference.lag, and thresholds
@@ -105,8 +104,7 @@ filter_trajects(trajectory.data)
 extract_movement(trajectory.data)
 
 # merge mophology of ParticleAnalyzer on the filtered trajectories for classification
-morphology_movement_merge(trajectory.data)
-
+trajectory_morphology()
 
 # Classification
 
