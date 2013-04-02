@@ -104,6 +104,9 @@ predict_visual <- sqldf("select t.*, p.predict_spec
                         on p.id=t.id
                         where t.file in ('Data45','Data52','Data57')")
 
+# rename NAs from sql merge as "unknown"
+predict_visual[is.na(predict_visual)] <- "unknown"
+
 predict_visual$predict_spec <- factor(predict_visual$predict_spec)
 
 create_prediction_plots <- function(path,width,height,difference.lag){ 
@@ -173,6 +176,37 @@ if(.Platform$OS.type == "windows")
 
 create_prediction_plots(to.data,735,690,10)
 
+# extract summary stats on species counts and trait destributions per species
+
+summary_counts <- ddply(predict_visual, .(predict_spec,file,frame), summarise, count = length(predict_spec))
+summary_means <- ddply(summary_counts, .(predict_spec,file), summarise, mean_count = mean(count))
+
+# visualize
+library(ggplot2)
+ggplot(predict, aes(x=predict$area, color=predict$predict_spec)) + geom_density()
+ggplot(predict, aes(x=predict$grey, color=predict$predict_spec)) + geom_density()
+ggplot(predict, aes(x=predict$major, color=predict$predict_spec)) + geom_density()
+ggplot(predict, aes(x=predict$perimeter, color=predict$predict_spec)) + geom_density()
+ggplot(predict, aes(x=predict$circularity, color=predict$predict_spec)) + geom_density()
+ggplot(predict, aes(x=predict$AR, color=predict$predict_spec)) + geom_density()
+
+# 2. movement characteristics
+ggplot(predict, aes(x=predict$net_speed, color=as.factor(predict$predict_spec))) + geom_density()
+ggplot(predict, aes(x=predict$NGDR, color=as.factor(predict$predict_spec))) + geom_density()
+ggplot(predict, aes(x=predict$sd_turning, color=as.factor(predict$predict_spec))) + geom_density()
+ggplot(predict, aes(x=predict$period, color=as.factor(predict$predict_spec))) + geom_density()
+
+# use a PCA to visualize whether species can be separated by morphology & movement
+fit_move <- princomp(predict[, c(4,5,6,7,8,9)], cor=TRUE)
+fit_morph <- princomp(predict[, c(14,15,16,17,18,19,20)], cor=TRUE)
+PC1_morph <- fit_morph$scores[,1]
+PC2_morph <- fit_morph$scores[,2]
+PC1_move <- fit_move$scores[,1]
+PC2_move <- fit_move$scores[,2]
+plot_PCA_morph <- cbind(PC1_morph,PC2_morph,predict[c(2,3,21)])
+plot_PCA_move <- cbind(PC1_move,PC2_move,predict[c(2,3,21)])
+ggplot(plot_PCA_morph, aes(x=PC1_morph, y=PC2_morph, color=plot_PCA_morph$species)) + geom_point()
+ggplot(plot_PCA_move, aes(x=PC1_move, y=PC2_move, color=plot_PCA_move$species)) + geom_point()
 
 
 
