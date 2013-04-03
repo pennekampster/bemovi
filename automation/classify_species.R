@@ -40,8 +40,10 @@ trajectory.data <- read.table(paste0(to.data,class.data,"trajectory.data.summary
 #merge morphology data with meaningful trajectory data (meaningful = show properties used for filter trajectories)
 all_data <- sqldf("select *
                   from 'trajectory.data' t, 'morphology.data' m
-                  where t.file=m.file AND t.trajectory=m.trajectory
-                  ")
+                  where t.file=m.file AND t.trajectory=m.trajectory")
+
+# in case there are missing data 
+all_data <- all_data[complete.cases(all_data),]
 
 # labelling files according to species
 all_data$species <- factor(all_data$file,
@@ -113,7 +115,7 @@ predict_visual$predict_spec <- factor(predict_visual$predict_spec)
 
 # function to create overlays
 source(paste(to.code, "batch_process_videos.r", sep=""))
-create_prediction_plots(to.data,735,690,10)
+create_prediction_plots(to.data,2048,2048,10)
 
 # extract summary stats on species counts and trait destributions per species
 summary_counts <- ddply(predict_visual, .(predict_spec,file,frame), summarise, count = length(predict_spec))

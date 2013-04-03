@@ -83,8 +83,8 @@ LoadIJ_Traj_Outs(trackdata.dir)
 
 # create overlay videos
 if(.Platform$OS.type == "windows"){
-  width <- 735
-  height <- 690}
+  width <- 2048
+  height <- 2048}
 if(.Platform$OS.type == "unix"){
   width <- 2048
   height <- 2048}
@@ -104,7 +104,7 @@ filter_trajects(trajectory.data)
 extract_movement(trajectory.data)
 
 # merge mophology of ParticleAnalyzer on the filtered trajectories for classification
-trajectory_morphology()
+trajectory_morphology(trajectory.data)
 
 # Classification
 

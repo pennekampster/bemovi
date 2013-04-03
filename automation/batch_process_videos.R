@@ -305,7 +305,7 @@ create_prediction_plots <- function(path,width,height,difference.lag){
   }
   
   # create directory to store overlays
-  dir.create(sub(trajectory.data.folder,prediction.folder2,path))
+  dir.create(paste0(path,prediction.folder2))
   
   #call IJ macro to merge original video with the trajectory data
   if(.Platform$OS.type == "unix"){

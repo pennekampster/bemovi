@@ -1,4 +1,4 @@
-trajectory_morphology <- function(){
+trajectory_morphology <- function(trajectory.data){
 
 # Code to summarize the morphology of particles
 # 1. For all moving particles morphology is extracted by means of the Particle Analyzer function
@@ -9,7 +9,7 @@ library(plyr)
 library(sqldf)
 
 # load trajectory.data
-trajectory.data <- read.table(paste0(to.data,trajectory.data.folder,"trajectory.data.txt"), row.names=1)
+#trajectory.data <- read.table(paste0(to.data,trajectory.data.folder,"trajectory.data.txt"), row.names=1)
 trajectory.data$X <- round_any(-trajectory.data$X, 5)
 trajectory.data$Y <- round_any(trajectory.data$Y, 5)
 # trajectory frame starts with 0, therefore add one to adjust to morphology data
