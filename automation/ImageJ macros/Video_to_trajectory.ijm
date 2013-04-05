@@ -76,7 +76,7 @@ run("Median...", "radius=4 stack");
 vid4 = getTitle();
   
 selectWindow(vid4);
-run("AVI... ", "compression=JPEG frame=26 save=["+dir_output+replace(list[k],".cxd",".avi")+"]");
+run("AVI... ", "compression=Uncompressed frame=26 save=["+dir_output+replace(list[k],".cxd",".avi")+"]");
 close();
 close();
 close();
