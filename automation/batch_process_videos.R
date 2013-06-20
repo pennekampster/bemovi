@@ -123,22 +123,22 @@ LoadIJ_Traj_Outs <- function(trajdata.dir)
 ## for the moment colour not assigned by species identity but that's easy to add 
 ## provide path of " 2 - trajectory data", and the width and height of the original video 
 ## (I use cropped videos to increase speed while troubleshooting)
-create_overlay_plots <- function(path,width,height,difference.lag,type='traj'){ 
-    trajectory.data <- as.data.frame(read.table(paste(path,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
+create_overlay_plots <- function(trackdata.dir, width, height, difference.lag, type='traj'){ 
+    trajectory.data <- as.data.frame(read.table(paste(trackdata.dir,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
     file_names <- unique(trajectory.data$file)  
     
     ## change path for output
-    dir.create(sub(trajectory.data.folder,overlay.folder,path))
+    dir.create(sub(trajectory.data.folder,overlay.folder,trackdata.dir))
     for (i in 1:length(file_names)){
         ##split filename into name and ending for creating directories according to video name
         ##filename_split <- strsplit(paste(file_names[i]),"\\.")
         ##filename <- filename_split[[1]]
-        dir.create(paste0(sub(trajectory.data.folder,overlay.folder,path), file_names[i])) #sub("Traj_","",filename[1]),sep="/"))
+        dir.create(paste0(sub(trajectory.data.folder,overlay.folder,trackdata.dir), file_names[i])) #sub("Traj_","",filename[1]),sep="/"))
         trajectory.data_tmp <- subset(trajectory.data,file == file_names[i])
         j<- 0
         if (type == 'traj'){
             while(j < max(trajectory.data$frame)+1){
-                jpeg(paste(sub(trajectory.data.folder,overlay.folder,path),file_names[i],"/","frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
+                jpeg(paste(sub(trajectory.data.folder,overlay.folder,trackdata.dir),file_names[i],"/","frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
                 par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
                 print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame <= j, select=c("X","Y","trajectory"))
                 plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="#FFFF00", pch=15, cex=1, asp=1)
@@ -146,7 +146,7 @@ create_overlay_plots <- function(path,width,height,difference.lag,type='traj'){
                 j <- j+1}}
         if (type == 'label'){
             while(j < max(trajectory.data$frame)+1){
-                jpeg(paste(sub(trajectory.data.folder,overlay.folder,path),file_names[i],"/","frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
+                jpeg(paste(sub(trajectory.data.folder,overlay.folder,trackdata.dir),file_names[i],"/","frame_",j,".jpg",sep=""), width = as.numeric(width), height = as.numeric(height), quality = 100)
                 par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
                 print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame == j, select=c("X","Y","trajectory"))
                 plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="blue", pch=1, cex=6, asp=1)
@@ -166,9 +166,9 @@ create_overlay_plots <- function(path,width,height,difference.lag,type='traj'){
     
     
     ## use regular expression to insert input and output directory
-    text[grep("avi_input = ", text)] <- paste("avi_input = ","'", sub(trajectory.data.folder,raw.video.folder,path),"';", sep = "")
-    text[grep("overlay_input = ", text)] <- paste("overlay_input = ","'", sub(trajectory.data.folder,overlay.folder,path),"';", sep = "")
-    text[grep("overlay_output = ", text)] <- paste("overlay_output = ","'", sub(trajectory.data.folder,overlay.folder2,path),"';", sep = "")
+    text[grep("avi_input = ", text)] <- paste("avi_input = ","'", sub(trajectory.data.folder,raw.video.folder,trackdata.dir),"';", sep = "")
+    text[grep("overlay_input = ", text)] <- paste("overlay_input = ","'", sub(trajectory.data.folder,overlay.folder,trackdata.dir),"';", sep = "")
+    text[grep("overlay_output = ", text)] <- paste("overlay_output = ","'", sub(trajectory.data.folder,overlay.folder2,trackdata.dir),"';", sep = "")
     text[grep("lag =", text)] <- paste("lag = ",difference.lag,";", sep = "")
     
     
@@ -182,7 +182,7 @@ create_overlay_plots <- function(path,width,height,difference.lag,type='traj'){
     }
     
     ## create directory to store overlays
-    dir.create(sub(trajectory.data.folder,overlay.folder2,path))
+    dir.create(sub(trajectory.data.folder,overlay.folder2,trackdata.dir))
     
     ## call IJ macro to merge original video with the trajectory data
     if(.Platform$OS.type == "unix"){
