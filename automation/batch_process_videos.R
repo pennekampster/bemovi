@@ -342,10 +342,12 @@ create_overlay_plots <- function(trackdata.dir, width, height, difference.lag, t
 
 ### does what the function name suggests...
 merge_morphology_trajectory_expt_data <- function(to.data, particle.analyzer.folder, trajectory.data.folder, merge.folder,
-											sample.dir, sample.description.file, difference.lag, rounder=5) {
+											sample.dir, sample.description.file, difference.lag, rounder) {
 
 	# read the file that gives the important information about each video
 	file.sample.info <- read.table(paste(sample.dir, sample.description.file, sep=""), sep= "\t", header = TRUE)
+	## put junk in the time variable
+	file.sample.info$time <- -999
 
 	## load the two datasets
 	morphology.data <- read.table(paste0(to.data, particle.analyzer.folder, "morphology.data.txt"), row.names=1)
@@ -365,7 +367,7 @@ merge_morphology_trajectory_expt_data <- function(to.data, particle.analyzer.fol
 
 
 	## Prep for merging the morphology data
-	morphology.data$frame <- morphology.data$Slice + difference.lag-1
+	morphology.data$frame <- morphology.data$Slice + 8   ## I have no idea why add 8 here!!!
 	morphology.data$Slice <- NULL
 	morphology.data$X <- round_any(morphology.data$X, rounder)
 	morphology.data$Y <- round_any(morphology.data$Y, rounder)
@@ -381,13 +383,12 @@ merge_morphology_trajectory_expt_data <- function(to.data, particle.analyzer.fol
 	# xlims <- c(840,950)
 	# ylims <- c(50, 200)
 	# #xlims <- c(0,2100)
-	# #ylims <- c(0, 2100)
-	# pal <- rep(rainbow(15), 10)
-	
-	# plot(subset_m$X, subset_m$Y, pch=1, asp=1, col=pal[subset_m$frame], xlim=xlims, ylim=ylims)
+	# #ylims <- c(0, 2100)	
+	# plot(subset_m$X, subset_m$Y, pch=subset_m$frame, cex=0.5, asp=1, xlim=xlims, ylim=ylims)
 	# par(new=T)
-	# plot(subset_t$X, subset_t$Y, col=pal[subset_t$frame], pch=16, cex=0.5, asp=1, type="p", xlim=xlims, ylim=ylims)
+	# plot(subset_t$X+10, subset_t$Y, pch=subset_t$frame, cex=0.5, asp=1, type="p", xlim=xlims, ylim=ylims)
 	# par(new=F)
+
 
 	# dim(morphology.data)
 	# dim(trajectory.data)
@@ -398,9 +399,11 @@ merge_morphology_trajectory_expt_data <- function(to.data, particle.analyzer.fol
 					by.y=c("X", "Y", "frame", "file"),
 					all=T)
 	##dim(merged1)		
+	##dim(na.omit(merged1))						
 							
-							
-	merged2 <- merge(merged1, file.sample.info, by.x="file", by.y="video", all=F)				
+	merged2 <- merge(merged1, file.sample.info, by.x="file", by.y="video", all=F)	
+	##dim(merged2)			
+	##dim(na.omit(merged2))
 
 	dir.create(paste0(to.data, merge.folder), showWarnings=F)
 
