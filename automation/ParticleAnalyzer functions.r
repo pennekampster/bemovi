@@ -15,7 +15,7 @@ video_to_morphology <- function(video.dir, difference.lag, thresholds=c(0,1000))
     if(.Platform$OS.type == "windows") 
         writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_to_morphology_tmp.ijm",sep=""),sep="\n")
     if(.Platform$OS.type == "unix") {
-        dir.create(sub(raw.video.folder,"ijmacs",video.dir))	
+        dir.create(sub(raw.video.folder,"ijmacs",video.dir), showWarnings=F)	
         writeLines(text,con=paste(sub(raw.video.folder,"ijmacs",video.dir), "/Video_to_morphology_tmp.ijm",sep=""))
     }
     
