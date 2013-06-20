@@ -342,7 +342,7 @@ create_overlay_plots <- function(trackdata.dir, width, height, difference.lag, t
 
 ### does what the function name suggests...
 merge_morphology_trajectory_expt_data <- function(to.data, particle.analyzer.folder, trajectory.data.folder, merge.folder,
-											sample.dir, sample.description.file) {
+											sample.dir, sample.description.file, difference.lag, rounder=5) {
 
 	# read the file that gives the important information about each video
 	file.sample.info <- read.table(paste(sample.dir, sample.description.file, sep=""), sep= "\t", header = TRUE)
@@ -353,40 +353,58 @@ merge_morphology_trajectory_expt_data <- function(to.data, particle.analyzer.fol
 
 	## Prep for merging the trajectory data
 	## Note that the next lines also swap the x and y 
-	trajectory.data$Y1 <- round_any(-trajectory.data$X, 5)
-	trajectory.data$X1 <- round_any(trajectory.data$Y, 5)
+	trajectory.data$Y1 <- round_any(-trajectory.data$X, rounder)
+	trajectory.data$X1 <- round_any(trajectory.data$Y, rounder)
 	trajectory.data$X  <- trajectory.data$X1
 	trajectory.data$Y  <- trajectory.data$Y1
 	## trajectory frame starts with 0, therefore add one to adjust to morphology data
-	trajectory.data$frame <- trajectory.data$frame+1-9   ########## not sure why +1-9 !!!!!!
-	trajectory.data <- trajectory.data[,-c(6,7)]
+	trajectory.data$frame <- trajectory.data$frame 
+	#trajectory.data <- trajectory.data[,-c(6,7)]
+	##unique(trajectory.data$frame)
+	##with(trajectory.data, aggregate(frame, list(frame), length))
+
 
 	## Prep for merging the morphology data
-	morphology.data$frame <- morphology.data$Slice
+	morphology.data$frame <- morphology.data$Slice + difference.lag-1
 	morphology.data$Slice <- NULL
-	morphology.data$X <- round_any(morphology.data$X, 5)
-	morphology.data$Y <- round_any(morphology.data$Y, 5)
+	morphology.data$X <- round_any(morphology.data$X, rounder)
+	morphology.data$Y <- round_any(morphology.data$Y, rounder)
 	morphology.data$file <- sub(".cxd", "", morphology.data$file)
+	##unique(morphology.data$frame)
+	##with(morphology.data, aggregate(Area, list(frame=frame), function(x) length(x[!is.na(x)]))) 
 
+	
 	## subsample to do visual control
-	##subset_m <- subset(morphology.data, file == "Data34")
-	##subset_t <- subset(trajectory.data, file == "Data34")
-	## check why X and Y differ between trajectories and morphology
-	##plot(subset_m$X,subset_m$Y,pch=16,asp=1,col="red")
-	##par(new=T)
-	##plot(subset_t$Y,subset_t$X,col="blue",pch=1,asp=1, type="p")
+	# subset_m <- subset(morphology.data, file == "Data00160")# & trajectory==2)
+	# subset_t <- subset(trajectory.data, file == "Data00160")# & trajectory==2)
+	# ## check why X and Y differ between trajectories and morphology
+	# xlims <- c(840,950)
+	# ylims <- c(50, 200)
+	# #xlims <- c(0,2100)
+	# #ylims <- c(0, 2100)
+	# pal <- rep(rainbow(15), 10)
+	
+	# plot(subset_m$X, subset_m$Y, pch=1, asp=1, col=pal[subset_m$frame], xlim=xlims, ylim=ylims)
+	# par(new=T)
+	# plot(subset_t$X, subset_t$Y, col=pal[subset_t$frame], pch=16, cex=0.5, asp=1, type="p", xlim=xlims, ylim=ylims)
+	# par(new=F)
+
+	# dim(morphology.data)
+	# dim(trajectory.data)
 
 	## merge the two datasets
 	merged1 <- merge(morphology.data, trajectory.data,
 					by.x=c("X", "Y", "frame", "file"),
 					by.y=c("X", "Y", "frame", "file"),
 					all=T)
+	##dim(merged1)		
+							
 							
 	merged2 <- merge(merged1, file.sample.info, by.x="file", by.y="video", all=F)				
 
 	dir.create(paste0(to.data, merge.folder), showWarnings=F)
 
-	write.csv(merged2, file = paste(paste0(to.data,merge.folder),"MorphTrajExptData.csv", sep = "/"))
+	write.csv(merged2, file = paste(paste0(to.data,merge.folder),"MorphTrajExptData.csv", sep = "/"), row.names=F)
 
 
 }
