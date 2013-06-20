@@ -399,3 +399,55 @@ create_prediction_plots <- function(path,width,height,difference.lag){
     file.remove("C:/Program Files/Fiji.app/macros/Prediction_overlay_tmp.ijm")
 }
 
+
+
+merge_morphology_trajectory_expt_data <- function(to.data, particle.analyzer.folder, trajectory.data.folder, merge.folder,
+											sample.dir, sample.description.file) {
+
+	# read the file that gives the important information about each video
+	file.sample.info <- read.table(paste(sample.dir, sample.description.file, sep=""), sep= "\t", header = TRUE)
+
+	## load the two datasets
+	morphology.data <- read.table(paste0(to.data, particle.analyzer.folder, "morphology.data.txt"), row.names=1)
+	trajectory.data <- read.table(paste0(to.data, trajectory.data.folder, "trajectory.data.txt"), header=TRUE, sep="\t")
+
+	## Prep for merging the trajectory data
+	## Note that the next lines also swap the x and y 
+	trajectory.data$Y1 <- round_any(-trajectory.data$X, 5)
+	trajectory.data$X1 <- round_any(trajectory.data$Y, 5)
+	trajectory.data$X  <- trajectory.data$X1
+	trajectory.data$Y  <- trajectory.data$Y1
+	## trajectory frame starts with 0, therefore add one to adjust to morphology data
+	trajectory.data$frame <- trajectory.data$frame+1-9   ########## not sure why +1-9 !!!!!!
+	trajectory.data <- trajectory.data[,-c(6,7)]
+
+	## Prep for merging the morphology data
+	morphology.data$frame <- morphology.data$Slice
+	morphology.data$Slice <- NULL
+	morphology.data$X <- round_any(morphology.data$X, 5)
+	morphology.data$Y <- round_any(morphology.data$Y, 5)
+	morphology.data$file <- sub(".cxd", "", morphology.data$file)
+
+	## subsample to do visual control
+	##subset_m <- subset(morphology.data, file == "Data34")
+	##subset_t <- subset(trajectory.data, file == "Data34")
+	## check why X and Y differ between trajectories and morphology
+	##plot(subset_m$X,subset_m$Y,pch=16,asp=1,col="red")
+	##par(new=T)
+	##plot(subset_t$Y,subset_t$X,col="blue",pch=1,asp=1, type="p")
+
+	## merge the two datasets
+	merged1 <- merge(morphology.data, trajectory.data,
+					by.x=c("X", "Y", "frame", "file"),
+					by.y=c("X", "Y", "frame", "file"),
+					all=T)
+							
+	merged2 <- merge(merged1, file.sample.info, by.x="file", by.y="video", all=F)				
+
+	dir.create(paste0(to.data, merge.folder), showWarnings=F)
+
+	write.csv(merged2, file = paste(paste0(to.data,merge.folder),"MorphTrajExptData.csv", sep = "/"))
+
+
+}
+
