@@ -123,17 +123,19 @@ LoadIJ_Traj_Outs <- function(trajdata.dir)
 ## for the moment colour not assigned by species identity but that's easy to add 
 ## provide path of " 2 - trajectory data", and the width and height of the original video 
 ## (I use cropped videos to increase speed while troubleshooting)
-create_overlay_plots <- function(trackdata.dir, width, height, difference.lag, type='traj'){ 
+create_overlay_plots <- function(trackdata.dir, width, height, difference.lag, type='traj',
+	original.vid.contrast.enhancement=1.0){ 
+
     trajectory.data <- as.data.frame(read.table(paste(trackdata.dir,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
     file_names <- unique(trajectory.data$file)  
     
     ## change path for output
-    dir.create(sub(trajectory.data.folder,overlay.folder,trackdata.dir))
+    dir.create(sub(trajectory.data.folder, overlay.folder, trackdata.dir), showWarnings=F)
     for (i in 1:length(file_names)){
         ##split filename into name and ending for creating directories according to video name
         ##filename_split <- strsplit(paste(file_names[i]),"\\.")
         ##filename <- filename_split[[1]]
-        dir.create(paste0(sub(trajectory.data.folder,overlay.folder,trackdata.dir), file_names[i])) #sub("Traj_","",filename[1]),sep="/"))
+        dir.create(paste0(sub(trajectory.data.folder,overlay.folder,trackdata.dir), file_names[i]), showWarnings=F) #sub("Traj_","",filename[1]),sep="/"))
         trajectory.data_tmp <- subset(trajectory.data,file == file_names[i])
         j<- 0
         if (type == 'traj'){
@@ -160,7 +162,7 @@ create_overlay_plots <- function(trackdata.dir, width, height, difference.lag, t
     if(.Platform$OS.type == "windows")
         text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_overlay.ijm",warn = FALSE)
     if(.Platform$OS.type == "unix")
-	text <- readLines("/Users/owenpetchey/work/git/franco/automation/ImageJ macros/Video_overlay.ijm")
+		text <- readLines("/Users/owenpetchey/work/git/franco/automation/ImageJ macros/Video_overlay.ijm")
     
     text <- readLines(paste(to.code, "ImageJ macros/Video_overlay.ijm", sep=""))
     
@@ -170,6 +172,7 @@ create_overlay_plots <- function(trackdata.dir, width, height, difference.lag, t
     text[grep("overlay_input = ", text)] <- paste("overlay_input = ","'", sub(trajectory.data.folder,overlay.folder,trackdata.dir),"';", sep = "")
     text[grep("overlay_output = ", text)] <- paste("overlay_output = ","'", sub(trajectory.data.folder,overlay.folder2,trackdata.dir),"';", sep = "")
     text[grep("lag =", text)] <- paste("lag = ",difference.lag,";", sep = "")
+  text[grep("Enhance Contrast", text)] <- paste("run(\"Enhance Contrast...\", \"saturated=", original.vid.contrast.enhancement, " process_all\");", sep = "")
     
     
     ## re-create ImageJ macro for batch processing of video files with ParticleTracker
@@ -182,14 +185,14 @@ create_overlay_plots <- function(trackdata.dir, width, height, difference.lag, t
     }
     
     ## create directory to store overlays
-    dir.create(sub(trajectory.data.folder,overlay.folder2,trackdata.dir))
+    dir.create(sub(trajectory.data.folder,overlay.folder2,trackdata.dir), showWarnings=F)
     
     ## call IJ macro to merge original video with the trajectory data
     if(.Platform$OS.type == "unix"){
         cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub(raw.video.folder,"ijmacs",video.dir), "/Video_overlay_tmp.ijm",sep=""))
     }
     if(.Platform$OS.type == "windows"){
-	cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_overlay_tmp.ijm')}
+		cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_overlay_tmp.ijm')}
     
     ## run ImageJ macro
     system(cmd)

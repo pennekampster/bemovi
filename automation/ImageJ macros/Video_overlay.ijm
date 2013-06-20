@@ -16,6 +16,7 @@ vid1 = getTitle();
 
 // Open stack with picture sequence from which trajectories were extracted (original gray scle images)
 run("AVI...", "select=["+avi_input+list[i]+"] first=1 last="+slices+"");
+run("Enhance Contrast...", "saturated=0.4 process_all");
 run("RGB Color");
 run("Invert", "stack");
 vid2 = getTitle();
@@ -39,6 +40,7 @@ vid1 = getTitle();
 
 // Open stack with picture sequence from which trajectories were extracted (original gray scle images)
 run("Bio-Formats", "open=["+avi_input+list[i]+"] autoscale color_mode=Default view=[Standard ImageJ] stack_order=Default");
+run("Enhance Contrast...", "saturated=0.4 process_all");
 vidtemp = getTitle();
 run("Make Substack...", "  slices=1-"+slices+"");
 vid2 = getTitle();
