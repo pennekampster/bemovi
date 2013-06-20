@@ -1,3 +1,65 @@
+
+
+## Check to see if there are any unsupported file types, or file names with two periods
+Check.video.files <- function(video.dir)
+{
+    files <- dir(video.dir)
+    ## check for unsupported video file format
+    unsupported.files <- files[-c(grep("\\.avi", files), grep("\\.cxd", files))]
+    if(length(unsupported.files)>0)
+        print(paste("Unsupported video file:", unsupported.files))
+    ## check for file with more than one period
+    ## I think this previously caused me a problem
+    bad.filenames <- files[unlist(lapply(lapply(strsplit(files, "\\."), length), function(x) x>2))]
+    if(length(bad.filenames)>0)
+        print(paste("Bad video filename (no periods please, except before extension:", bad.filenames))
+}
+
+
+
+
+
+## This function creates a image j macro that can be helpful for checking the thresholds
+## used to "threshold" the video and the lag
+## It used to do more, but Owen hashed out this functionality.
+Check_threshold <- function(video.dir,difference.lag, thresholds=c(10,255)) {
+    
+    ## generate the folders if not already existing
+    ijmacs.folder <- sub(raw.video.folder,"ijmacs/",video.dir)
+    dir.create(ijmacs.folder, showWarnings = FALSE)	
+    ##checkthresh.folder <- sub(raw.video.folder,raw.checkthreshold.folder,video.dir)
+    ##dir.create(checkthresh.folder, showWarnings = FALSE)
+      
+    ## copy master copy of ImageJ macro there for treatment
+    text <- readLines(paste(to.code, "ImageJ macros/Check_threshold.ijm", sep=""))
+    
+    ## use regular expression to insert input and output directory
+    text[grep("avi_input =", text)] <- paste("avi_input = ","'", video.dir,"';", sep = "")
+    ##text[grep("avi_output =", text)] <- paste("avi_output = ","'",checkthresh.folder,"';", sep = "")
+    text[grep("lag =", text)] <- paste("lag = ",difference.lag,";", sep = "")
+    text[grep("setThreshold", text)] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep="")
+
+    ## re-create ImageJ macro for batch processing of video files with ParticleTracker
+    ## perhaps put this in a subdirectory of the data folder?
+    ## This is implemented in OSX but not windows, which is as you wrote it
+    if(.Platform$OS.type == "windows") 
+        writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Check_threshold_tmp.ijm",sep=""),sep="\n")
+    if(.Platform$OS.type == "unix") 
+        writeLines(text,con=paste(ijmacs.folder, "/Check_threshold_tmp.ijm",sep=""))
+
+    ## run to process video files by calling ImageJ / needs fixing for Mac
+    ## if(.Platform$OS.type == "unix")
+    ##     cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(ijmacs.folder, "Check_threshold_tmp.ijm",sep=""))
+    ## if(.Platform$OS.type == "windows")
+    ##     cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Check_threshold_tmp.ijm')
+    ##system(cmd)
+
+}
+
+
+
+
+## Function to get morphological measurements using the particle analyser in imagej
 video_to_morphology <- function(video.dir, difference.lag, thresholds=c(0,1000)) {
 
     ## copy master copy of ImageJ macro there for treatment
@@ -36,8 +98,11 @@ video_to_morphology <- function(video.dir, difference.lag, thresholds=c(0,1000))
 }
 
 
-## This function gets the output files produced by the imagej macros previously created (by function MakeIJMacros)
-## and run by function RunIJMacros
+
+
+
+
+## This function puts all the morphology files (one for each video) into one dataset, and saves it
 LoadIJ_morph_outs <- function(IJ_output.dir) {
     
     ## the macro file names
@@ -82,7 +147,6 @@ video_to_trajectory <- function(video.dir, difference.lag, thresholds=c(10,255),
     trajdata.folder <- sub(raw.video.folder,"2 - trajectory data/",video.dir)
     dir.create(trajdata.folder, showWarnings = FALSE)
     
-    
     ## copy master copy of ImageJ macro there for treatment
     text <- readLines(paste(to.code, "ImageJ macros/Video_to_trajectory.ijm", sep=""))
     
@@ -93,9 +157,7 @@ video_to_trajectory <- function(video.dir, difference.lag, thresholds=c(10,255),
     text[grep("setThreshold", text)] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep="")
     if(stack.max.background=="light")
 	text[grep("light =", text)] = paste("  light = ", stackmax.background, ";", sep="")
-    
-    
-    
+      
     ## re-create ImageJ macro for batch processing of video files with ParticleTracker
     ## perhaps put this in a subdirectory of the data folder?
     ## This is implemented in OSX but not windows, which is as you wrote it
@@ -103,7 +165,6 @@ video_to_trajectory <- function(video.dir, difference.lag, thresholds=c(10,255),
 	writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_to_trajectory_tmp.ijm",sep=""),sep="\n")
     if(.Platform$OS.type == "unix") 
         writeLines(text,con=paste(ijmacs.folder, "/Video_to_trajectory_tmp.ijm",sep=""))
-    
     
     ## run to process video files by calling ImageJ / needs fixing for Mac
     if(.Platform$OS.type == "unix")
@@ -188,6 +249,9 @@ LoadIJ_Traj_Outs <- function(trajdata.dir)
     assign("trajectory.data",dd,envir = .GlobalEnv)
     write.table(trajectory.data, file = paste(trajdata.dir,"trajectory.data.txt", sep = "/"), sep = "\t")
 }
+
+
+
 
 ## function to plot trajectories for overlay (must be merged with original video by ImageJ macro)
 ## creates a folder containing one jpeg plot containing all the positions till the respective frame
@@ -275,63 +339,61 @@ create_overlay_plots <- function(trackdata.dir, width, height, difference.lag, t
 
 
 
-## Check to see if there are any unsupported file types, or file names with two periods
-Check.video.files <- function(video.dir)
-{
-    files <- dir(video.dir)
-    ## check for unsupported video file format
-    unsupported.files <- files[-c(grep("\\.avi", files), grep("\\.cxd", files))]
-    if(length(unsupported.files)>0)
-        print(paste("Unsupported video file:", unsupported.files))
-    ## check for file with more than one period
-    ## I think this previously caused me a problem
-    bad.filenames <- files[unlist(lapply(lapply(strsplit(files, "\\."), length), function(x) x>2))]
-    if(length(bad.filenames)>0)
-        print(paste("Bad video filename (no periods please, except before extension:", bad.filenames))
+
+### does what the function name suggests...
+merge_morphology_trajectory_expt_data <- function(to.data, particle.analyzer.folder, trajectory.data.folder, merge.folder,
+											sample.dir, sample.description.file) {
+
+	# read the file that gives the important information about each video
+	file.sample.info <- read.table(paste(sample.dir, sample.description.file, sep=""), sep= "\t", header = TRUE)
+
+	## load the two datasets
+	morphology.data <- read.table(paste0(to.data, particle.analyzer.folder, "morphology.data.txt"), row.names=1)
+	trajectory.data <- read.table(paste0(to.data, trajectory.data.folder, "trajectory.data.txt"), header=TRUE, sep="\t")
+
+	## Prep for merging the trajectory data
+	## Note that the next lines also swap the x and y 
+	trajectory.data$Y1 <- round_any(-trajectory.data$X, 5)
+	trajectory.data$X1 <- round_any(trajectory.data$Y, 5)
+	trajectory.data$X  <- trajectory.data$X1
+	trajectory.data$Y  <- trajectory.data$Y1
+	## trajectory frame starts with 0, therefore add one to adjust to morphology data
+	trajectory.data$frame <- trajectory.data$frame+1-9   ########## not sure why +1-9 !!!!!!
+	trajectory.data <- trajectory.data[,-c(6,7)]
+
+	## Prep for merging the morphology data
+	morphology.data$frame <- morphology.data$Slice
+	morphology.data$Slice <- NULL
+	morphology.data$X <- round_any(morphology.data$X, 5)
+	morphology.data$Y <- round_any(morphology.data$Y, 5)
+	morphology.data$file <- sub(".cxd", "", morphology.data$file)
+
+	## subsample to do visual control
+	##subset_m <- subset(morphology.data, file == "Data34")
+	##subset_t <- subset(trajectory.data, file == "Data34")
+	## check why X and Y differ between trajectories and morphology
+	##plot(subset_m$X,subset_m$Y,pch=16,asp=1,col="red")
+	##par(new=T)
+	##plot(subset_t$Y,subset_t$X,col="blue",pch=1,asp=1, type="p")
+
+	## merge the two datasets
+	merged1 <- merge(morphology.data, trajectory.data,
+					by.x=c("X", "Y", "frame", "file"),
+					by.y=c("X", "Y", "frame", "file"),
+					all=T)
+							
+	merged2 <- merge(merged1, file.sample.info, by.x="file", by.y="video", all=F)				
+
+	dir.create(paste0(to.data, merge.folder), showWarnings=F)
+
+	write.csv(merged2, file = paste(paste0(to.data,merge.folder),"MorphTrajExptData.csv", sep = "/"))
+
+
 }
 
 
 
-## This function creates a image j macro that can be helpful for checking the thresholds
-## used to "threshold" the video and the lag
-## It used to do more, but Owen hashed out this functionality.
-Check_threshold <- function(video.dir,difference.lag, thresholds=c(10,255)) {
-    
-    ## generate the folders if not already existing
-    ijmacs.folder <- sub(raw.video.folder,"ijmacs/",video.dir)
-    dir.create(ijmacs.folder, showWarnings = FALSE)	
-    ##checkthresh.folder <- sub(raw.video.folder,raw.checkthreshold.folder,video.dir)
-    ##dir.create(checkthresh.folder, showWarnings = FALSE)
-    
-    
-    ## copy master copy of ImageJ macro there for treatment
-    text <- readLines(paste(to.code, "ImageJ macros/Check_threshold.ijm", sep=""))
-    
-    ## use regular expression to insert input and output directory
-    text[grep("avi_input =", text)] <- paste("avi_input = ","'", video.dir,"';", sep = "")
-    ##text[grep("avi_output =", text)] <- paste("avi_output = ","'",checkthresh.folder,"';", sep = "")
-    text[grep("lag =", text)] <- paste("lag = ",difference.lag,";", sep = "")
-    text[grep("setThreshold", text)] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep="")
 
-
-
-    ## re-create ImageJ macro for batch processing of video files with ParticleTracker
-    ## perhaps put this in a subdirectory of the data folder?
-    ## This is implemented in OSX but not windows, which is as you wrote it
-    if(.Platform$OS.type == "windows") 
-        writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Check_threshold_tmp.ijm",sep=""),sep="\n")
-    if(.Platform$OS.type == "unix") 
-        writeLines(text,con=paste(ijmacs.folder, "/Check_threshold_tmp.ijm",sep=""))
-
-
-    ## run to process video files by calling ImageJ / needs fixing for Mac
-    ## if(.Platform$OS.type == "unix")
-    ##     cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(ijmacs.folder, "Check_threshold_tmp.ijm",sep=""))
-    ## if(.Platform$OS.type == "windows")
-    ##     cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Check_threshold_tmp.ijm')
-    ##system(cmd)
-
-}
 
 
 create_prediction_plots <- function(path,width,height,difference.lag){ 
@@ -399,55 +461,4 @@ create_prediction_plots <- function(path,width,height,difference.lag){
     file.remove("C:/Program Files/Fiji.app/macros/Prediction_overlay_tmp.ijm")
 }
 
-
-
-merge_morphology_trajectory_expt_data <- function(to.data, particle.analyzer.folder, trajectory.data.folder, merge.folder,
-											sample.dir, sample.description.file) {
-
-	# read the file that gives the important information about each video
-	file.sample.info <- read.table(paste(sample.dir, sample.description.file, sep=""), sep= "\t", header = TRUE)
-
-	## load the two datasets
-	morphology.data <- read.table(paste0(to.data, particle.analyzer.folder, "morphology.data.txt"), row.names=1)
-	trajectory.data <- read.table(paste0(to.data, trajectory.data.folder, "trajectory.data.txt"), header=TRUE, sep="\t")
-
-	## Prep for merging the trajectory data
-	## Note that the next lines also swap the x and y 
-	trajectory.data$Y1 <- round_any(-trajectory.data$X, 5)
-	trajectory.data$X1 <- round_any(trajectory.data$Y, 5)
-	trajectory.data$X  <- trajectory.data$X1
-	trajectory.data$Y  <- trajectory.data$Y1
-	## trajectory frame starts with 0, therefore add one to adjust to morphology data
-	trajectory.data$frame <- trajectory.data$frame+1-9   ########## not sure why +1-9 !!!!!!
-	trajectory.data <- trajectory.data[,-c(6,7)]
-
-	## Prep for merging the morphology data
-	morphology.data$frame <- morphology.data$Slice
-	morphology.data$Slice <- NULL
-	morphology.data$X <- round_any(morphology.data$X, 5)
-	morphology.data$Y <- round_any(morphology.data$Y, 5)
-	morphology.data$file <- sub(".cxd", "", morphology.data$file)
-
-	## subsample to do visual control
-	##subset_m <- subset(morphology.data, file == "Data34")
-	##subset_t <- subset(trajectory.data, file == "Data34")
-	## check why X and Y differ between trajectories and morphology
-	##plot(subset_m$X,subset_m$Y,pch=16,asp=1,col="red")
-	##par(new=T)
-	##plot(subset_t$Y,subset_t$X,col="blue",pch=1,asp=1, type="p")
-
-	## merge the two datasets
-	merged1 <- merge(morphology.data, trajectory.data,
-					by.x=c("X", "Y", "frame", "file"),
-					by.y=c("X", "Y", "frame", "file"),
-					all=T)
-							
-	merged2 <- merge(merged1, file.sample.info, by.x="file", by.y="video", all=F)				
-
-	dir.create(paste0(to.data, merge.folder), showWarnings=F)
-
-	write.csv(merged2, file = paste(paste0(to.data,merge.folder),"MorphTrajExptData.csv", sep = "/"))
-
-
-}
 
