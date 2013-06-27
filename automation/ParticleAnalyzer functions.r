@@ -64,3 +64,43 @@ if(length(ijout.files)>2) {
 assign("morphology.data",dd,envir = .GlobalEnv)
 write.table(morphology.data, file = paste(IJ_output.dir,"morphology.data.txt", sep = "/"), sep = "\t")
 }
+
+# Function to convert XY coordinates of the ParticleAnalyzer into a structure (e.g. folder with coordinates per frame) 
+# that can be read by the standalone ParticleLinker
+convert_PA_to_traject <- function(PA_output_dir,traj_out.dir){
+  all.files <- dir(PA_output_dir, pattern = ".ijout.txt")
+  for (j in 1:length(all.files)){
+    PA_data <- read.table(paste0(PA_output_dir,"/",all.files[j]),sep="\t",header=T)
+    dir <- gsub(".ijout.txt","",all.files[j])
+    dir.create(dir)
+    for (i in 1:max(PA_data$Slice)){
+      frame <- subset(PA_data, Slice == i)[,c(6,7)]
+      frame$Z <- rep(0.00, length(frame[,1]))
+      sink(paste0(dir,"/frame_",i-1,".txt"))
+      cat(paste0("frame ",i-1))
+      cat("\n")
+      sink()
+      write.table(frame,file=paste0(dir,"/frame_",i-1,".txt"),append=T,col.names=F,row.names=F)
+    }
+    
+    # run ParticleLinker
+    if(.Platform$OS.type == "unix") {
+      cmd <- "java -Xmx512m -Dparticle.linkrange=5 -Dparticle.displacement=20 -jar ~/Desktop/shawntest/ParticleLinker.jar ~/Desktop/shawntest/input_data ~/Desktop/shawntest/output.txt"
+    }
+    
+    if(.Platform$OS.type == "windows") {
+      cmd <- paste0('C:/Progra~2/java/jre7/bin/javaw.exe -Xmx512m -Dparticle.linkrange=5 -Dparticle.displacement=20 -jar C:/Users/Frank/Dropbox/shawntest/ParticleLinker.jar ',dir,' "',traj_out.dir,'/ParticleLinker_',all.files[j],'.txt"')
+      system(cmd)
+    }
+    
+    # delete working dir
+    unlink(dir, recursive = TRUE) 
+    
+    #increase file counter
+    j+1
+  }
+}
+
+
+
+

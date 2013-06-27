@@ -32,6 +32,9 @@ overlay.folder <- "3 - overlay plots/"
 overlay.folder2 <- "4 - overlays/"
 particle.analyzer.folder <- "5 - Particle Analyzer data/"
 merge.folder <- "6 - Classification/"
+particle.linker.out <- "9 - Particle Analyzer trajectories"
+
+
 
 ## put the sample info into the dataset
 sample.description <- read.table(paste0(to.data,sample.description.folder,"frank.video.description.txt"), header=TRUE, sep="\t")
@@ -77,6 +80,10 @@ Check.video.files(video.dir)
 ## particle analyser needs white background
 video_to_morphology(video.dir,difference.lag,thresholds)
 LoadIJ_morph_outs(IJ_output.dir)
+
+# convert XY coordinates from ParticleAnalyzer into data, which is read by the standalone Particle
+# linker and output as text file
+convert_PA_to_traject(paste0(to.data.frank,particle.analyzer.folder),paste0(to.data.frank,particle.linker.out))
 
 # run ParticleTracker, merge results and produce overlays
 video_to_trajectory(video.dir, difference.lag, thresholds, stack.max.background)
