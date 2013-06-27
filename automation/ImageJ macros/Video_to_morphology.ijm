@@ -12,6 +12,11 @@ for (i=0; i<lengthOf(list); i++) {
 if (endsWith(list[i],"avi")){
 run("AVI...", "select=["+avi_input+list[i]+"] convert");
 getDimensions(width, height, channels, slices, frames);
+slices=slices;
+frames=frames;
+width=width;
+height=height;
+channels=channels;
 run("Properties...", "channels=1 slices=1 frames="+slices+" unit=pixel pixel_width=1.0000 pixel_height=1.0000 voxel_depth=1.0000 frame=[0 sec] origin=0,0");
 vid1 = getTitle();
 run("Make Substack...", "  slices="+lag+"-"+slices+"");
@@ -42,6 +47,11 @@ close();
 if (endsWith(list[i],"cxd")){
 run("Bio-Formats", "open=["+avi_input+list[i]+"] autoscale color_mode=Default view=[Standard ImageJ] stack_order=Default");
 getDimensions(width, height, channels, slices, frames);
+slices=slices;
+frames=frames;
+width=width;
+height=height;
+channels=channels;
 vid1 = getTitle();
 run("Make Substack...", "  slices="+lag+"-"+frames+"");
 vid2 = getTitle();
