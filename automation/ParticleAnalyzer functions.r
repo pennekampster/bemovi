@@ -101,6 +101,21 @@ convert_PA_to_traject <- function(PA_output_dir,traj_out.dir){
   }
 }
 
+#merge the trajectory data from the ParticleLinker into one data file which corresponds to what we got before from the ParticleTracker
+merge_PA_results <- function(dir){
+df <- data.frame(frame=numeric(),X=numeric(),Y=numeric(),trajectory=numeric(),file=character())
+files <- dir(paste0(to.data.frank,particle.linker.out))
+for (i in 1:length(files)){
 
-
+file <- gsub(".ijout.txt.txt","",gsub("ParticleLinker_","",files[i]))
+data <- read.table(paste(dir,files[i],sep="/"),header=T,sep=",")
+data$file <- rep(file,length(data$x))
+data$y <- -data$y
+if (i == 1) data.full <- rbind(data,df)
+if (i > 1) data.full <- rbind(data.full,data)
+}
+data.full <- data.full[, c(2,3,4,1,5)]
+colnames(data.full) <- c("frame","X","Y","trajectory","file")
+write.table(data.full,file=paste(dir,"trajectory.data.txt",sep="/"),sep="\t")
+}
 

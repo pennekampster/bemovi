@@ -92,6 +92,10 @@ video_to_trajectory(video.dir, difference.lag, thresholds, stack.max.background)
 #specify directory
 LoadIJ_Traj_Outs(trackdata.dir)
 
+#same for ParticleLinker
+merge_PA_results(paste0(to.data.frank,particle.linker.out))
+
+
 # create overlay videos
 if(.Platform$OS.type == "windows"){
   width <- 1024
