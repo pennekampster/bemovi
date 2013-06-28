@@ -1,6 +1,7 @@
 library(plyr)
 library(sqldf)
 library(randomForest)
+library(ggplot2)
 
 # code to do classification based on both morphology and movement data
 # will integrate all of OWen's previous ideas and re-use available codes

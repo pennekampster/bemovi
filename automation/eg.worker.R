@@ -76,6 +76,7 @@ LoadIJ_morph_outs(IJ_output.dir)
 # run ParticleTracker, merge results and produce overlays
 video_to_trajectory(video.dir, difference.lag, thresholds, stack.max.background)
 
+
 # merge trajectory data into database
 #specify directory
 LoadIJ_Traj_Outs(trackdata.dir)
