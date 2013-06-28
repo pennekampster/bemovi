@@ -29,7 +29,7 @@ if(stack.max.background=="light")
 ## perhaps put this in a subdirectory of the data folder?
 ## This is implemented in OSX but not windows, which is as you wrote it
 if(.Platform$OS.type == "windows") 
-	writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_to_trajectory_tmp.ijm",sep=""),sep="\n")
+	writeLines(text,con=paste("C:/Progra~1/FIJI.app/macros/Video_to_trajectory_tmp.ijm",sep=""),sep="\n")
 if(.Platform$OS.type == "unix") 
     writeLines(text,con=paste(ijmacs.folder, "/Video_to_trajectory_tmp.ijm",sep=""))
 
@@ -38,12 +38,12 @@ if(.Platform$OS.type == "unix")
 if(.Platform$OS.type == "unix")
     cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(ijmacs.folder, "Video_to_trajectory_tmp.ijm",sep=""))
 if(.Platform$OS.type == "windows")
-    cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_to_trajectory_tmp.ijm')
+    cmd <- c('"C:/Progra~1/FIJI.app/fiji-win64.exe" -macro Video_to_trajectory_tmp.ijm')
 system(cmd)
 
 # delete temporary file after execution
 if(.Platform$OS.type == "windows")
-    file.remove("C:/Program Files/Fiji.app/macros/Video_to_trajectory_tmp.ijm")
+    file.remove("C:/Progra~1/FIJI.app/macros/Video_to_trajectory_tmp.ijm")
 
 #copy files produced by ParticleTracker to "2 - trajectory data" directory
 all.files <- dir(tmp.raw.folder)
@@ -149,7 +149,7 @@ for (i in 1:length(file_names)){
      par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
      print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame == j, select=c("X","Y","trajectory"))
      plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="blue", pch=1, cex=6, asp=1)
-     text(print$Y, print$X+as.numeric(height)-20,print$traject,cex=2,col="red")
+     text(print$Y, print$X+as.numeric(height)-20,as.numeric(print$trajectory),cex=2,col="red")
      dev.off()
      j <- j+1}}
 
