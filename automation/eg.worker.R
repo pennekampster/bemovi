@@ -94,18 +94,17 @@ video_to_trajectory(video.dir, difference.lag, thresholds, stack.max.background)
 LoadIJ_Traj_Outs(trackdata.dir)
 
 #same for ParticleLinker
-merge_PA_results(paste0(to.data.frank,particle.linker.out))
-
+merge_PA_results(paste0(to.data.frank,particle.linker.out),paste0(to.data.frank,trajectory.data.folder))
 
 # create overlay videos
 if(.Platform$OS.type == "windows"){
-  width <- 1024
-  height <- 768}
+  width <- 735
+  height <- 690}
 if(.Platform$OS.type == "unix"){
   width <- 2048
   height <- 2048}
 #specify directory
-create_overlay_plots(trackdata.dir,width,height,difference.lag,type='label')
+create_overlay_plots(trackdata.dir,width,height,difference.lag,type='traj')
 
 # Feature extraction from data files
 
