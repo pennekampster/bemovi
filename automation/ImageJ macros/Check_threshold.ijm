@@ -1,14 +1,18 @@
-setBatchMode(true);
+setBatchMode(false);
 
 // input user information;
-avi_input = '/Users/owenpetchey/Desktop/hard.test/1 - raw/';
+avi_input = '/Users/owenpetchey/Desktop/experiment2/videocounts/video5/1 - raw/';
 avi_output = '/Users/owenpetchey/Desktop/hard.test/1 - raw checkthresh/';
-lag = 25;
+lag = 10;
 
 list = getFileList(avi_input);
 
 
-for (i=0; i<lengthOf(list); i++) {
+// for (i=0; i<lengthOf(list); i++) {
+
+// choose the video to work on, remember that the numbering starts at 0 in imagej
+i=0;
+
 
 if (endsWith(list[i],"avi")){
 run("AVI...", "select=["+avi_input+list[i]+"] convert");
@@ -34,14 +38,14 @@ close();
 selectWindow(vid3);
 close();
 selectWindow(vid4);
-setThreshold(10,255);
+setThreshold(2000,50000);
 run("Convert to Mask", "method=Default background=Default");
-run("AVI... ", "compression=JPEG frame=26 save=["+avi_output+list[i]+"]");
+//run("AVI... ", "compression=JPEG frame=26 save=["+avi_output+list[i]+"]");
 
 
-selectWindow(vid1);
-close();
-close();
+//selectWindow(vid1);
+//close();
+//close();
 }
 
 
@@ -68,16 +72,16 @@ close();
 selectWindow(vid3);
 close();
 selectWindow(vid4);
-setThreshold(10,255);
+setThreshold(2000,50000);
 run("Convert to Mask", "method=Default background=Default");
-run("AVI... ", "compression=JPEG frame=26 save=["+avi_output+replace(list[i],".cxd",".avi")+"]");
+//run("AVI... ", "compression=JPEG frame=26 save=["+avi_output+replace(list[i],".cxd",".avi")+"]");
 
 
 
-selectWindow(vid1);
-close();
-close();
+//selectWindow(vid1);
+//close();
+//close();
 }
-}
 
-run("Quit");
+
+//run("Quit");
