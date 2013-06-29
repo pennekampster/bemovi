@@ -11,6 +11,11 @@ if (endsWith(list[i],"avi")){
 // Open stack with trajectories from folder (incrementing positions through time)
 run("Image Sequence...", "open=["+overlay_input+replace(list[i],".avi","")+"] sort");
 getDimensions(width, height, channels, slices, frames);
+slices=slices;
+frames=frames;
+width=width;
+height=height;
+channels=channels;
 run("RGB Color");
 vid1 = getTitle();
 
@@ -35,6 +40,11 @@ if (endsWith(list[i],"cxd")){
 // Open stack with trajectories from folder (incrementing positions through time)
 run("Image Sequence...", "open=["+overlay_input+replace(list[i],".cxd","")+"] sort");
 getDimensions(width, height, channels, slices, frames);
+slices=slices;
+frames=frames;
+width=width;
+height=height;
+channels=channels;
 run("RGB Color");
 vid1 = getTitle();
 

@@ -12,7 +12,7 @@ require(plyr)
 ## specify difference.lag for both Particle Analyzer as well as Tracker
 difference.lag <- 10
 ## specify threshold values
-thresholds = c(2000,50000)
+thresholds = c(5,255)
 ## background for stack maxima
 stack.max.background = "light" ## any other values results in dark background
 
@@ -20,10 +20,12 @@ stack.max.background = "light" ## any other values results in dark background
 to.code.owen <- "/Users/owenpetchey/work/git/franco/automation/"
 to.data.owen <- "/Users/owenpetchey/Desktop/experiment2/videocounts/video5/"
 to.video.description <- "/Users/owenpetchey/Desktop/experiment2/videocounts/"
+to.particlelinker.owen <-"/Users/owenpetchey/..."
 
 ## Frank's paths
 to.code.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/automation/"
 to.data.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/"
+to.particlelinker.frank <-"C:/Users/Frank/Documents/PhD/Programming/franco/data/"
 
 ## General folders
 sample.description.folder <- "0 - sample description/"
@@ -34,8 +36,15 @@ trajectory.data.folder <- "2 - trajectory data/"
 overlay.folder <- "3 - overlay plots/"
 overlay.folder2 <- "4 - overlays/"
 particle.analyzer.folder <- "5 - Particle Analyzer data/"
+merge.folder <- "6 - Classification/"
 merge.folder <- "6 - merged data"
+particle.linker.out <- "9 - Particle Analyzer trajectories"
 
+## put the sample info into the dataset
+sample.description <- read.table(paste0(to.data.frank,sample.description.folder,"frank.video.description.txt"), header=TRUE, sep="\t")
+# vessel.vol.used as ml volume used in 30ml flasks
+sample.description$vessel.vol.used <- gsub("30ml/","",sample.description$vessel.vol.used)
+sample.description$vessel.vol.used <- gsub("ml","",sample.description$vessel.vol.used)
 
 ## what OS are we on?
 OS <- .Platform$OS.type
@@ -74,19 +83,24 @@ Check_threshold(video.dir,difference.lag, thresholds)
 video_to_morphology(video.dir, difference.lag, thresholds)
 LoadIJ_morph_outs(IJ_output.dir)
 
+# convert XY coordinates from ParticleAnalyzer into data, which is read by the standalone Particle
+# linker and output as text file
+convert_PA_to_traject(paste0(to.data.frank,particle.analyzer.folder),paste0(to.data.frank,particle.linker.out))
 
 # run ParticleTracker, merge results and produce overlays
-video_to_trajectory(video.dir, difference.lag, thresholds, stack.max.background)
-
+# video_to_trajectory(video.dir, difference.lag, thresholds, stack.max.background)
+ 
 # merge trajectory data into database
-#specify directory
-LoadIJ_Traj_Outs(trackdata.dir)
+# specify directory
+# LoadIJ_Traj_Outs(trackdata.dir)
 
+#same for ParticleLinker
+merge_PA_results(paste0(to.data.frank,particle.linker.out),paste0(to.data.frank,trajectory.data.folder))
 
 # create overlay videos
 if(.Platform$OS.type == "windows"){
-  width <- 2048
-  height <- 2048}
+  width <- 735
+  height <- 690}
 if(.Platform$OS.type == "unix"){
   width <- 2048
   height <- 2048}
@@ -120,30 +134,5 @@ trajectory_morphology(trajectory.data)
 # Classification
 
 
-
-
-
-
-'''
-## NOT WORKING PROPERLY FROM HERE ONWARDS
-## put the sample info into the dataset
-
-#keep only filename no prefix or suffix
-trajectory.data$file <- gsub(".avi.txt","",gsub("Traj_","",trajectory.data$file))
-
-trajectory.data$magnification <- file.sample.info$mag[match(toupper(trajectory.data$file), toupper(file.sample.info$video))]
-trajectory.data$vol <- file.sample.info$vessel.vol.used[match(toupper(trajectory.data$file), toupper(file.sample.info$video))]
-trajectory.data$vol <-  as.numeric(gsub("30/","",gsub("ml","",trajectory.data$vol)))
-trajectory.data$real.density <- file.sample.info$real.density[match(toupper(trajectory.data$file), toupper(file.sample.info$video))]
-
-
-dd1 <- aggregate(dd$X, list(file=dd$X, Slice=dd$Slice, volume=dd$volume, magnification=dd$magnification, real.density=dd$real.density), length)
-str(dd1)
-dd1
-dd1$est <- dd1$x * dd1$magnification
-dd1$est <- dd1$est / dd1$volume
-boxplot(est ~ as.numeric(as.factor(dd1$file)), dd1, cex.axis=0.4)
-points(real.density ~ as.numeric(as.factor(dd1$file)), dd1, pch=21, bg="red")
-dd1$real.density
 
 

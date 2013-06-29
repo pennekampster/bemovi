@@ -44,7 +44,7 @@ traject_features$detection_rate <- traject_features$count/traject_features$frame
 # filter very short trajectories out, otherwise problems when rediscretizing based on distance
 trajectory.data <- sqldf("select t.*
                 from 'trajectory.data' t, traject_features c
-                where t.id=c.id AND count > 0 AND net_speed > 1 AND detection_rate > 0.7 AND net_disp > 50")
+                where t.id=c.id AND count > 0 AND net_speed > 1 AND detection_rate > 0.7 AND net_disp > 100")
 
 # drop factor levels of id
 trajectory.data$id <- factor(trajectory.data$id)
@@ -99,7 +99,7 @@ net_disp <-   sqldf("select id, sqrt(R2n) as net_disp
 disp <- merge(net_disp,gross_disp,by=c('id'))
 
 # 5. rediscretize the trajectory in space to analyze geometrical properties of the trajectory
-redis_space <- redisltraj(mvt_data, 10)
+redis_space <- redisltraj(mvt_data, 50, nnew = 10)
 
 # plotting of selected trajectories
 #plot(redis_space[[1]]$rel.angle)

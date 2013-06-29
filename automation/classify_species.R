@@ -1,6 +1,7 @@
 library(plyr)
 library(sqldf)
 library(randomForest)
+library(ggplot2)
 
 # code to do classification based on both morphology and movement data
 # will integrate all of OWen's previous ideas and re-use available codes
@@ -115,7 +116,7 @@ predict_visual$predict_spec <- factor(predict_visual$predict_spec)
 
 # function to create overlays
 source(paste(to.code, "batch_process_videos.r", sep=""))
-create_prediction_plots(to.data,2048,2048,10)
+create_prediction_plots(to.data,1024,768,25)
 
 # extract summary stats on species counts and trait destributions per species
 summary_counts <- ddply(predict_visual, .(predict_spec,file,frame), summarise, count = length(predict_spec))

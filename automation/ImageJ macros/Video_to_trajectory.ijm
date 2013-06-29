@@ -20,6 +20,7 @@ run("Make Substack...", "  slices=1-"+slices-(lag-1)+"");
 
 if (endsWith(list[k],"cxd")){
 run("Bio-Formats", "open=["+dir_input+list[k]+"] autoscale color_mode=Default view=[Standard ImageJ] stack_order=Default");
+run("8-bit"");
 original = getTitle();
 getDimensions(width, height, channels, slices, frames);
 run("Make Substack...", "  slices="+lag+"-"+frames+"");
@@ -27,7 +28,6 @@ vid1 = getTitle();
 selectWindow(original);
 run("Make Substack...", "  slices=1-"+frames-(lag-1)+"");
 }
-
 
 vid2 = getTitle();
 selectWindow(original);
@@ -84,10 +84,8 @@ close();
 
 // de-activate batch mode, otherwise ParticleTracker does not produce output
 setBatchMode(false);
-
 // re-open image sequence after saving
 run("AVI...", "select=["+dir_output+replace(list[k],".cxd",".avi")+"] convert");
-
 getDimensions(width, height, channels, slices, frames);
 run("Properties...", "channels=1 slices=1 frames="+slices+" unit=pixel pixel_width=1.0000 pixel_height=1.0000 voxel_depth=1.0000 frame=[0 sec] origin=0,0");
 run("Particle Tracker 2D/3D", "radius=1 cutoff=0 percentile=0.01 link=5 displacement=20");
