@@ -13,28 +13,6 @@ Check.video.files <- function(video.dir)
         print(paste("Bad video filename (no periods please, except before extension:", bad.filenames))
 }
 
-# re-create ImageJ macro for batch processing of video files with ParticleTracker
-## perhaps put this in a subdirectory of the data folder?
-## This is implemented in OSX but not windows, which is as you wrote it
-if(.Platform$OS.type == "windows") 
-	writeLines(text,con=paste("C:/Progra~1/FIJI.app/macros/Video_to_trajectory_tmp.ijm",sep=""),sep="\n")
-if(.Platform$OS.type == "unix") 
-    writeLines(text,con=paste(ijmacs.folder, "/Video_to_trajectory_tmp.ijm",sep=""))
-
-
-# run to process video files by calling ImageJ / needs fixing for Mac
-if(.Platform$OS.type == "unix")
-    cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(ijmacs.folder, "Video_to_trajectory_tmp.ijm",sep=""))
-if(.Platform$OS.type == "windows")
-    cmd <- c('"C:/Progra~1/FIJI.app/fiji-win64.exe" -macro Video_to_trajectory_tmp.ijm')
-system(cmd)
-
-# delete temporary file after execution
-if(.Platform$OS.type == "windows")
-    file.remove("C:/Progra~1/FIJI.app/macros/Video_to_trajectory_tmp.ijm")
-
-
-
 ## This function creates a image j macro that can be helpful for checking the thresholds
 ## used to "threshold" the video and the lag
 ## It used to do more, but Owen hashed out this functionality.
@@ -150,6 +128,51 @@ for (i in 1:length(file_names)){
      text(print$Y, print$X+as.numeric(height)-20,as.numeric(print$trajectory),cex=2,col="red")
      dev.off()
      j <- j+1}}
+   
+}
+
+# copy master copy of ImageJ macro there for treatment
+if(.Platform$OS.type == "windows")
+  text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_overlay.ijm",warn = FALSE)
+if(.Platform$OS.type == "unix")
+  text <- readLines("/Users/owenpetchey/work/git/franco/automation/ImageJ macros/Video_overlay.ijm")
+
+text <- readLines(paste(to.code, "ImageJ macros/Video_overlay.ijm", sep=""))
+
+
+# use regular expression to insert input and output directory
+text[grep("avi_input = ", text)] <- paste("avi_input = ","'", sub(trajectory.data.folder,raw.video.folder,path),"';", sep = "")
+text[grep("overlay_input = ", text)] <- paste("overlay_input = ","'", sub(trajectory.data.folder,overlay.folder,path),"';", sep = "")
+text[grep("overlay_output = ", text)] <- paste("overlay_output = ","'", sub(trajectory.data.folder,overlay.folder2,path),"';", sep = "")
+text[grep("lag =", text)] <- paste("lag = ",difference.lag,";", sep = "")
+
+
+# re-create ImageJ macro for batch processing of video files with ParticleTracker
+if(.Platform$OS.type == "windows")
+  writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm",sep=""),sep="\n")
+if(.Platform$OS.type == "unix") {
+  ijmacs.folder <- sub(raw.video.folder,"ijmacs/",video.dir)
+  writeLines(text,con=paste(ijmacs.folder, "/Video_overlay_tmp.ijm",sep=""))
+  ##writeLines(text,con=paste(sub("1 - raw","ijmacs",video.dir), "/Video_overlay_tmp.ijm",sep=""))
+}
+
+# create directory to store overlays
+dir.create(sub(trajectory.data.folder,overlay.folder2,path))
+
+#call IJ macro to merge original video with the trajectory data
+if(.Platform$OS.type == "unix"){
+  cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub(raw.video.folder,"ijmacs",video.dir), "/Video_overlay_tmp.ijm",sep=""))
+}
+if(.Platform$OS.type == "windows"){
+  cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_overlay_tmp.ijm')}
+
+# run ImageJ macro
+system(cmd)
+
+# delete temporary file after execution
+if(.Platform$OS.type == "windows")
+  file.remove("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm")
+}
 
 
 
@@ -176,74 +199,71 @@ LoadIJ_morph_outs <- function(IJ_output.dir) {
             dd <- rbind(dd, dd.t)
 	}
     }
+  
+assign("morphology.data",dd,envir = .GlobalEnv)
+write.table(morphology.data, file = paste(IJ_output.dir,"morphology.data.txt", sep = "/"), sep = "\t")
+}
 
+   
+   
 # Function to convert XY coordinates of the ParticleAnalyzer into a structure (e.g. folder with coordinates per frame) 
 # that can be read by the standalone ParticleLinker
 convert_PA_to_traject <- function(PA_output_dir,traj_out.dir){
-  all.files <- dir(PA_output_dir, pattern = ".ijout.txt")
-  for (j in 1:length(all.files)){
-    PA_data <- read.table(paste0(PA_output_dir,"/",all.files[j]),sep="\t",header=T)
-    dir <- gsub(".ijout.txt","",all.files[j])
-    dir.create(dir)
-    for (i in 1:max(PA_data$Slice)){
-      frame <- subset(PA_data, Slice == i)[,c(6,7)]
-      frame$Z <- rep(0.00, length(frame[,1]))
-      sink(paste0(dir,"/frame_",i-1,".txt"))
-      cat(paste0("frame ",i-1))
-      cat("\n")
-      sink()
-      write.table(frame,file=paste0(dir,"/frame_",i-1,".txt"),append=T,col.names=F,row.names=F)
-    }
-    
-    # run ParticleLinker
-    if(.Platform$OS.type == "unix") {
-      cmd <- "java -Xmx512m -Dparticle.linkrange=5 -Dparticle.displacement=20 -jar ~/Desktop/shawntest/ParticleLinker.jar ~/Desktop/shawntest/input_data ~/Desktop/shawntest/output.txt"
-    }
-    
-    if(.Platform$OS.type == "windows") {
-      cmd <- paste0('C:/Progra~2/java/jre7/bin/javaw.exe -Xmx512m -Dparticle.linkrange=5 -Dparticle.displacement=20 -jar C:/Users/Frank/Dropbox/shawntest/ParticleLinker.jar ',dir,' "',traj_out.dir,'/ParticleLinker_',all.files[j],'.txt"')
-      system(cmd)
-    }
-    
-    # delete working dir
-    unlink(dir, recursive = TRUE) 
-    
-    #increase file counter
-    j+1
-  }
+ all.files <- dir(PA_output_dir, pattern = ".ijout.txt")
+ for (j in 1:length(all.files)){
+   PA_data <- read.table(paste0(PA_output_dir,"/",all.files[j]),sep="\t",header=T)
+   dir <- gsub(".ijout.txt","",all.files[j])
+   dir.create(dir)
+       for (i in 1:max(PA_data$Slice)){
+         frame <- subset(PA_data, Slice == i)[,c(6,7)]
+         frame$Z <- rep(0.00, length(frame[,1]))
+         sink(paste0(dir,"/frame_",i-1,".txt"))
+         cat(paste0("frame ",i-1))
+         cat("\n")
+         sink()
+         write.table(frame,file=paste0(dir,"/frame_",i-1,".txt"),append=T,col.names=F,row.names=F)
+         }
+       
+# run ParticleLinker
+if(.Platform$OS.type == "unix") {
+    cmd <- paste0("java -Xmx512m -Dparticle.linkrange=5 -Dparticle.displacement=20 -jar ",to.particlelinker.owen,"/ParticleLinker.jar ~/Desktop/shawntest/input_data ~/Desktop/shawntest/output.txt")
 }
-
+       
+if(.Platform$OS.type == "windows") {
+   cmd <- paste0('C:/Progra~2/java/jre7/bin/javaw.exe -Xmx512m -Dparticle.linkrange=5 -Dparticle.displacement=20 -jar ',to.particlelinker.frank,'/ParticleLinker.jar ',dir,' "',traj_out.dir,'/ParticleLinker_',all.files[j],'.txt"')
+   system(cmd)
+}
+       
+# delete working dir
+unlink(dir, recursive = TRUE) 
+       
+#increase file counter
+j+1
+}
+}
+   
 #merge the trajectory data from the ParticleLinker into one data file which corresponds to what we got before from the ParticleTracker
 #provide directory where ParticleLinker output is stored and where merged trajectory.data should be saved
 merge_PA_results <- function(PA_dir,traj_out.dir){
 df <- data.frame(frame=numeric(),X=numeric(),Y=numeric(),trajectory=numeric(),file=character())
 files <- dir(paste0(to.data.frank,particle.linker.out))
 for (i in 1:length(files)){
-
-file <- gsub(".ijout.txt.txt","",gsub("ParticleLinker_","",files[i]))
-data <- read.table(paste(PA_dir,files[i],sep="/"),header=T,sep=",")
-data$file <- rep(file,length(data$x))
-data$y <- -data$y
-if (i == 1) data.full <- rbind(data,df)
-if (i > 1) data.full <- rbind(data.full,data)
+    file <- gsub(".ijout.txt.txt","",gsub("ParticleLinker_","",files[i]))
+    data <- read.table(paste(PA_dir,files[i],sep="/"),header=T,sep=",")
+    data$file <- rep(file,length(data$x))
+    data$y <- -data$y
+    if (i == 1) data.full <- rbind(data,df)
+    if (i > 1) data.full <- rbind(data.full,data)
 }
 data.full <- data.full[, c(2,4,3,1,5)]
 colnames(data.full) <- c("frame","X","Y","trajectory","file")
 write.table(data.full,file=paste(traj_out.dir,"trajectory.data.txt",sep="/"),sep="\t")
-}
-  
-    assign("morphology.data",dd,envir = .GlobalEnv)
-    write.table(morphology.data, file = paste(IJ_output.dir,"morphology.data.txt", sep = "/"), sep = "\t")
-}
-
-
-
-
+}   
+   
 
 # code to batch process videos by ImageJ and ParticleTracker plugin
 # provide directory where raw videos are stored
-video_to_trajectory <- function(video.dir, difference.lag, thresholds=c(10,255), stackmax.background="false")
-{
+video_to_trajectory <- function(video.dir, difference.lag, thresholds=c(10,255), stackmax.background="false"){
 
     ## generate the folders...
     ijmacs.folder <- sub(raw.video.folder,"ijmacs/",video.dir)
@@ -584,8 +604,6 @@ create_prediction_plots <- function(path,width,height,difference.lag){
   system(cmd)
   
   ## delete temporary file after execution
-  if(.Platform$OS.type == "windows")
-    file.remove("C:/Program Files/Fiji.app/macros/Prediction_overlay_tmp.ijm")
+  if(.Platform$OS.type == "windows"){
+    file.remove("C:/Program Files/Fiji.app/macros/Prediction_overlay_tmp.ijm")}
 }
-
-

@@ -20,10 +20,12 @@ stack.max.background = "light" ## any other values results in dark background
 to.code.owen <- "/Users/owenpetchey/work/git/franco/automation/"
 to.data.owen <- "/Users/owenpetchey/Desktop/experiment2/videocounts/video5/"
 to.video.description <- "/Users/owenpetchey/Desktop/experiment2/videocounts/"
+to.particlelinker.owen <-"/Users/owenpetchey/..."
 
 ## Frank's paths
 to.code.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/automation/"
 to.data.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/"
+to.particlelinker.frank <-"C:/Users/Frank/Documents/PhD/Programming/franco/data/"
 
 ## General folders
 sample.description.folder <- "0 - sample description/"
