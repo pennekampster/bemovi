@@ -423,9 +423,8 @@ create_overlay_plots <- function(trackdata.dir, width, height, difference.lag, t
     if(.Platform$OS.type == "windows")
         text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_overlay.ijm",warn = FALSE)
     if(.Platform$OS.type == "unix")
-		text <- readLines("/Users/owenpetchey/work/git/franco/automation/ImageJ macros/Video_overlay.ijm")
-    
-    text <- readLines(paste(to.code, "ImageJ macros/Video_overlay.ijm", sep=""))
+		##text <- readLines("/Users/owenpetchey/work/git/franco/automation/ImageJ macros/Video_overlay.ijm")
+        text <- readLines(paste(to.code, "ImageJ macros/Video_overlay.ijm", sep=""))
     
     
     ## use regular expression to insert input and output directory
