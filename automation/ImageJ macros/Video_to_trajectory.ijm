@@ -20,6 +20,7 @@ run("Make Substack...", "  slices=1-"+slices-(lag-1)+"");
 
 if (endsWith(list[k],"cxd")){
 run("Bio-Formats", "open=["+dir_input+list[k]+"] autoscale color_mode=Default view=[Standard ImageJ] stack_order=Default");
+run("8-bit"");
 original = getTitle();
 getDimensions(width, height, channels, slices, frames);
 run("Make Substack...", "  slices="+lag+"-"+frames+"");

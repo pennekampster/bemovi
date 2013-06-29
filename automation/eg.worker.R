@@ -10,7 +10,7 @@ rm(list=ls())
 ## specify difference.lag for both Particle Analyzer as well as Tracker
 difference.lag <- 10
 ## specify threshold values
-thresholds = c(800,7245)
+thresholds = c(5,255)
 ## background for stack maxima
 stack.max.background = "light" ## any other values results in dark background
 
@@ -37,7 +37,7 @@ particle.linker.out <- "9 - Particle Analyzer trajectories"
 
 
 ## put the sample info into the dataset
-sample.description <- read.table(paste0(to.data,sample.description.folder,"frank.video.description.txt"), header=TRUE, sep="\t")
+sample.description <- read.table(paste0(to.data.frank,sample.description.folder,"frank.video.description.txt"), header=TRUE, sep="\t")
 # vessel.vol.used as ml volume used in 30ml flasks
 sample.description$vessel.vol.used <- gsub("30ml/","",sample.description$vessel.vol.used)
 sample.description$vessel.vol.used <- gsub("ml","",sample.description$vessel.vol.used)
@@ -86,12 +86,11 @@ LoadIJ_morph_outs(IJ_output.dir)
 convert_PA_to_traject(paste0(to.data.frank,particle.analyzer.folder),paste0(to.data.frank,particle.linker.out))
 
 # run ParticleTracker, merge results and produce overlays
-video_to_trajectory(video.dir, difference.lag, thresholds, stack.max.background)
-
-
+# video_to_trajectory(video.dir, difference.lag, thresholds, stack.max.background)
+ 
 # merge trajectory data into database
-#specify directory
-LoadIJ_Traj_Outs(trackdata.dir)
+# specify directory
+# LoadIJ_Traj_Outs(trackdata.dir)
 
 #same for ParticleLinker
 merge_PA_results(paste0(to.data.frank,particle.linker.out),paste0(to.data.frank,trajectory.data.folder))
@@ -104,7 +103,7 @@ if(.Platform$OS.type == "unix"){
   width <- 2048
   height <- 2048}
 #specify directory
-create_overlay_plots(trackdata.dir,width,height,difference.lag,type='traj')
+create_overlay_plots(trackdata.dir,width,height,difference.lag,type='label')
 
 # Feature extraction from data files
 
