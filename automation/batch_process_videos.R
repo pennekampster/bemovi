@@ -250,7 +250,7 @@ merge_PA_results <- function(PA_dir,traj_out.dir){
 df <- data.frame(frame=numeric(),X=numeric(),Y=numeric(),trajectory=numeric(),file=character())
 files <- dir(paste0(to.data,particle.linker.out))
 for (i in 1:length(files)){
-    file <- gsub(".cxd.ijout.txt.txt","",gsub("ParticleLinker_","",files[i]))
+    file <- gsub(".ijout.txt.txt","",gsub("ParticleLinker_","",files[i]))
     data <- read.table(paste(PA_dir,files[i],sep="/"),header=T,sep=",")
     data$file <- rep(file,length(data$x))
     data$y <- -data$y
