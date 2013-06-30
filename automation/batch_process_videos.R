@@ -212,7 +212,7 @@ convert_PA_to_traject <- function(PA_output_dir,traj_out.dir){
  all.files <- dir(PA_output_dir, pattern = ".ijout.txt")
  for (j in 1:length(all.files)){
    PA_data <- read.table(paste0(PA_output_dir,"/",all.files[j]),sep="\t",header=T)
-   dir <- gsub(".ijout.txt","",all.files[j])
+   dir <- gsub(".cxd","",sub(".ijout.txt","",all.files[j]))
    dir.create(dir)
        for (i in 1:max(PA_data$Slice)){
          frame <- subset(PA_data, Slice == i)[,c(6,7)]
@@ -226,7 +226,8 @@ convert_PA_to_traject <- function(PA_output_dir,traj_out.dir){
        
 # run ParticleLinker
 if(.Platform$OS.type == "unix") {
-    cmd <- paste0("java -Xmx512m -Dparticle.linkrange=5 -Dparticle.displacement=20 -jar ",to.particlelinker.owen,"/ParticleLinker.jar ~/Desktop/shawntest/input_data ~/Desktop/shawntest/output.txt")
+    cmd <- paste0('java -Xmx512m -Dparticle.linkrange=5 -Dparticle.displacement=20 -jar ',to.particlelinker.owen,'/ParticleLinker.jar ',dir,' "',traj_out.dir,'/ParticleLinker_',all.files[j],'.txt"')   
+ system(cmd)
 }
        
 if(.Platform$OS.type == "windows") {
@@ -241,14 +242,15 @@ unlink(dir, recursive = TRUE)
 j+1
 }
 }
+
    
 #merge the trajectory data from the ParticleLinker into one data file which corresponds to what we got before from the ParticleTracker
 #provide directory where ParticleLinker output is stored and where merged trajectory.data should be saved
 merge_PA_results <- function(PA_dir,traj_out.dir){
 df <- data.frame(frame=numeric(),X=numeric(),Y=numeric(),trajectory=numeric(),file=character())
-files <- dir(paste0(to.data.frank,particle.linker.out))
+files <- dir(paste0(to.data,particle.linker.out))
 for (i in 1:length(files)){
-    file <- gsub(".ijout.txt.txt","",gsub("ParticleLinker_","",files[i]))
+    file <- gsub(".cxd.ijout.txt.txt","",gsub("ParticleLinker_","",files[i]))
     data <- read.table(paste(PA_dir,files[i],sep="/"),header=T,sep=",")
     data$file <- rep(file,length(data$x))
     data$y <- -data$y
