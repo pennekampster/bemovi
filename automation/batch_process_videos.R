@@ -389,8 +389,7 @@ LoadIJ_Traj_Outs <- function(trajdata.dir)
 ## for the moment colour not assigned by species identity but that's easy to add 
 ## provide path of " 2 - trajectory data", and the width and height of the original video 
 ## (I use cropped videos to increase speed while troubleshooting)
-create_overlay_plots <- function(trackdata.dir, width, height, difference.lag, type='traj',
-	original.vid.contrast.enhancement=1.0){ 
+create_overlay_plots <- function(trackdata.dir, width, height, difference.lag, type='traj',original.vid.contrast.enhancement=1.0){ 
 
     trajectory.data <- as.data.frame(read.table(paste(trackdata.dir,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
     file_names <- unique(trajectory.data$file)  
