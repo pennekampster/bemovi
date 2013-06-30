@@ -209,6 +209,8 @@ write.table(morphology.data, file = paste(IJ_output.dir,"morphology.data.txt", s
 # Function to convert XY coordinates of the ParticleAnalyzer into a structure (e.g. folder with coordinates per frame) 
 # that can be read by the standalone ParticleLinker
 convert_PA_to_traject <- function(PA_output_dir,traj_out.dir){
+
+ dir.create(traj_out.dir)
  all.files <- dir(PA_output_dir, pattern = ".ijout.txt")
  for (j in 1:length(all.files)){
    PA_data <- read.table(paste0(PA_output_dir,"/",all.files[j]),sep="\t",header=T)
@@ -247,6 +249,7 @@ j+1
 #merge the trajectory data from the ParticleLinker into one data file which corresponds to what we got before from the ParticleTracker
 #provide directory where ParticleLinker output is stored and where merged trajectory.data should be saved
 merge_PA_results <- function(PA_dir,traj_out.dir){
+dir.create(traj_out.dir)
 df <- data.frame(frame=numeric(),X=numeric(),Y=numeric(),trajectory=numeric(),file=character())
 files <- dir(paste0(to.data,particle.linker.out))
 for (i in 1:length(files)){
