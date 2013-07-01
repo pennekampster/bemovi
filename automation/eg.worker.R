@@ -99,8 +99,8 @@ merge_PA_results(paste0(to.data.frank,particle.linker.out),paste0(to.data.frank,
 
 # create overlay videos
 if(.Platform$OS.type == "windows"){
-  width <- 735
-  height <- 690}
+  width <- 1024
+  height <- 768}
 if(.Platform$OS.type == "unix"){
   width <- 2048
   height <- 2048}

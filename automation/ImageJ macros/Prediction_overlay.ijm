@@ -20,21 +20,13 @@ channels=channels;
 run("RGB Color");
 vid1 = getTitle();
 
+if (endsWith(list[i],"avi")){
 // Open stack with picture sequence from which trajectories were extracted (original gray scale images)
 run("AVI...", "select=["+avi_input+replace(list2[i],"/",".avi")+"] first=1 last="+slices+"");
 run("RGB Color");
 run("Invert", "stack");
 vid2 = getTitle();
-
-// merge both stacks into
-imageCalculator("AND create stack", vid2, vid1);
-run("Invert", "stack");
-run("AVI... ", "compression=JPEG frame=26 save=["+overlay_output+replace(list2[i],"/",".avi")+"]");
-close();
-close();
-close();
-
-
+}
 
 if (endsWith(list[i],"cxd")){
 // Open stack with trajectories from folder (incrementing positions through time)
@@ -58,6 +50,7 @@ close();
 selectWindow(vid2);
 run("RGB Color");
 run("Invert", "stack");
+}
 
 // merge both stacks into
 imageCalculator("AND create stack", vid2, vid1);
@@ -66,10 +59,6 @@ run("AVI... ", "compression=JPEG frame=26 save=["+overlay_output+replace(list2[i
 close();
 close();
 close();
-}
-
-
-
 
 }
 run("Quit");
