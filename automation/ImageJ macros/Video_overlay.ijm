@@ -52,7 +52,7 @@ vid1 = getTitle();
 run("Bio-Formats", "open=["+avi_input+list[i]+"] autoscale color_mode=Default view=[Standard ImageJ] stack_order=Default");
 run("Enhance Contrast...", "saturated=0.4 process_all");
 vidtemp = getTitle();
-run("Make Substack...", "  slices="+lag+"-"+slices+"");
+run("Make Substack...", "  slices="+lag+"-125");
 vid2 = getTitle();
 selectWindow(vidtemp);
 close();
