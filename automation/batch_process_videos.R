@@ -254,12 +254,13 @@ df <- data.frame(frame=numeric(),X=numeric(),Y=numeric(),trajectory=numeric(),fi
 files <- dir(paste0(to.data,particle.linker.out))
 for (i in 1:length(files)){
     file <- gsub(".ijout.txt.txt","",gsub("ParticleLinker_","",files[i]))
+    if (file.info(paste(PA_dir,files[i],sep="/"))$size > 0){
     data <- read.table(paste(PA_dir,files[i],sep="/"),header=T,sep=",")
     data$file <- rep(file,length(data$x))
     data$y <- -data$y
     if (i == 1) data.full <- rbind(data,df)
     if (i > 1) data.full <- rbind(data.full,data)
-}
+}}
 data.full <- data.full[, c(2,4,3,1,5)]
 colnames(data.full) <- c("frame","X","Y","trajectory","file")
 write.table(data.full,file=paste(traj_out.dir,"trajectory.data.txt",sep="/"),sep="\t")
