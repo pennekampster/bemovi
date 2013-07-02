@@ -34,7 +34,7 @@ if (endsWith(list[i],"cxd")){
 run("Bio-Formats", "open=["+avi_input+replace(list2[i],"/",".cxd")+"] autoscale color_mode=Default view=[Standard ImageJ] stack_order=Default");
 run("Enhance Contrast...", "saturated=1 process_all");
 vidtemp = getTitle();
-run("Make Substack...", "  slices="1-116");
+run("Make Substack...", "  slices=1-116");
 vid2 = getTitle();
 selectWindow(vidtemp);
 close();
