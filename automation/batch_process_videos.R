@@ -105,10 +105,7 @@ file_names <- unique(trajectory.data$file)
 # change path for output
 dir.create(sub(trajectory.data.folder,overlay.folder,path))
 for (i in 1:length(file_names)){
-   #split filename into name and ending for creating directories according to video name
-   #filename_split <- strsplit(paste(file_names[i]),"\\.")
-   #filename <- filename_split[[1]]
-   dir.create(paste0(sub(trajectory.data.folder,overlay.folder,path), file_names[i])) #sub("Traj_","",filename[1]),sep="/"))
+   dir.create(paste0(sub(trajectory.data.folder,overlay.folder,path), file_names[i]))
    trajectory.data_tmp <- subset(trajectory.data,file == file_names[i])
    j<- 0
    if (type == 'traj'){
@@ -125,7 +122,7 @@ for (i in 1:length(file_names)){
      par(mar = rep(0, 4), xaxs=c("i"), yaxs=c("i"))
      print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame == j, select=c("X","Y","trajectory"))
      plot(print$Y, print$X+as.numeric(height), xlim=c(0,as.numeric(width)), ylim=c(0,as.numeric(height)), col="blue", pch=1, cex=6, asp=1)
-     text(print$Y, print$X+as.numeric(height)-20,as.numeric(print$trajectory),cex=2,col="red")
+     if (length(print$trajectory)>0) text(print$Y, print$X+as.numeric(height)-20,as.numeric(print$trajectory),cex=2,col="red")
      dev.off()
      j <- j+1}}
    
