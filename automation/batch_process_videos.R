@@ -380,18 +380,15 @@ LoadIJ_Traj_Outs <- function(trajdata.dir)
 }
 
 
-
-
 ## function to plot trajectories for overlay (must be merged with original video by ImageJ macro)
 ## creates a folder containing one jpeg plot containing all the positions till the respective frame
 ## for the moment colour not assigned by species identity but that's easy to add 
 ## provide path of " 2 - trajectory data", and the width and height of the original video 
 ## (I use cropped videos to increase speed while troubleshooting)
 create_overlay_plots <- function(trackdata.dir, width, height, difference.lag, type='traj',original.vid.contrast.enhancement=1.0){ 
-
     trajectory.data <- as.data.frame(read.table(paste(trackdata.dir,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
     file_names <- unique(trajectory.data$file)  
-    
+
     ## change path for output
     dir.create(sub(trajectory.data.folder, overlay.folder, trackdata.dir), showWarnings=F)
     for (i in 1:length(file_names)){

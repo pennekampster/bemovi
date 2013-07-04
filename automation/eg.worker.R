@@ -66,10 +66,10 @@ trackdata.dir <- paste(to.data, trajectory.data.folder, sep="")
 class.dir <- paste(to.data, merge.folder, sep="")
 
 # load functions to call ImageJ from R
-source(paste(to.code, "batch_process_videos.r", sep=""))
+source(paste(to.code, "batch_process_videos.r", sep=""), encoding="utf-8")
 ##source(paste(to.code, "ParticleAnalyzer functions.r", sep="")) ## functions moved to batch_process_vids source file
 #source(paste(to.code, "merge.r", sep=""))
-source(paste(to.code, "movement_analysis.r", sep=""))
+source(paste(to.code, "movement_analysis.r", sep=""), encoding="utf-8")
 
 
 ## check for unsupported file types, and for periods in the file name
