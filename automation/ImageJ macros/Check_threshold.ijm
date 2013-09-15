@@ -16,6 +16,7 @@ i=0;
 
 if (endsWith(list[i],"avi")){
 run("AVI...", "select=["+avi_input+list[i]+"] convert");
+run("8-bit");
 getDimensions(width, height, channels, slices, frames);
 slices=slices;
 frames=frames;
@@ -51,6 +52,7 @@ run("Convert to Mask", "method=Default background=Default");
 
 if (endsWith(list[i],"cxd")){
 run("Bio-Formats", "open=["+avi_input+list[i]+"] autoscale color_mode=Default view=[Standard ImageJ] stack_order=Default");
+run("8-bit");
 getDimensions(width, height, channels, slices, frames);
 slices=slices;
 frames=frames;
