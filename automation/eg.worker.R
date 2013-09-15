@@ -12,20 +12,34 @@ require(plyr)
 ## specify difference.lag for both Particle Analyzer as well as Tracker
 difference.lag <- 10
 ## specify threshold values
-thresholds = c(5,255)
+thresholds = c(14,255)
 ## background for stack maxima
-stack.max.background = "light" ## any other values results in dark background
+##stack.max.background = "light" ## any other values results in dark background
 
-## Owen's paths
-to.code.owen <- "/Users/owenpetchey/work/git/franco/automation/"
-to.data.owen <- "/Users/owenpetchey/Desktop/experiment2/videocounts/video5/"
-to.video.description <- "/Users/owenpetchey/Desktop/experiment2/videocounts/"
-to.particlelinker.owen <-"/Users/owenpetchey/..."
+## Owen's paths (should read "OS X, linux, etc paths)
+to.code.owen <- "/Users/owenpetchey/Desktop/franco/automation/"
+to.data.owen <- "/Users/owenpetchey/Desktop/forshawn/"
+to.particlelinker.owen <- to.code.owen
 
-## Frank's paths
+## Frank's paths (should read "Windows paths")
 to.code.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/automation/"
 to.data.frank <- "C:/Users/Frank/Documents/PhD/Programming/franco/data/"
 to.particlelinker.frank <-"C:/Users/Frank/Documents/PhD/Programming/franco/data/"
+
+
+## what OS are we on?
+OS <- .Platform$OS.type
+## if on windows, use Frank's paths
+if(.Platform$OS.type == "windows"){
+	to.code <- to.code.frank
+	to.data <- to.data.frank
+	to.particlelinker <- to.particlelinker.frank}
+## otherwise use Owen's
+if(.Platform$OS.type == "unix"){
+	to.code <- to.code.owen
+	to.data <- to.data.owen
+	to.particlelinker <- to.particlelinker.owen}
+
 
 ## General folders
 sample.description.folder <- "0 - sample description/"
@@ -40,30 +54,15 @@ merge.folder <- "6 - Classification/"
 merge.folder <- "6 - merged data"
 particle.linker.out <- "9 - Particle Analyzer trajectories"
 
-## put the sample info into the dataset
-sample.description <- read.table(paste0(to.data.frank,sample.description.folder,"frank.video.description.txt"), header=TRUE, sep="\t")
-# vessel.vol.used as ml volume used in 30ml flasks
-sample.description$vessel.vol.used <- gsub("30ml/","",sample.description$vessel.vol.used)
-sample.description$vessel.vol.used <- gsub("ml","",sample.description$vessel.vol.used)
 
-## what OS are we on?
-OS <- .Platform$OS.type
-## if on windows, use Frank's paths
-if(.Platform$OS.type == "windows"){
-	to.code <- to.code.frank
-	to.data <- to.data.frank}
-## otherwise use Owen's
-if(.Platform$OS.type == "unix"){
-	to.code <- to.code.owen
-	to.data <- to.data.owen}
-	
 ## set up paths
-sample.dir <- paste(to.video.description, sample.description.folder, sep="")
+sample.dir <- paste(to.data.owen, sample.description.folder, sep="")
 video.dir <- paste(to.data, raw.video.folder, sep="")
 IJ_output.dir <- paste(to.data, particle.analyzer.folder, sep="")
 video.dir <- paste(to.data, raw.video.folder, sep="")
 trackdata.dir <- paste(to.data, trajectory.data.folder, sep="")
 class.dir <- paste(to.data, merge.folder, sep="")
+
 
 # load functions to call ImageJ from R
 source(paste(to.code, "batch_process_videos.r", sep=""), encoding="utf-8")
@@ -71,6 +70,15 @@ source(paste(to.code, "batch_process_videos.r", sep=""), encoding="utf-8")
 #source(paste(to.code, "merge.r", sep=""))
 source(paste(to.code, "movement_analysis.r", sep=""), encoding="utf-8")
 
+
+
+## put the sample info into the dataset
+sample.description <- read.table(paste0(to.data.frank,sample.description.folder,"frank.video.description.txt"), header=TRUE, sep="\t")
+# vessel.vol.used as ml volume used in 30ml flasks
+sample.description$vessel.vol.used <- gsub("30ml/","",sample.description$vessel.vol.used)
+sample.description$vessel.vol.used <- gsub("ml","",sample.description$vessel.vol.used)
+
+	
 
 ## check for unsupported file types, and for periods in the file name
 Check.video.files(video.dir)
@@ -85,7 +93,10 @@ LoadIJ_morph_outs(IJ_output.dir)
 
 # convert XY coordinates from ParticleAnalyzer into data, which is read by the standalone Particle
 # linker and output as text file
-convert_PA_to_traject(paste0(to.data.frank,particle.analyzer.folder),paste0(to.data.frank,particle.linker.out))
+PA_output_dir <- paste0(to.data, particle.analyzer.folder)
+traj_out.dir <- paste0(to.data, particle.linker.out)
+convert_PA_to_traject(PA_output_dir, traj_out.dir)
+
 
 # run ParticleTracker, merge results and produce overlays
 # video_to_trajectory(video.dir, difference.lag, thresholds, stack.max.background)
@@ -95,7 +106,10 @@ convert_PA_to_traject(paste0(to.data.frank,particle.analyzer.folder),paste0(to.d
 # LoadIJ_Traj_Outs(trackdata.dir)
 
 #same for ParticleLinker
-merge_PA_results(paste0(to.data.frank,particle.linker.out),paste0(to.data.frank,trajectory.data.folder))
+PA_dir <- paste0(to.data, particle.linker.out)
+traj_out.dir <- paste0(to.data, trajectory.data.folder)
+merge_PA_results(PA_dir, traj_out.dir)
+
 
 # create overlay videos
 if(.Platform$OS.type == "windows"){
@@ -105,9 +119,14 @@ if(.Platform$OS.type == "unix"){
   width <- 2048
   height <- 2048}
 #specify directory
-type = "label"
-original.vid.contrast.enhancement = 1.0
-create_overlay_plots(trackdata.dir, width, height, difference.lag, type=type)
+type = "label" ## other type is "traj"
+create_overlay_plots(trackdata.dir,
+	width,
+	height,
+	difference.lag,
+	type=type,
+	original.vid.contrast.enhancement = 1.0
+)
 
 
 
