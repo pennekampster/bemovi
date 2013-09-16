@@ -1,9 +1,5 @@
 Being done:
 
-1. Owen is working through Frank's code for particle linking, overlay production, and then movement analysis. Mostly for himself, but also some streamlining. All seems to be working up to and including production of overlay plots. (Still needs a little more testing.)
-
-2. Owen is working on batch processing of xy data by the particle linker of mosaic.
-
 3. Frank is taking care of the movement analysis: so far summary statistics are calculated for each trajectory which will be used for classification.
 
 To do:
@@ -13,13 +9,28 @@ To do:
 
 2. It would be good to make the code as parellelisable as possible. One constraint may be the possibility of running multiple instances of imagej -- I don't know if this is possible. Otherwise multiple instances of R functions can be run in parallel, using a package like multicore and function such as mclapply().
 
-3. Use the particle analyser to detect particles and return morphology and xy coords. Feed these xy coords into the particle linker of mosaic. Merge the morphology and trajectory data. This requires some work on the mosaic plugin, or source code for the plugin
-
 4. On OSX at least, figure out why imagej continuously increases its used memory. (up to 8GB, for example).
 
 5. Get overlay overlay dimensions from the size of the original video.
 
-6. Make a function that allows checking of threshold values.
+
+
+
 
 Ideas:
 When an individual reverses direction (or changes sharply), its shape changes (think of Paramecium side on while swimming, versus end on when reversing). This, or perhaps just shape variation, could be used to help quantify three dimensional morphology, possibly useful for id and biovolume.
+
+
+
+
+
+
+Stuff that we've done / finished:
+
+1. Owen is working through Frank's code for particle linking, overlay production, and then movement analysis. Mostly for himself, but also some streamlining. All seems to be working up to and including production of overlay plots. (Still needs a little more testing.)
+
+2. Owen is working on batch processing of xy data by the particle linker of mosaic.
+
+3. Use the particle analyser to detect particles and return morphology and xy coords. Feed these xy coords into the particle linker of mosaic. Merge the morphology and trajectory data. This requires some work on the mosaic plugin, or source code for the plugin
+
+6. Make a function that allows checking of threshold values.
