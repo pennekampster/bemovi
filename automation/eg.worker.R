@@ -18,8 +18,10 @@ thresholds = c(10,255)
 
 
 ## Owen's paths (could read "OS X, linux, etc paths)
-to.code.owen <- "/Users/owenpetchey/franco/automation/"
-to.data.owen <- "/Users/owenpetchey/Dropbox/testvids/"
+#to.code.owen <- "/Users/owenpetchey/franco/automation/"
+#to.data.owen <- "/Users/owenpetchey/Dropbox/testvids/"
+to.code.owen <- "/Users/Frank/franco/automation/"
+to.data.owen <- "/Users/Frank/franco/data/"
 to.particlelinker.owen <- to.code.owen
 
 
@@ -87,14 +89,13 @@ Organise_particle_data(to.data, particle.data.folder)
 Link_particles(to.data, particle.data.folder, trajectory.data.folder)
 Organise_link_data(to.data, trajectory.data.folder)
 
-
 # create overlay videos
 if(.Platform$OS.type == "windows"){
   width <- 1024
   height <- 768}
 if(.Platform$OS.type == "unix"){
-  width <- 2048
-  height <- 2048}
+  width <- 1024
+  height <- 768}
 #specify directory
 type = "label" ## other type is "traj"
 Create_overlay_videos(to.data, trajectory.data.folder, raw.video.folder,
@@ -118,23 +119,19 @@ Merge_particle_link_experiment_data(to.data,
 
 ## checked to here...
 
+# load final dataset
+trajectory.data <- read.csv(paste0(to.data,merged.data.folder,"MasterData.csv"),row.names=NULL)
+trajectory.data <- trajectory.data[order(trajectory.data$file,trajectory.data$trajectory,trajectory.data$frame), ]
 
 # filter trajectories to exclude artefacts and very short trajects which do not allow proper extraction
 # of all relevant movement features (e.g. periodic patterns in turning angles)
 filter_trajects(trajectory.data)
 
-
 # extract movement metrics and save to classification folder
 extract_movement(trajectory.data)
 
-
-# merge mophology of ParticleAnalyzer on the filtered trajectories for classification
-trajectory_morphology(trajectory.data)
-
-
-
 # Classification
-
+# check separate analysis script; no standardized functions available yet
 
 
 

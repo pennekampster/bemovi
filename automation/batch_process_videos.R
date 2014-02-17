@@ -449,6 +449,8 @@ create_prediction_plots <- function(path,width,height,difference.lag){
   ## numbered objects without halo where filtered out before classification and are therefore artefacts,
   ## though sometimes valid trajects are filtered out
   
+  video.dir <- paste(to.data, raw.video.folder, sep="")
+  
   trajectory.data <- predict_visual
   file_names <- unique(trajectory.data$file)  
   ## change path for output
@@ -470,9 +472,9 @@ create_prediction_plots <- function(path,width,height,difference.lag){
   if(.Platform$OS.type == "windows")
     text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_overlay.ijm",warn = FALSE)
   if(.Platform$OS.type == "unix")
-    text <- readLines("/Users/owenpetchey/work/git/franco/automation/ImageJ macros/Video_overlay.ijm")
-  
-  text <- readLines(paste(to.code, "ImageJ macros/Prediction_overlay.ijm", sep=""))
+   # text <- readLines("/Users/owenpetchey/work/git/franco/automation/ImageJ macros/Video_overlay.ijm")
+    text <- readLines("/Users/Frank/franco/automation/ImageJ macros/Video_overlay.ijm")
+    text <- readLines(paste(to.code, "ImageJ macros/Prediction_overlay.ijm", sep=""))
   
   
   ## use regular expression to insert input and output directory

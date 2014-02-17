@@ -21,15 +21,17 @@ library(plyr)
 id <- paste(trajectory.data$file,trajectory.data$trajectory,sep="-")
 trajectory.data <- cbind(trajectory.data,id)
 
+#subset dataset to only include relevant movement information
+trajectory.data <- trajectory.data[,c("file","X","Y","frame","id","trajectory")]
+
 #calculate summary stats (count of frames) to perform trajectory selection
-start_frame <- ddply(trajectory.data, .(id), .fun = function(a){a[which.min(a$frame), ]})
-end_frame <- ddply(trajectory.data, .(id), .fun = function(a){a[which.max(a$frame), ]})
-names(start_frame) <- c("start_frame","X_start","Y_start","file","trajectory","id")
-names(end_frame) <- c("end_frame","X_end","Y_end","file","trajectory","id")
-fixes_count <- ddply(trajectory.data, .(id), summarise, count = length(frame))
+start_frame <- sqldf("select min(frame) as start_frame, X, Y, file, id from 'trajectory.data' group by id")
+end_frame <- sqldf("select max(frame) as end_frame, X, Y, file, id from 'trajectory.data' group by id")
+
+fixes_count <- sqldf("select count(frame) as count, id from 'trajectory.data' group by id")
 
 traject_features <- sqldf("select s.id, 
-                          round(sqrt(power((e.X_end - s.X_start),2) + power((e.Y_end - s.Y_start),2))) as net_disp,
+                          round(sqrt(power((e.X - s.X),2) + power((e.Y - s.Y),2))) as net_disp,
                           (e.end_frame - s.start_frame)+1 as frame_range
                           from start_frame as s, end_frame as e
                           where s.id=e.id")
@@ -52,6 +54,8 @@ trajectory.data$id <- factor(trajectory.data$id)
 assign("trajectory.data",trajectory.data,envir = .GlobalEnv)
 }
 
+
+
 # plot effect of filtering
 #trajectory.data <- subset(trajectory.data)
 #plot(trajectory.data$Y, trajectory.data$X+2048, xlim=c(0,2048), ylim=c(0,2048), col="red", pch=1, cex=1.5, asp=1)
@@ -63,6 +67,7 @@ extract_movement <- function(trajectory.data){
 
 # required libraries
 library(adehabitatLT)
+library(circular)
 
 # 1. convert frame into time class (each frame representing a time step of a second)
 trajectory.data$sec <- trajectory.data$frame  
@@ -116,11 +121,13 @@ mvt_summary2 <- subset(mvt_summary2, count >= 5)
 mvt_summary2$rel.ang <- NULL
 mvt_summary2$count <- NULL
 
-# reset factor id
+# reset factor id and burst
 mvt_summary2$id <- factor(mvt_summary2$id)
+mvt_summary2$burst <- factor(mvt_summary2$burst)
 
-turning <- ddply(mvt_summary2, .(id), summarize, mean_turning=mean(rel.angle, na.rm=T))
-sd_ta <- ddply(mvt_summary2, .(id), summarize, sd_turning=sd(rel.angle, na.rm=T))
+# calculate the mean and Sd of the turning angles (in radians)
+turning <- ddply(mvt_summary2[!is.na(mvt_summary2$rel.angle),], .(id), summarize, mean_turning=circ.mean(rel.angle))
+sd_ta <- ddply(mvt_summary2, .(id), summarize, sd_turning=sd.circular(rel.angle, na.rm=T))
 turning_summary <- cbind(sd_ta,turning)
 turning_summary[,3] <- NULL
 
@@ -176,10 +183,10 @@ trajectory.data.summary <- sqldf("select DISTINCT t.*, f.file, f.trajectory
                                   on t.id=f.id")
 
 # create folder to save results
-dir.create(paste0(to.data,merge.folder), showWarnings = FALSE)  
+dir.create(paste0(to.data,merged.data.folder), showWarnings = FALSE)  
 
 # export aggregated data on movement
-write.table(trajectory.data.summary, file = paste(paste0(to.data,merge.folder),"trajectory.data.summary.txt", sep = "/"), sep = "\t")
+write.table(trajectory.data.summary, file = paste(paste0(to.data,merged.data.folder),"trajectory.data.summary.txt", sep = "/"), sep = "\t")
 }
 
 
