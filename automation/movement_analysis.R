@@ -17,6 +17,9 @@ library(plyr)
 #library(reshape)
   
 # 0. prepare data for analysis with adehabitat package
+# drop single coordinate trajectories
+trajectory.data <- trajectory.data[!is.na(trajectory.data$trajectory),]
+
 # create unique ID consisting of trajectory ID and file
 id <- paste(trajectory.data$file,trajectory.data$trajectory,sep="-")
 trajectory.data <- cbind(trajectory.data,id)
@@ -53,8 +56,6 @@ trajectory.data$id <- factor(trajectory.data$id)
 
 assign("trajectory.data",trajectory.data,envir = .GlobalEnv)
 }
-
-
 
 # plot effect of filtering
 #trajectory.data <- subset(trajectory.data)

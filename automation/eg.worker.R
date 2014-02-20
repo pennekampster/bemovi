@@ -62,6 +62,7 @@ source(paste(to.code, "batch_process_videos.r", sep=""), encoding="utf-8")
 ##source(paste(to.code, "ParticleAnalyzer functions.r", sep="")) ## functions moved to batch_process_vids source file
 #source(paste(to.code, "merge.r", sep=""))
 source(paste(to.code, "movement_analysis.r", sep=""), encoding="utf-8")
+source(paste(to.code, "calculate_TA_ML.r", sep=""), encoding="utf-8")
 
 	
 
@@ -94,8 +95,8 @@ if(.Platform$OS.type == "windows"){
   width <- 1024
   height <- 768}
 if(.Platform$OS.type == "unix"){
-  width <- 1024
-  height <- 768}
+  width <- 2048
+  height <- 2048}
 #specify directory
 type = "label" ## other type is "traj"
 Create_overlay_videos(to.data, trajectory.data.folder, raw.video.folder,

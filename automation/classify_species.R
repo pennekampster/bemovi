@@ -53,10 +53,11 @@ trajectory.data <- read.table(paste0(to.data,merged.data,"trajectory.data.summar
 #merge morphology data with meaningful trajectory data (meaningful = show properties used for filter trajectories)
 all_data <- sqldf("select m.file, m.trajectory, m.id, m.area, m.perimeter, m.major, m.minor, m.shape, 
                   t.net_disp, t.gross_disp, t.NGDR, t.net_speed, t.gross_speed, t.mean_turning, t.sd_turning, t.period
-                  from 'trajectory.data' t, 'morphology.data.agg' m
-                  where t.id=m.id")
+                  from 'morphology.data.agg' m
+                  left join 'trajectory.data' t
+                  on t.id=m.id")
 
-# in case there are missing data 
+# in case you want to classify by variables which are missing from some observations (e.g. TAs, period) 
 all_data <- all_data[complete.cases(all_data),]
 
 # labelling files according to species
@@ -84,16 +85,27 @@ test.cl <- function(true, pred) {
 
 # test randomForest classification for species recognition
 # use factor function to only classify species comprised in the dataset
-train_rf <- three_moncultures[, c(4,5,6,7,8,17)]
+train_rf <- three_moncultures[, c(4,5,6,7,8,9,10,11,12,13,14,15,16,17)]
+
+
 samp <- sample(1:length(train_rf[,1]), length(train_rf[,1])/2)
 no.samp <- c(1:length(train_rf[,1]))[-samp]
-# train randomForest
-rf_fit <- randomForest(factor(species) ~ area + perimeter + major + minor + shape , data=train_rf[samp,], importance=TRUE, proximity=TRUE)
-print(rf_fit)
-plot(rf_fit)
-varImpPlot(rf_fit)
-MDSplot(rf_fit, train_rf[samp,]$species)
-table(factor(train_rf[no.samp,]$species), predict(rf_fit, train_rf[no.samp,]))
+
+# train randomForest on morphology
+rf_fit_morph <- randomForest(factor(species) ~ area + perimeter + major + minor + shape , data=train_rf[samp,], importance=TRUE, proximity=TRUE)
+print(rf_fit_morph)
+plot(rf_fit_morph)
+varImpPlot(rf_fit_morph)
+MDSplot(rf_fit_morph, train_rf[samp,]$species)
+table(factor(train_rf[no.samp,]$species), predict(rf_fit_morph, train_rf[no.samp,]))
+
+# train randomForest on movement behaviour
+rf_fit_mvt <- randomForest(factor(species) ~ net_speed + gross_speed + NGDR + mean_turning + sd_turning + period , data=train_rf[samp,], importance=TRUE, proximity=TRUE)
+print(rf_fit_mvt)
+plot(rf_fit_mvt)
+varImpPlot(rf_fit_mvt)
+MDSplot(rf_fit_mvt, train_rf[samp,]$species)
+table(factor(train_rf[no.samp,]$species), predict(rf_fit_mvt, train_rf[no.samp,]))
 
 # use monoculture to predic species identity in communities
 three_monocult <- sqldf("select *
@@ -106,13 +118,13 @@ mixed_cult <- sqldf("select *
 
 # classification by randomForest
 train_rf <- three_monocult[, c(4,5,6,7,8,17)]
-rf_fit <- randomForest(factor(species) ~ area + perimeter + major + minor + shape , data=train_rf, importance=TRUE, proximity=TRUE)
-predict_spec <- predict(rf_fit, mixed_cult[, c(4,5,6,7,8,9,10,11,12,13,14,15,16,17)])
+rf_fit_morph <- randomForest(factor(species) ~ area + perimeter + major + minor + shape , data=train_rf, importance=TRUE, proximity=TRUE)
+predict_spec <- predict(rf_fit_morph, mixed_cult[, c(4,5,6,7,8,9,10,11,12,13,14,15,16,17)])
 predict <- cbind(mixed_cult,predict_spec)
 
 # visualize prediction
 # refilter trajectories with complete data
-trajectory.data <- read.table(paste0("/Users/Frank//franco/data/2 - trajectory data/trajectory.data.txt"), header=TRUE, sep="\t")
+trajectory.data <- read.table(paste0("/Users/Frank/franco/data/3 - trajectory data/trajectory.data.txt"), header=TRUE, sep="\t")
 filter_trajects(trajectory.data)
 trajectory_raw <- trajectory.data
 trajectory_raw$id <- paste(tolower(trajectory_raw$file),trajectory_raw$trajectory,sep="-")
@@ -127,11 +139,9 @@ predict_visual <- sqldf("select t.*, p.predict_spec
 predict_visual[is.na(predict_visual)] <- "unknown"
 predict_visual$predict_spec <- factor(predict_visual$predict_spec)
 
-levels(predict_visual$predict_spec)
-
 # function to create overlays
 source(paste(to.code, "batch_process_videos.r", sep=""))
-create_prediction_plots(to.data,1024,768,25)
+create_prediction_plots(to.data,2048,2048,25)
 
 # extract summary stats on species counts and trait destributions per species
 summary_counts <- ddply(predict_visual, .(predict_spec,file,frame), summarise, count = length(predict_spec))
