@@ -12,10 +12,16 @@ if (endsWith(list[k],"avi")){
 run("AVI...", "select=["+dir_input+list[k]+"] convert");
 original = getTitle();
 getDimensions(width, height, channels, slices, frames);
-run("Make Substack...", "  slices="+lag+"-"+slices+"");
+//run("Make Substack...", "  slices="+lag+"-"+slices+"");
 vid1 = getTitle();
 selectWindow(original);
-run("Make Substack...", "  slices=1-"+slices-(lag-1)+"");
+run("Make Substack...", "  slices="+lag+"-"+slices+"");
+vid2 = getTitle();
+selectWindow(vid1);
+run("Make Substack...", "  slices=1-"+(lag-1)+"");
+vid3 = getTitle();
+run("Concatenate...", "  image1=["+vid2+"] image2=["+vid3+"] image3=[-- None --]");
+vid4 = getTitle();
 }
 
 if (endsWith(list[k],"cxd")){
@@ -23,18 +29,37 @@ run("Bio-Formats", "open=["+dir_input+list[k]+"] autoscale color_mode=Default vi
 run("8-bit"");
 original = getTitle();
 getDimensions(width, height, channels, slices, frames);
-run("Make Substack...", "  slices="+lag+"-"+frames+"");
+//run("Make Substack...", "  slices="+lag+"-"+frames+"");
+vid1 = getTitle();
+//selectWindow(original);
+//run("Make Substack...", "  slices=1-"+frames-(lag-1)+"");
+
 vid1 = getTitle();
 selectWindow(original);
-run("Make Substack...", "  slices=1-"+frames-(lag-1)+"");
+run("Make Substack...", "  slices="+lag+"-"+slices+"");
+vid2 = getTitle();
+selectWindow(vid1);
+run("Make Substack...", "  slices=1-"+(lag-1)+"");
+vid3 = getTitle();
+run("Concatenate...", "  image1=["+vid2+"] image2=["+vid3+"] image3=[-- None --]");
+vid4 = getTitle();
+
+
 }
 
-vid2 = getTitle();
+//vid2 = getTitle();
 selectWindow(original);
 close();
-imageCalculator("Subtract create stack", vid2, vid1);
-vid3 = getTitle();
-selectWindow(vid3);
+//imageCalculator("Subtract create stack", vid2, vid1);
+//vid3 = getTitle();
+//selectWindow(vid3);
+
+
+imageCalculator("Subtract create stack", vid1, vid4);
+vid4 = getTitle();
+selectWindow(vid4);
+
+
 
 // perhaps use autothreshold?
 // setAutoThreshold("Default light");
