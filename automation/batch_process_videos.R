@@ -148,7 +148,9 @@ Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
 	all.files <- dir(PA_output_dir, pattern = ".ijout.txt")
  
  	for (j in 1:length(all.files)) {
-   		PA_data <- read.table(paste0(PA_output_dir,"/",all.files[j]),sep="\t",header=T)
+  
+		
+      PA_data <- read.table(paste0(PA_output_dir,"/",all.files[j]),sep="\t",header=T)
  
    		## only attempt particle linking if particles were detected in the video
    		## note: not sure what would happen if only one particle was found in one frame
@@ -160,21 +162,21 @@ Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
    			for (i in 1:max(PA_data$Slice)){
          		frame <- subset(PA_data, Slice == i)[,c(6,7)]
          		frame$Z <- rep(0.00, length(frame[,1]))
-         		sink(paste0(dir,"/frame_",i-1,".txt"))
+         		sink(paste0(dir,"/frame_",sprintf("%04d", i-1),".txt"))
          		cat(paste0("frame ",i-1))
          		cat("\n")
          		sink()
-         		write.table(frame,file=paste0(dir,"/frame_",i-1,".txt"),append=T,col.names=F,row.names=F)
+            write.table(frame,file=paste0(dir,"/frame_",sprintf("%04d", i-1),".txt"),append=T,col.names=F,row.names=F)
     		}
        
   			## run ParticleLinker
   			if(.Platform$OS.type == "unix") {
-    			cmd <- paste0('java -Xmx512m -Dparticle.linkrange=5 -Dparticle.displacement=20 -jar ',to.particlelinker.owen,'/ParticleLinker.jar ',dir,' "',traj_out.dir,'/ParticleLinker_',all.files[j],'.txt"')   
+    			cmd <- paste0('java -Xmx8192m -Dparticle.linkrange=5 -Dparticle.displacement=20 -jar ',to.particlelinker.owen,'/ParticleLinker.jar ',dir,' "',traj_out.dir,'/ParticleLinker_',all.files[j],'.txt"')   
     			system(cmd)
   			}
        
   			if(.Platform$OS.type == "windows") {
-    			cmd <- paste0('C:/Progra~2/java/jre7/bin/javaw.exe -Xmx512m -Dparticle.linkrange=5 -Dparticle.displacement=20 -jar ',to.particlelinker.frank,'/ParticleLinker.jar ',dir,' "',traj_out.dir,'/ParticleLinker_',all.files[j],'.txt"')
+    			cmd <- paste0('C:/Progra~2/java/jre7/bin/javaw.exe -Xmx8192m -Dparticle.linkrange=5 -Dparticle.displacement=20 -jar ',to.particlelinker.frank,'/ParticleLinker.jar ',dir,' "',traj_out.dir,'/ParticleLinker_',all.files[j],'.txt"')
     			system(cmd)
   			}
        
