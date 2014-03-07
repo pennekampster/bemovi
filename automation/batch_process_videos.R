@@ -204,7 +204,8 @@ Organise_link_data <- function(to.data, trajectory.data.folder) {
 	
 	dir.create(here, showWarnings=F)
 	df <- data.frame(frame=numeric(), X=numeric(), Y=numeric(), trajectory=numeric(), file=character())
-	files <- dir(here)
+	#files <- dir(here)
+	files <- dir(here, pattern = ".ijout.txt.txt")
 	for (i in 1:length(files)){
     	file <- gsub(".ijout.txt.txt", "", gsub("ParticleLinker_", "", files[i]))
     	if (file.info(paste(here, files[i], sep="/"))$size > 0) {
