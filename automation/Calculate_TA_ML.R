@@ -119,9 +119,10 @@ net_displacement <- function(x,y){
 
 calculate_mvt <- function(data){
   
+  
   library(circular)
   library(CircStats)
-  library(plyr)
+  library(dplyr)
   library(sqldf)  
 
   data_full <- data
@@ -143,12 +144,20 @@ calculate_mvt <- function(data){
   data <- data[,c("file","X","Y","frame","id","trajectory")]
   
   # extract movement metrics
-  mvt_summary <- ddply(data, .(id), mutate, step_length = step_length(X,Y),
-                       gross_disp = cumsum(step_length),
-                       net_disp = net_displacement(X,Y),
-                       abs_angle = anglefun(diff(X),diff(Y)),
-                       rel_angle = rel.angle(anglefun(diff(X),diff(Y))))
+#   mvt_summary <- ddply(data, .(id), mutate, step_length = step_length(X,Y),
+#                        gross_disp = cumsum(step_length),
+#                        net_disp = net_displacement(X,Y),
+#                        abs_angle = anglefun(diff(X),diff(Y)),
+#                        rel_angle = rel.angle(anglefun(diff(X),diff(Y))))
   
+  mvt_summary <- data %.%
+                 group_by(id) %.%
+                 mutate(step_length = step_length(X,Y),
+                        gross_disp = cumsum(step_length),
+                        net_disp = net_displacement(X,Y),
+                        abs_angle = anglefun(diff(X),diff(Y)),
+                        rel_angle = rel.angle(anglefun(diff(X),diff(Y))))
+
   data <- sqldf("select t.*, step_length, net_disp, abs_angle, rel_angle  
                 from data_full t 
                 left join mvt_summary m
