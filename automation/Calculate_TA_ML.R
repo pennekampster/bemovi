@@ -117,6 +117,45 @@ net_displacement <- function(x,y){
 
 }
 
+calculate_mvt <- function(data){
+  
+  library(circular)
+  library(CircStats)
+  library(plyr)
+  library(sqldf)  
+
+  data_full <- data
+  
+  # create unique ID consisting of trajectory ID and file
+  id <- paste(data$file,data$trajectory,sep="-")
+  data <- cbind(data,id)  
+  
+  #order dataframe
+  data <- data[order(data$file,data$trajectory,trajectory.data$frame), ]
+  
+  # filter out single coordinates which do not form trajectories
+  data <- data[!is.na(data$trajectory),]
+  
+  #filter out duplicate positions, if available
+  data <- data[-which(diff(data$X) == 0 & diff(data$Y) == 0),]
+  
+  #subset dataset to only include relevant movement information
+  data <- data[,c("file","X","Y","frame","id","trajectory")]
+  
+  # extract movement metrics
+  mvt_summary <- ddply(data, .(id), mutate, step_length = step_length(X,Y),
+                       gross_disp = cumsum(step_length),
+                       net_disp = net_displacement(X,Y),
+                       abs_angle = anglefun(diff(X),diff(Y)),
+                       rel_angle = rel.angle(anglefun(diff(X),diff(Y))))
+  
+  data <- sqldf("select t.*, step_length, net_disp, abs_angle, rel_angle  
+                from data_full t 
+                left join mvt_summary m
+                on t.id=m.id AND t.frame=m.frame")
+  
+  return(data)
+}
 
 
 
