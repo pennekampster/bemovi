@@ -106,6 +106,18 @@ step_length <- function(x,y){
   
 }
 
+step_duration <- function(frame){
+  
+  # function to extract step duration for each step
+  
+  step_duration <- diff(frame)
+  step_duration <- c(step_duration,-9999)
+  step_duration[step_duration == -9999] <- NA
+  return(step_duration)  
+  
+}
+
+
 net_displacement <- function(x,y){
 
 # function to calculate the net squared displacement for each step
@@ -153,12 +165,14 @@ calculate_mvt <- function(data){
   mvt_summary <- data %.%
                  group_by(id) %.%
                  mutate(step_length = step_length(X,Y),
+                        step_duration = step_duration(frame),
+                        step_speed = step_length/step_duration,
                         gross_disp = cumsum(step_length),
                         net_disp = net_displacement(X,Y),
                         abs_angle = anglefun(diff(X),diff(Y)),
                         rel_angle = rel.angle(anglefun(diff(X),diff(Y))))
 
-  data <- sqldf("select t.*, step_length, net_disp, abs_angle, rel_angle  
+  data <- sqldf("select t.*, step_length, step_duration, step_speed, gross_disp, net_disp, abs_angle, rel_angle  
                 from data_full t 
                 left join mvt_summary m
                 on t.id=m.id AND t.frame=m.frame")
@@ -167,4 +181,9 @@ calculate_mvt <- function(data){
 }
 
 
-
+# trajectory.data$factor <- as.factor(trajectory.data$id)
+# head(ddply(trajectory.data, .(id), mutate, step_length = step_length(X,Y)))
+# diff()
+# trajectory.data[trajectory.data$id == "data00001-1", ]
+# df <- data.frame(x=rnorm(10,1),factor=gl(2,5))
+# ddply(df, .(factor), summarise, mean(x))
