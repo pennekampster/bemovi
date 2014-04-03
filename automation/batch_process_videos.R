@@ -139,7 +139,7 @@ Organise_particle_data <- function(to.data, particle.data.folder) {
 ## Function to convert XY coordinates of the ParticleAnalyzer into a structure
 ## (e.g. folder with coordinates per frame) 
 ## that can be read by the standalone ParticleLinker
-Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder) {
+Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder, memory=512, linkrange=5, disp=20) {
 	
 	PA_output_dir <- paste0(to.data, particle.data.folder)
 	traj_out.dir <- paste0(to.data, trajectory.data.folder)
@@ -171,12 +171,12 @@ Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
        
   			## run ParticleLinker
   			if(.Platform$OS.type == "unix") {
-    			cmd <- paste0('java -Xmx8192m -Dparticle.linkrange=5 -Dparticle.displacement=20 -jar ',to.particlelinker.owen,'/ParticleLinker.jar ',dir,' "',traj_out.dir,'/ParticleLinker_',all.files[j],'.txt"')   
+    			cmd <- paste0('java -Xmx',memory,'m -Dparticle.linkrange=',linkrange,' -Dparticle.displacement=',disp,' -jar ',to.particlelinker.owen,'/ParticleLinker.jar ',dir,' "',traj_out.dir,'/ParticleLinker_',all.files[j],'.txt"')   
     			system(cmd)
   			}
        
   			if(.Platform$OS.type == "windows") {
-    			cmd <- paste0('C:/Progra~2/java/jre7/bin/javaw.exe -Xmx8192m -Dparticle.linkrange=5 -Dparticle.displacement=20 -jar ',to.particlelinker.frank,'/ParticleLinker.jar ',dir,' "',traj_out.dir,'/ParticleLinker_',all.files[j],'.txt"')
+    			cmd <- paste0('C:/Progra~2/java/jre7/bin/javaw.exe -Xmx',memory,'m -Dparticle.linkrange=',linkrange,' -Dparticle.displacement=',disp,' -jar ',to.particlelinker.frank,'/ParticleLinker.jar ',dir,' "',traj_out.dir,'/ParticleLinker_',all.files[j],'.txt"')
     			system(cmd)
   			}
        
