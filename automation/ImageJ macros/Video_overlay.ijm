@@ -46,7 +46,7 @@ run("Invert", "stack");
 // merge both stacks into
 imageCalculator("AND create stack", vid2, vid1);
 run("Invert", "stack");
-run("AVI... ", "compression=JPEG frame=26 save=["+overlay_output+replace(list2[i],"/",".avi")+"]");
+run("AVI... ", "compression=JPEG frame=25 save=["+overlay_output+replace(list2[i],"/",".avi")+"]");
 close();
 close();
 close();
