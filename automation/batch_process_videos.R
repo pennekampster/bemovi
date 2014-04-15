@@ -57,7 +57,7 @@ Check_threshold_values <- function(to.data, raw.video.folder, difference.lag, th
 
 ## Function to get morphological measurements using the particle analyser in imagej
 Locate_and_measure_particles <- function(to.data, raw.video.folder, particle.data.folder,
-										 difference.lag, thresholds=c(0,1000)) {
+										 difference.lag, thresholds=c(0,1000), memory=memory.alloc) {
 
     video.dir <- paste(to.data, raw.video.folder, sep="")
 
@@ -87,7 +87,7 @@ Locate_and_measure_particles <- function(to.data, raw.video.folder, particle.dat
     
     ## run to process video files by calling ImageJ
     if(.Platform$OS.type == "unix")
-        cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub("1 - raw","ijmacs",video.dir), "Video_to_morphology_tmp.ijm",sep=""))
+        cmd <- paste0("java -Xmx",memory,"m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste0(sub("1 - raw","ijmacs",video.dir), "Video_to_morphology_tmp.ijm"))
     if(.Platform$OS.type == "windows")
         cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_to_morphology_tmp.ijm')
     system(cmd)
@@ -139,7 +139,7 @@ Organise_particle_data <- function(to.data, particle.data.folder) {
 ## Function to convert XY coordinates of the ParticleAnalyzer into a structure
 ## (e.g. folder with coordinates per frame) 
 ## that can be read by the standalone ParticleLinker
-Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder, memory=512, linkrange=5, disp=20) {
+Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder, memory=memory.alloc, linkrange=5, disp=20) {
 	
 	PA_output_dir <- paste0(to.data, particle.data.folder)
 	traj_out.dir <- paste0(to.data, trajectory.data.folder)
@@ -235,13 +235,15 @@ Organise_link_data <- function(to.data, trajectory.data.folder) {
 Create_overlay_videos <- function(to.data, trajectory.data.folder, raw.video.folder,
 								  temp.overlay.folder, overlay.folder, 
 								  width, height, difference.lag,
-								  type='traj', original.vid.contrast.enhancement=1.0) {
+								  type='traj',
+                                  original.vid.contrast.enhancement=1.0,
+                                memory=memory.alloc){
 	
 	video.dir <- paste(to.data, raw.video.folder, sep="")	
 								 
 	trackdata.dir <- paste(to.data, trajectory.data.folder, sep="")								 
 								  	 
-    trajectory.data <- as.data.frame(read.table(paste(trackdata.dir,"trajectory.data.txt", sep = ""),													header = TRUE, sep = "\t"))
+    trajectory.data <- as.data.frame(read.table(paste(trackdata.dir,"trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
     file_names <- unique(trajectory.data$file)  
 
     ## change path for output
@@ -341,7 +343,7 @@ Create_overlay_videos <- function(to.data, trajectory.data.folder, raw.video.fol
     
     ## call IJ macro to merge original video with the trajectory data
     if(.Platform$OS.type == "unix")
-        cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub(raw.video.folder, ijmacs.folder, video.dir), "Video_overlay_tmp.ijm", sep=""))
+        cmd <- paste0("java -Xmx",memory,"m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste0(sub(raw.video.folder, ijmacs.folder, video.dir), "Video_overlay_tmp.ijm"))
     
     if(.Platform$OS.type == "windows")
 		cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Video_overlay_tmp.ijm')
@@ -446,7 +448,7 @@ Merge_particle_link_experiment_data <- function(to.data,
 
 
 
-create_prediction_plots <- function(path,width,height,difference.lag){ 
+create_prediction_plots <- function(path,width,height,difference.lag,memory=memory.alloc){
   ## function that produces labelled overlays based on the classification and the original tracks:
   ## different species are coloured
   ## numbered objects without halo where filtered out before classification and are therefore artefacts,
@@ -500,7 +502,7 @@ create_prediction_plots <- function(path,width,height,difference.lag){
   
   ## call IJ macro to merge original video with the trajectory data
   if(.Platform$OS.type == "unix"){
-    cmd <- paste("java -Xmx8192m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste(sub(raw.video.folder,"ijmacs",video.dir), "/Prediction_overlay_tmp.ijm",sep=""))
+    cmd <- paste0("java -Xmx",memory,"m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", paste0(sub(raw.video.folder,"ijmacs",video.dir), "/Prediction_overlay_tmp.ijm"))
   }
   if(.Platform$OS.type == "windows"){
     cmd <- c('"C:/Program Files/FIJI.app/fiji-win64.exe" -macro Prediction_overlay_tmp.ijm')}

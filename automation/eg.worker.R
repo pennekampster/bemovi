@@ -14,7 +14,9 @@ rm(list=ls())
 ## specify difference.lag for both Particle Analyzer as well as Tracker
 difference.lag <- 10
 ## specify threshold values
-thresholds = c(10,255)
+thresholds <- c(10,255)
+## specify global memory for analysis (i.e. 75% of available memory in Mb)
+memory.alloc <- c(24000)
 
 
 ## Owen's paths (could read "OS X, linux, etc paths)
