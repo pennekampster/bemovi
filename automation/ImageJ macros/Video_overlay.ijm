@@ -17,14 +17,14 @@ frames=frames;
 width=width;
 height=height;
 channels=channels;
-run("RGB Color");
+//run("RGB Color");
 vid1 = getTitle();
 
 if (endsWith(list[i],"avi")){
 // Open stack with picture sequence from which trajectories were extracted (original gray scale images)
 run("AVI...", "select=["+avi_input+replace(list2[i],"/",".avi")+"] first=1 last="+slices+"");
 run("Enhance Contrast...", "saturated=1 process_all");
-run("RGB Color");
+//run("RGB Color");
 run("Invert", "stack");
 vid2 = getTitle();
 }
