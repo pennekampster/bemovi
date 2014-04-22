@@ -9,10 +9,10 @@
 
 calculate_mvt <- function(data){
   
-library(circular)
-library(CircStats)
-library(dplyr)
-library(sqldf)  
+# library(circular)
+# library(CircStats)
+# library(dplyr)
+# library(sqldf)  
 
 anglefun <- function(xx,yy,bearing=TRUE,as.deg=FALSE){
   

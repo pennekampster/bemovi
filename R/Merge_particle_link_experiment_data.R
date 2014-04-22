@@ -9,7 +9,7 @@
 #' @param video.description.folder Directory containing the video description file
 #' @param video.description.file Name of the video description file
 #' @param merged.data.folder Directory where the global database is saved
-#' @return
+#' @return Saves the global database to the merged.data.folder
 #' @export
 Merge_particle_link_experiment_data <- function(to.data, particle.data.folder, trajectory.data.folder, video.description.folder, 
                                                 video.description.file, merged.data.folder) {

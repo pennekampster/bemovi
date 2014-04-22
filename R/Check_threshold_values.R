@@ -5,7 +5,6 @@
 #' @param difference_lag Numeric value specifying the offset between two video frames to 
 #' compute the difference image
 #' @param thresholds Numeric vector containing the min and max threshold values
-#' @return Null
 #' @export
 Check_threshold_values <- function(to.data, raw.video.folder, difference.lag, thresholds = c(10, 255)) {
   
