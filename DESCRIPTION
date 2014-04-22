@@ -1,0 +1,11 @@
+Package: franco
+Title: 
+Description: A package to automatically measure the abundance and traits of
+    aquatic microbes using digital video processing and machine learning
+Version: 0.1
+Authors: Frank Pennekamp <Frank.Pennekamp@ieu.uzh.ch>,
+    Owen Petchey <Owen.Petchey@ieu.uzh.ch>
+Depends:
+    R (>= 3.0.2)
+License: MIT
+LazyData: true
