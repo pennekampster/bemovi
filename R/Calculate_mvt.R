@@ -4,15 +4,9 @@
 #' such as the gross and net displacement, absolute and relative angles and duration
 #' @param data Dataframe containing the X- and Y-coordinates, the frame and the trajectory ID
 #' @return Returns the original dataframe with movement metrics attached
-#' @import circular CircStats dplyr sqldf
 #' @export
 
 calculate_mvt <- function(data){
-  
-# library(circular)
-# library(CircStats)
-# library(dplyr)
-# library(sqldf)  
 
 anglefun <- function(xx,yy,bearing=TRUE,as.deg=FALSE){
   
@@ -43,8 +37,6 @@ anglefun <- function(xx,yy,bearing=TRUE,as.deg=FALSE){
   tempangle[tempangle==-9999] <- NA
   return(tempangle)
 }
-
-
 
 # shortened function to calculate turning angles from absolute angles
 rel.angle <- function(abs.angle){
@@ -80,8 +72,7 @@ step_length <- function(x,y){
 step_duration <- function(frame){
   
   # function to extract step duration for each step
-  
-  step_duration <- diff(frame)
+    step_duration <- diff(frame)
   step_duration <- c(step_duration,-9999)
   step_duration[step_duration == -9999] <- NA
   return(step_duration)  
@@ -92,7 +83,6 @@ step_duration <- function(frame){
 net_displacement <- function(x,y){
 
 # function to calculate the net squared displacement for each step
-  
    start_x <- x[1]
    start_y <- y[1]
    R2n <- (start_x-x)^2+(start_y-y)^2
@@ -100,12 +90,13 @@ net_displacement <- function(x,y){
 
 }
 
-  data_full <- data
-  
   # create unique ID consisting of trajectory ID and file
   id <- paste(data$file,data$trajectory,sep="-")
   data <- cbind(data,id)  
-  
+
+  # keep a copy of the original data for left join later, but drop redundant columns
+  data_full <- data
+
   #order dataframe
   data <- data[order(data$file,data$trajectory,trajectory.data$frame), ]
   
@@ -126,15 +117,10 @@ net_displacement <- function(x,y){
                         gross_disp = cumsum(step_length),
                         net_disp = net_displacement(X,Y),
                         abs_angle = anglefun(diff(X),diff(Y)),
-                        rel_angle = rel.angle(anglefun(diff(X),diff(Y))))
+                        rel_angle = rel.angle(anglefun(diff(X),diff(Y))))                 
 
-  data <- sqldf("select t.*, step_length, step_duration, step_speed, gross_disp, net_disp, abs_angle, rel_angle  
-                from data_full t 
-                left join mvt_summary m
-                on t.id=m.id AND t.frame=m.frame")
-  
-  # replace sqldf with dplyr
-  # data <- left_join(data_full,mvt_summary,by=c("id","frame"))
+  mvt_summary <- subset(mvt_summary, select=c(id,frame,step_length, step_duration, step_speed, gross_disp, net_disp, abs_angle, rel_angle))
+  data <- left_join(data_full,mvt_summary,by=c("id","frame"))
   
   return(data)
 }

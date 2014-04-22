@@ -20,14 +20,13 @@ Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
   
   for (j in 1:length(all.files)) {
     
-    
     PA_data <- read.table(paste0(PA_output_dir, "/", all.files[j]), sep = "\t", header = T)
     
     ## only attempt particle linking if particles were detected in the video note: not sure what would happen if only one
     ## particle was found in one frame
     if (length(PA_data[, 1]) > 0) {
       
-      dir <- gsub(".cxd", "", sub(".ijout.txt", "", all.files[j]))
+      dir <- paste0(to.data,gsub(".cxd", "", sub(".ijout.txt", "", all.files[j])))
       dir.create(dir)
       
       for (i in 1:max(PA_data$Slice)) {
