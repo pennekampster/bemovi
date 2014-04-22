@@ -81,10 +81,8 @@ Create_overlay_videos <- function(to.data, trajectory.data.folder, raw.video.fol
   
   ## copy master copy of ImageJ macro there for treatment
   if (.Platform$OS.type == "windows") 
-    text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_overlay.ijm", 
-                      warn = FALSE)
+    text <- readLines(paste0(to.code,"ImageJ macros/Video_overlay.ijm"),warn = FALSE)
   if (.Platform$OS.type == "unix") 
-    ## text <- readLines('/Users/owenpetchey/work/git/franco/automation/ImageJ macros/Video_overlay.ijm')
     text <- readLines(paste(to.code, "ImageJ macros/Video_overlay.ijm", sep = ""))
   
   
