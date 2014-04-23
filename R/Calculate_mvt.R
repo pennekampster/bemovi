@@ -3,10 +3,10 @@
 #' The function takes the X- and Y-coordinates for each unqiue trajectory and calculates movement metrics
 #' such as the gross and net displacement, absolute and relative angles and duration
 #' @param data Dataframe containing the X- and Y-coordinates, the frame and the trajectory ID
-#' @return Returns the original dataframe with movement metrics attached
+#' @return Saves the original dataframe with movement metrics attached to the disk
 #' @export
 
-calculate_mvt <- function(data){
+calculate_mvt <- function(data,to.data,merged.data.folder){
 
 anglefun <- function(xx,yy,bearing=TRUE,as.deg=FALSE){
   
@@ -90,6 +90,9 @@ net_displacement <- function(x,y){
 
 }
 
+  # output path
+  out.dir <- paste0(to.data,merged.data.folder)
+
   # create unique ID consisting of trajectory ID and file
   id <- paste(data$file,data$trajectory,sep="-")
   data <- cbind(data,id)  
@@ -122,6 +125,6 @@ net_displacement <- function(x,y){
   mvt_summary <- subset(mvt_summary, select=c(id,frame,step_length, step_duration, step_speed, gross_disp, net_disp, abs_angle, rel_angle))
   data <- left_join(data_full,mvt_summary,by=c("id","frame"))
   
-  return(data)
+  write.csv(data, file = data, "MasterData.csv", sep = ",", row.names = F)
 }
 
