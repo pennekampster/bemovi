@@ -1,27 +1,22 @@
-## function that produces labelled overlays based on the classification and the original tracks:
-## different species are coloured
-## numbered objects without halo where filtered out before classification and are therefore artefacts,
-## though sometimes valid trajects are filtered out
-
-#' Function to create an overlay between the raw data and the extracted trajectories
-#' 
-#' A function to overlay the trajectories and the original video using plots created in R and then processed in 
-#' ImageJ; two different visualization types are available
+#' Function to create an overlay between the raw data and the trajectories; different colours are used to indicate the different
+#' species identities
+#'  
+#' A function to overlay the trajectories of different species with different colours with the original video 
+#' using plots created in R and then processed in ImageJ
+#' @param data A dataframe containing the X- and Y-coordinates, the frame, the filename from which the data was extracted, 
+#' the unique trajectory ID and a column (predict_spec) with the species labels
 #' @param path Path to the output saved from the ParticleLinker and the raw video directory
 #' @param width The width of the raw video
 #' @param height The height of the raw video
 #' @param difference_lag Numeric value specifying the offset between two video frames to 
 #' compute the difference image
-#' @param original.vid.contrast.enhancement A numeric value to increase the contrast of the raw video
 #' @param memory Numeric value specifying the amount of memory available to ImageJ
 #' @export
 
+create_prediction_plots <- function(data,path,width,height,difference.lag,original.vid.contrast.enhancement = 1, memory = memory.alloc){
 
-create_prediction_plots <- function(path,width,height,difference.lag,memory=memory.alloc){
-
+  trajectory.data <- data
   video.dir <- paste(to.data, raw.video.folder, sep="")
-  
-  trajectory.data <- predict_visual
   file_names <- unique(trajectory.data$file)  
   ## change path for output
   dir.create(paste0(path,prediction.folder))
@@ -40,20 +35,19 @@ create_prediction_plots <- function(path,width,height,difference.lag,memory=memo
   
   ## copy master copy of ImageJ macro there for treatment
   if(.Platform$OS.type == "windows")
-    text <- readLines("C:/Users/Frank/Documents/PhD/Programming/franco/automation/ImageJ macros/Video_overlay.ijm",warn = FALSE)
+    text <- readLines(paste0(to.code,"ImageJ macros/Video_overlay.ijm"),warn = FALSE)
   if(.Platform$OS.type == "unix")
-    # text <- readLines("/Users/owenpetchey/work/git/franco/automation/ImageJ macros/Video_overlay.ijm")
-    text <- readLines("/Users/Frank/franco/automation/ImageJ macros/Video_overlay.ijm")
-  text <- readLines(paste(to.code, "ImageJ macros/Prediction_overlay.ijm", sep=""))
-  
-  
+    text <- readLines(paste0(to.code,"ImageJ macros/Video_overlay.ijm"))
+    #text <- readLines(paste(to.code, "ImageJ macros/Prediction_overlay.ijm", sep=""))
+    
   ## use regular expression to insert input and output directory
   text[grep("avi_input = ", text)] <- paste("avi_input = ","'", paste0(path,raw.video.folder),"';", sep = "")
   text[grep("overlay_input = ", text)] <- paste("overlay_input = ","'", paste0(path,prediction.folder),"';", sep = "")
   text[grep("overlay_output = ", text)] <- paste("overlay_output = ","'", paste0(path,prediction.folder2),"';", sep = "")
   text[grep("lag =", text)] <- paste("lag = ",difference.lag,";", sep = "")
-  
-  
+  text[grep("Enhance Contrast", text)] <- paste("run(\"Enhance Contrast...\", \"saturated=", original.vid.contrast.enhancement, 
+                                                " process_all\");", sep = "")
+    
   ## re-create ImageJ macro for batch processing of video files with ParticleTracker
   if(.Platform$OS.type == "windows")
     writeLines(text,con=paste("C:/Program Files/Fiji.app/macros/Prediction_overlay_tmp.ijm",sep=""),sep="\n")

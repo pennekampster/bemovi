@@ -125,6 +125,6 @@ net_displacement <- function(x,y){
   mvt_summary <- subset(mvt_summary, select=c(id,frame,step_length, step_duration, step_speed, gross_disp, net_disp, abs_angle, rel_angle))
   data <- left_join(data_full,mvt_summary,by=c("id","frame"))
   
-  write.csv(data, file = data, "MasterData.csv", sep = ",", row.names = F)
+  write.csv(data, file = paste0(out.dir,"MasterData2.csv"), row.names = F)
 }
 

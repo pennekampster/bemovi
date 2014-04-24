@@ -28,7 +28,7 @@ Create_overlay_videos <- function(to.data, trajectory.data.folder, raw.video.fol
   ## change path for output
   dir.create(sub(trajectory.data.folder, temp.overlay.folder, trackdata.dir), showWarnings = F)
   for (i in 1:length(file_names)) {
-    dir.create(paste0(sub(trajectory.data.folder, temp.overlay.folder, trackdata.dir), file_names[i]), showWarnings = F)  #sub('Traj_','',filename[1]),sep='/'))
+    dir.create(paste0(sub(trajectory.data.folder, temp.overlay.folder, trackdata.dir), file_names[i]), showWarnings = F)
     trajectory.data_tmp <- subset(trajectory.data, file == file_names[i])
     j <- 0
     if (type == "traj") {
