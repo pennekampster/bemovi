@@ -6,12 +6,14 @@
 #' @param particle.data.folder Directory to which the data is saved as a text file
 #' @param difference_lag Numeric value specifying the offset between two video frames to 
 #' compute the difference image
+#' @param min_size Minimum size for detection of particles
+#' @param max_size Maximum size for detection of particles
 #' @param thresholds Numeric vector containing the min and max threshold values
 #' @param memory Numeric value specifying the amount of memory available to ImageJ
 #' @return Saves the output of the ParticleAnalyzer function of ImageJ as a text file in the output directory
 #' @export 
-Locate_and_measure_particles <- function(to.data, raw.video.folder, particle.data.folder, difference.lag, thresholds = c(0, 
-                                                                                                                         1000), memory = memory.alloc) {
+Locate_and_measure_particles <- function(to.data, raw.video.folder, particle.data.folder, difference.lag, min_size=0, max_size=10000, 
+thresholds = c(0, 1000), memory = memory.alloc) {
   
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   
@@ -20,11 +22,11 @@ Locate_and_measure_particles <- function(to.data, raw.video.folder, particle.dat
   
   ## use regular expression to insert input & output directory as well as difference lag
   text[grep("avi_input = ", text)] <- paste("avi_input = ", "'", video.dir, "';", sep = "")
-  text[grep("avi_output = ", text)] <- paste("avi_output = ", "'", sub("1 - raw/", particle.data.folder, video.dir), 
-                                             "';", sep = "")
+  text[grep("avi_output = ", text)] <- paste("avi_output = ", "'", sub("1 - raw/", particle.data.folder, video.dir), "';", sep = "")
   text[grep("lag = ", text)] <- paste("lag = ", difference.lag, ";", sep = "")
   text[grep("setThreshold", text)] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep = "")
-  
+  text[grep("size=", text)] <- paste('run("Analyze Particles...", "size=',min_size,'-',max_size,' circularity=0.00-1.00 show=Nothing clear stack");',sep = "")
+    
   ## re-create ImageJ macro for batch processing of video files with Particle Analyzer
   if (.Platform$OS.type == "windows") 
     writeLines(text, con = paste("C:/Program Files/Fiji.app/macros/Video_to_morphology_tmp.ijm", sep = ""), sep = "\n")
