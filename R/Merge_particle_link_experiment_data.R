@@ -22,7 +22,8 @@ Merge_particle_link_experiment_data <- function(to.data, particle.data.folder, t
   morphology.data <- read.table(paste0(to.data, particle.data.folder, "particle.data.txt"), row.names = 1)
   trajectory.data <- read.table(paste0(to.data, trajectory.data.folder, "trajectory.data.txt"), header = TRUE, sep = "\t")
   
-  ## Prep for merging the trajectory data Note that the next lines also swap the x and y
+  # Prep for merging the trajectory data 
+  # Note that the next lines also swap the x and y
   trajectory.data$Y1 <- -trajectory.data$X
   trajectory.data$X1 <- trajectory.data$Y
   trajectory.data$X <- trajectory.data$X1
