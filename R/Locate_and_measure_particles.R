@@ -40,8 +40,8 @@ thresholds = c(0, 1000), memory = memory.alloc) {
   
   ## run to process video files by calling ImageJ
   if (.Platform$OS.type == "unix") 
-    cmd <- paste0("java -Xmx", memory, "m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", 
-                  paste0(sub("1 - raw", "ijmacs", video.dir), "Video_to_morphology_tmp.ijm"))
+    cmd <- paste0("java -Xmx", memory, "m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ","'", 
+                  paste0(sub("1 - raw", "ijmacs", video.dir), "Video_to_morphology_tmp.ijm'"))
   if (.Platform$OS.type == "windows") 
     cmd <- c("\"C:/Program Files/FIJI.app/fiji-win64.exe\" -macro Video_to_morphology_tmp.ijm")
   system(cmd)
