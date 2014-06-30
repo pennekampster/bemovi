@@ -112,7 +112,7 @@ Create_overlay_videos <- function(to.data, trajectory.data.folder, raw.video.fol
   ## call IJ macro to merge original video with the trajectory data
   if (.Platform$OS.type == "unix") 
     cmd <- paste0("java -Xmx", memory, "m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", 
-                  paste0(sub(raw.video.folder, ijmacs.folder, video.dir), "Video_overlay_tmp.ijm"))
+                  paste0("'", sub(raw.video.folder, ijmacs.folder, video.dir), "Video_overlay_tmp.ijm", "'"))
   
   if (.Platform$OS.type == "windows") 
     cmd <- c("\"C:/Program Files/FIJI.app/fiji-win64.exe\" -macro Video_overlay_tmp.ijm")

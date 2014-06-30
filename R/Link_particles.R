@@ -7,10 +7,10 @@
 #' @param linkrange Numeric value passed to the ParticleLinker specifying the range of adjacent frames which
 #' are taken into account when a trajectory is assembled 
 #' @param disp A numeric value that specifies the maximum displacement of a given particle between two frames
+#' @param start_vid Numeric value to indicate whether the linking should be started with a video other than the first
 #' @return Returns a text file which contains the X- and Y-coordinates, the frame and a trajectory ID
 #' @export
-Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder, memory = memory.alloc, linkrange = 5, 
-                           disp = 20) {
+Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder, memory = memory.alloc, linkrange = 5, disp = 20, start_vid = 1) {
   
   PA_output_dir <- paste0(to.data, particle.data.folder)
   traj_out.dir <- paste0(to.data, trajectory.data.folder)
@@ -18,7 +18,7 @@ Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
   dir.create(traj_out.dir, showWarnings = F)
   all.files <- dir(PA_output_dir, pattern = ".ijout.txt")
   
-  for (j in 1:length(all.files)) {
+  for (j in start_vid:length(all.files)) {
     
     PA_data <- read.table(paste0(PA_output_dir, "/", all.files[j]), sep = "\t", header = T)
     
@@ -43,14 +43,14 @@ Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
       ## run ParticleLinker
       if (.Platform$OS.type == "unix") {
         cmd <- paste0("java -Xmx", memory, "m -Dparticle.linkrange=", linkrange, " -Dparticle.displacement=", disp, 
-                      " -jar ", to.particlelinker.owen, "/ParticleLinker.jar ", "'", dir,"'", " \"", traj_out.dir,"/ParticleLinker_", 
+                      " -jar ", to.particlelinker, "/ParticleLinker.jar ", "'", dir, "'", " \"", traj_out.dir,"/ParticleLinker_", 
                       all.files[j], ".txt\"")
         system(cmd)
       }
       
       if (.Platform$OS.type == "windows") {
         cmd <- paste0("C:/Progra~2/java/jre7/bin/javaw.exe -Xmx", memory, "m -Dparticle.linkrange=", linkrange, 
-                      " -Dparticle.displacement=", disp, " -jar ", to.particlelinker.frank, "/ParticleLinker.jar ", dir, " \"", 
+                      " -Dparticle.displacement=", disp, " -jar ", to.particlelinker, "/ParticleLinker.jar ", "'", dir, "'", " \"", 
                       traj_out.dir, "/ParticleLinker_", all.files[j], ".txt\"")
         system(cmd)
       }

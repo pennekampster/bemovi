@@ -3,7 +3,7 @@
 \title{Function to link the particle coordinates through time}
 \usage{
 Link_particles(to.data, particle.data.folder, trajectory.data.folder,
-  memory = memory.alloc, linkrange = 5, disp = 20)
+  memory = memory.alloc, linkrange = 5, disp = 20, start_vid = 1)
 }
 \arguments{
   \item{path}{Path to the directory where the
@@ -19,6 +19,10 @@ Link_particles(to.data, particle.data.folder, trajectory.data.folder,
 
   \item{disp}{A numeric value that specifies the maximum
   displacement of a given particle between two frames}
+
+  \item{start_vid}{Numeric value to indicate whether the
+  linking should be started with a video other than the
+  first}
 }
 \value{
 Returns a text file which contains the X- and
