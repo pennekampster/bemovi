@@ -9,7 +9,6 @@ Author: Frank Pennekamp <Frank.Pennekamp@ieu.uzh.ch>,
 Maintainer: Frank Pennekamp <Frank.Pennekamp@ieu.uzh.ch>
 Depends:
     R (>= 3.0.2),
-    dplyr,
     data.table,
     circular,
     CircStats
