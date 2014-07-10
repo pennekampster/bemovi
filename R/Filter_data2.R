@@ -15,19 +15,24 @@ filter_data2 <- function(raw_data,net_filter,duration_filter,detect_filter,media
   
   # filter out single coordinate detections
   raw_data <- raw_data[!is.na(raw_data$trajectory),]
-  raw_data$time <- raw_data$frame  
+  # rename frame column due to clash with frame() function in base graphics
+  raw_data$frame_ <- raw_data$frame  
   raw_data <- as.data.table(raw_data)
   
-  agg_data <- raw_data[ , list(duration=max(time)-min(time)+1, N_frames=length(net_disp), max_net_disp=max(sqrt(net_disp), na.rm=T), median_step = median(step_length, na.rm=T)), by=traj] 
+  # aggregate data
+  agg_data <- raw_data[ , list(duration=max(frame_)-min(frame_)+1, N_frames=length(net_disp), max_net_disp=max(sqrt(net_disp), na.rm=T), median_step = median(step_length, na.rm=T)), by=traj] 
   agg_data[,detect:=N_frames/duration]
   
+  # filter data based on specifications given as arguments
   agg_data <- agg_data[max_net_disp>net_filter & duration > duration_filter & detect > detect_filter & median_step > median_step_filter,]
   
+  # set keys
   setkey(agg_data, traj)
   setkey(raw_data, traj)
   
+  # only retain those trajectories that fulfill specs
   filter_data <- raw_data[agg_data]
-  filter_data <- filter_data[,c("duration", "N_frames", "max_net_disp", "median_step", "detect"):=NULL]
+  filter_data <- filter_data[,c("duration", "N_frames", "max_net_disp", "median_step", "detect", "frame_"):=NULL]
   
   return(filter_data)
   

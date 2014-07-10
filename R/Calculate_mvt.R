@@ -3,11 +3,13 @@
 #' The function takes the X- and Y-coordinates for each unqiue trajectory and calculates movement metrics
 #' such as the gross and net displacement, absolute and relative angles and duration
 #' @param data Dataframe containing the X- and Y-coordinates, the frame and the trajectory ID
-#' @return Saves the original dataframe with movement metrics attached to the disk
+#' @param write Saves the original dataframe with movement metrics attached to the disk
+#' @return Returns a data.table with the movement metrics for each fixed appended to the original dataframe
 #' @export
 
-calculate_mvt <- function(data,to.data,merged.data.folder){
+calculate_mvt <- function(data,to.data,merged.data.folder,write=FALSE){
 
+# define the functions to calculate movement parameters
 anglefun <- function(xx,yy,bearing=TRUE,as.deg=FALSE){
   
   ## http://quantitative-ecology.blogspot.ch/2007/05/anglefun-function-xxyy-bearing-true-as.html
@@ -50,11 +52,15 @@ rel.angle <- function(abs.angle){
   ta[ta > pi] = ta[ta > pi] - 2*pi
   ta <- c(-9999,ta,-9999)
   ta[ta == -9999] <- NA
+  ta <- as.numeric(ta)
   return(ta)}
   
   else {
   obs <- (length(abs.angle)+1)
   ta <- rep(NA,obs)
+  #ta <- rep(-9999,obs)
+  #ta[ta == -9999] <- NA
+  ta <- as.numeric(ta)
   return(ta)}
 }
 
@@ -69,10 +75,10 @@ step_length <- function(x,y){
   
 }
 
-step_duration <- function(frame){
+step_duration <- function(frame_){
   
   # function to extract step duration for each step
-    step_duration <- diff(frame)
+  step_duration <- diff(frame_)
   step_duration <- c(step_duration,-9999)
   step_duration[step_duration == -9999] <- NA
   return(step_duration)  
@@ -95,13 +101,14 @@ net_displacement <- function(x,y){
 
   # create unique ID consisting of trajectory ID and file
   id <- paste(data$file,data$trajectory,sep="-")
-  data <- cbind(data,id)  
+  data <- as.data.table(cbind(data,id))
 
   # keep a copy of the original data for left join later, but drop redundant columns
   data_full <- data
 
   #order dataframe
-  data <- data[order(data$file,data$trajectory,trajectory.data$frame), ]
+  setkey(data, file, trajectory, frame)
+  #data <- data[order(data$file,data$trajectory,trajectory.data$frame), ]
   
   # filter out single coordinates which do not form trajectories
   data <- data[!is.na(data$trajectory),]
@@ -110,21 +117,46 @@ net_displacement <- function(x,y){
   data <- data[-which(diff(data$X) == 0 & diff(data$Y) == 0),]
   
   #subset dataset to only include relevant movement information
-  data <- data[,c("file","X","Y","frame","id","trajectory")]
-  
-  mvt_summary <- data %.%
-                 group_by(id) %.%
-                 mutate(step_length = step_length(X,Y),
-                        step_duration = step_duration(frame),
-                        step_speed = step_length/step_duration,
-                        gross_disp = cumsum(step_length),
-                        net_disp = net_displacement(X,Y),
-                        abs_angle = anglefun(diff(X),diff(Y)),
-                        rel_angle = rel.angle(anglefun(diff(X),diff(Y))))                 
+  #data <- data[,c("file","X","Y","frame","id","trajectory")]
+  data <- data[,list(file,X,Y,frame,id,trajectory)]
+  #rename frame column to avoid clashes with frame() function
+  setnames(data, c("file","X","Y","frame","id","trajectory"), c("file","X","Y","frame_","id","trajectory"))
 
-  mvt_summary <- subset(mvt_summary, select=c(id,frame,step_length, step_duration, step_speed, gross_disp, net_disp, abs_angle, rel_angle))
-  data <- left_join(data_full,mvt_summary,by=c("id","frame"))
-  
-  write.csv(data, file = paste0(out.dir,"MasterData2.csv"), row.names = F)
+#    data <- as.data.frame(data)
+#    mvt_summary <- data %.%
+#                   group_by(id) %.%
+#                   mutate(step_length = step_length(X,Y),
+#                          step_duration = step_duration(frame_),
+#                          step_speed = step_length/step_duration,
+#                          gross_disp = cumsum(step_length),
+#                          net_disp = net_displacement(X,Y),
+#                          abs_angle = anglefun(diff(X),diff(Y)),
+#                          rel_angle = rel.angle(anglefun(diff(X),diff(Y))))
+#mvt_summary <- as.data.table(mvt_summary)
+
+mvt_summary <- data[,list(frame = frame_,
+                         step_length = step_length(X,Y),
+                         step_duration = step_duration(frame_),
+                         step_speed = step_length(X,Y)/step_duration(frame_),
+                         gross_disp = cumsum(step_length(X,Y)),
+                         net_disp = net_displacement(X,Y),
+                         abs_angle = anglefun(diff(X),diff(Y)),
+                         rel_angle = rel.angle(anglefun(diff(X),diff(Y)))), by=id]
+
+# mvt_summary <- subset(mvt_summary, select=c(id,frame,step_length, step_duration, step_speed, gross_disp, net_disp, abs_angle, rel_angle))
+#   data <- left_join(data_full,mvt_summary,by=c("id","frame"))
+
+mvt_summary <- mvt_summary[ , list(id,frame,step_length, step_duration, step_speed, gross_disp, net_disp, abs_angle, rel_angle)]
+# rename back
+#setnames(mvt_summary, c("id","frame_","step_length", "step_duration", "step_speed", "gross_disp", "net_disp", "abs_angle", "rel_angle"),
+#         c("id","frame","step_length", "step_duration", "step_speed", "gross_disp", "net_disp", "abs_angle", "rel_angle"))
+
+data <- merge(data_full,mvt_summary,by=c("id","frame"), all.x=T)
+
+# if (write==TRUE){write.csv(data, file = paste0(out.dir,"MasterData2.csv"), row.names = F)}
+if (write==TRUE){save(data, file = paste0(out.dir,"MasterData.Rdata"))}
+
+return(data)
 }
+
 
