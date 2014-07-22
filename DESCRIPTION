@@ -1,4 +1,4 @@
-Package: franco
+Package: fRanco
 Title: A package to extract abundance, morphological and behavioural data from
     videos of aquatic microbes
 Description: A package to automatically measure the abundance and traits of
