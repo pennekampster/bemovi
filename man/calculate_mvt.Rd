@@ -1,19 +1,27 @@
 \name{calculate_mvt}
 \alias{calculate_mvt}
-\title{A function to calculate the movement metrics used for species identification}
+\title{A function to calculate movement metrics for each trajectory, which can be used to predict the species identity}
 \usage{
-calculate_mvt(data, to.data, merged.data.folder, write = FALSE)
+calculate_mvt(data, write = FALSE, to.data, merged.data.folder)
 }
 \arguments{
-  \item{data}{Dataframe containing the X- and
+  \item{data}{dataframe containing the X- and
   Y-coordinates, the frame and the trajectory ID}
 
   \item{write}{Saves the original dataframe with movement
   metrics attached to the disk}
+
+  \item{to.data}{path to the working directory}
+
+  \item{merged.data.folder}{directory where the data is
+  saved, if write is TRUE}
 }
 \value{
-Returns a data.table with the movement metrics for each
-fixed appended to the original dataframe
+returns a data.table with the movement metrics for each fix
+appended to the original data (NB: movement metrics often
+need two (e.g. step length), sometimes even three fixes
+(turning angles) to be calculated; fixes for which metrics
+cannot be calculated are padded with NA)
 }
 \description{
 The function takes the X- and Y-coordinates for each unqiue

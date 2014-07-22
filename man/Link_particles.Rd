@@ -1,31 +1,36 @@
-\name{Link_particles}
-\alias{Link_particles}
+\name{link_particles}
+\alias{link_particles}
 \title{Function to link the particle coordinates through time}
 \usage{
-Link_particles(to.data, particle.data.folder, trajectory.data.folder,
-  memory = memory.alloc, linkrange = 5, disp = 20, start_vid = 1)
+link_particles(to.data, particle.data.folder, trajectory.data.folder,
+  memory = memory.alloc, linkrange = 1, disp = 20, start_vid = 1)
 }
 \arguments{
-  \item{path}{Path to the directory where the
+  \item{to.data}{path to the working directory}
+
+  \item{particle.data.folder}{directory where the
   ParticleAnalyzer output is saved (as text files)}
 
-  \item{memory}{Numeric value specifying the amount of
-  memory available to the ParticleLinker}
+  \item{trajectory.data.folder}{directory where the
+  ParticleLinker is saved (as text files)}
 
-  \item{linkrange}{Numeric value passed to the
+  \item{memory}{numeric value specifying the max amount of
+  memory allocated to the ParticleLinker}
+
+  \item{linkrange}{numeric value passed to the
   ParticleLinker specifying the range of adjacent frames
   which are taken into account when a trajectory is
-  assembled}
+  re-constructed}
 
-  \item{disp}{A numeric value that specifies the maximum
+  \item{disp}{numeric value that specifies the maximum
   displacement of a given particle between two frames}
 
-  \item{start_vid}{Numeric value to indicate whether the
+  \item{start_vid}{numeric value to indicate whether the
   linking should be started with a video other than the
   first}
 }
 \value{
-Returns a text file which contains the X- and
+Returns a single text file per video containing the X- and
 Y-coordinates, the frame and a trajectory ID
 }
 \description{

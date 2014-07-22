@@ -1,14 +1,17 @@
-\name{Check_video_file_names}
-\alias{Check_video_file_names}
-\title{Function to check if there are any unsupported file types or names}
+\name{check_video_file_names}
+\alias{check_video_file_names}
+\title{Function to check that video files have extension cxd or avi, and that they are otherwise compatible.}
 \usage{
-Check_video_file_names(to.data, raw.video.folder)
+check_video_file_names(to.data, raw.video.folder)
 }
 \arguments{
-  \item{path}{Path to the raw videos to be treated}
+  \item{to.data}{path to the working directory}
+
+  \item{raw.video.folder}{directory with the raw video
+  files}
 }
 \value{
-Returns an error message and a list with unsupported files
+returns an error message and a list with unsupported files
 or names
 }
 \description{

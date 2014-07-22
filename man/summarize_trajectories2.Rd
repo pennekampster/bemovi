@@ -1,19 +1,19 @@
 \name{summarize_trajectories2}
 \alias{summarize_trajectories2}
-\title{Function to summarize the mean morphology and movement and its variability on a trajectory level}
+\title{Function to summarize the average morphology and movement and their variability on the trajectory level}
 \usage{
 summarize_trajectories2(data, write = FALSE)
 }
 \arguments{
-  \item{data}{Dataframe with the information on morphology
+  \item{data}{dataframe with the information on morphology
   and movement for each frame}
 
-  \item{write}{Logical argument to indicate whether
-  aggregated information should save to disk}
+  \item{write}{logical argument to indicate whether
+  aggregated information should be saved to disk}
 }
 \value{
-Returns a dataframe with the aggregated information for
-each trajectory
+returns a dataframe with the aggregated morphology and
+movement information for each trajectory
 }
 \description{
 Takes the data comprising the information for each frame
