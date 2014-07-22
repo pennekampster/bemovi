@@ -1,18 +1,13 @@
 setBatchMode(false);
 
 // input user information;
-avi_input = '/Users/owenpetchey/Desktop/experiment2/videocounts/video5/1 - raw/';
-avi_output = '/Users/owenpetchey/Desktop/hard.test/1 - raw checkthresh/';
+
+avi_input = '/Users/Frank/Documents/Postdoc/Temporary projects/test/1 - raw/';
+// choose the video to work on, remember that the numbering starts at 0 in ImageJ
+i=0;
 lag = 10;
 
 list = getFileList(avi_input);
-
-
-// for (i=0; i<lengthOf(list); i++) {
-
-// choose the video to work on, remember that the numbering starts at 0 in imagej
-i=0;
-
 
 if (endsWith(list[i],"avi")){
 run("AVI...", "select=["+avi_input+list[i]+"] convert");
@@ -28,27 +23,23 @@ vid1 = getTitle();
 run("Make Substack...", "  slices="+lag+"-"+slices+"");
 vid2 = getTitle();
 selectWindow(vid1);
-run("Make Substack...", "  slices=1-"+slices-(lag-1)+"");
+run("Make Substack...", "  slices="+slices-2*(lag-1)+"-"+slices-lag+"");
 vid3 = getTitle();
-//selectWindow(vid1);
-//close();
-imageCalculator("Subtract create stack", vid2, vid3);
+run("Concatenate...", "  image1=["+vid2+"] image2=["+vid3+"] image3=[-- None --]");
+vid5 = getTitle();
+imageCalculator("Subtract create stack", vid1, vid5);
 vid4 = getTitle();
-selectWindow(vid2);
-close();
-selectWindow(vid3);
+selectWindow(vid5);
 close();
 selectWindow(vid4);
-setThreshold(2000,50000);
+close(vid1); // execute the macro till this line
+
+// play with the min and max threshold
+setThreshold(10,255);
+
+// run the following command to see the resulting difference image
 run("Convert to Mask", "method=Default background=Default");
-//run("AVI... ", "compression=JPEG frame=26 save=["+avi_output+list[i]+"]");
-
-
-//selectWindow(vid1);
-//close();
-//close();
 }
-
 
 if (endsWith(list[i],"cxd")){
 run("Bio-Formats", "open=["+avi_input+list[i]+"] autoscale color_mode=Default view=[Standard ImageJ] stack_order=Default");
@@ -59,31 +50,29 @@ frames=frames;
 width=width;
 height=height;
 channels=channels;
+run("Properties...", "channels=1 slices=1 frames="+slices+" unit=pixel pixel_width=1.0000 pixel_height=1.0000 voxel_depth=1.0000 frame=[0 sec] origin=0,0");
 vid1 = getTitle();
-run("Make Substack...", "  slices="+lag+"-"+frames+"");
+run("Make Substack...", "  slices="+lag+"-"+slices+"");
 vid2 = getTitle();
 selectWindow(vid1);
-run("Make Substack...", "  slices=1-"+frames-(lag-1)+"");
+run("Make Substack...", "  slices="+slices-2*(lag-1)+"-"+slices-lag+"");
 vid3 = getTitle();
-//selectWindow(vid1);
-//close();
-imageCalculator("Subtract create stack", vid2, vid3);
+run("Concatenate...", "  image1=["+vid2+"] image2=["+vid3+"] image3=[-- None --]");
+vid5 = getTitle();
+imageCalculator("Subtract create stack", vid1, vid5);
 vid4 = getTitle();
-selectWindow(vid2);
-close();
-selectWindow(vid3);
+//selectWindow(vid2);
+//close();
+//selectWindow(vid3);
+//close();
+selectWindow(vid5);
 close();
 selectWindow(vid4);
-setThreshold(2000,50000);
+close(vid1); // execute the macro till this line
+
+// play with the min and max threshold
+setThreshold(10,255);
+
+// run the following command to see the resulting difference image
 run("Convert to Mask", "method=Default background=Default");
-//run("AVI... ", "compression=JPEG frame=26 save=["+avi_output+replace(list[i],".cxd",".avi")+"]");
-
-
-
-//selectWindow(vid1);
-//close();
-//close();
 }
-
-
-//run("Quit");
