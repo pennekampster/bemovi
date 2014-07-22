@@ -1,9 +1,9 @@
-#' Function to summarize the mean morphology and movement and its variability on a trajectory level
+#' Function to summarize the average morphology and movement and their variability on the trajectory level
 #' 
 #' Takes the data comprising the information for each frame and calculates mean and sd along the trajectory
-#' @param data Dataframe with the information on morphology and movement for each frame
-#' @param write Logical argument to indicate whether aggregated information should save to disk
-#' @return Returns a dataframe with the aggregated information for each trajectory 
+#' @param data dataframe with the information on morphology and movement for each frame
+#' @param write logical argument to indicate whether aggregated information should be saved to disk
+#' @return returns a dataframe with the aggregated morphology and movement information for each trajectory 
 #' @export
 
 summarize_trajectories2 <- function(data, write=FALSE){
