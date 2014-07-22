@@ -2,15 +2,17 @@
 #' 
 #' The function converts the XY-coordinates of the ParticleAnalyzer into a temporary structure (e.g. folder 
 #' with all coordinates per frame in a separate text file) that can be read by the standalone ParticleLinker
-#' @param path Path to the directory where the ParticleAnalyzer output is saved (as text files)
-#' @param memory Numeric value specifying the amount of memory available to the ParticleLinker
-#' @param linkrange Numeric value passed to the ParticleLinker specifying the range of adjacent frames which
-#' are taken into account when a trajectory is assembled 
-#' @param disp A numeric value that specifies the maximum displacement of a given particle between two frames
-#' @param start_vid Numeric value to indicate whether the linking should be started with a video other than the first
-#' @return Returns a text file which contains the X- and Y-coordinates, the frame and a trajectory ID
+#' @param to.data path to the working directory 
+#' @param particle.data.folder directory where the ParticleAnalyzer output is saved (as text files)
+#' @param trajectory.data.folder directory where the ParticleLinker is saved (as text files)
+#' @param memory numeric value specifying the max amount of memory allocated to the ParticleLinker
+#' @param linkrange numeric value passed to the ParticleLinker specifying the range of adjacent frames which
+#' are taken into account when a trajectory is re-constructed 
+#' @param disp numeric value that specifies the maximum displacement of a given particle between two frames
+#' @param start_vid numeric value to indicate whether the linking should be started with a video other than the first
+#' @return Returns a single text file per video containing the X- and Y-coordinates, the frame and a trajectory ID
 #' @export
-Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder, memory = memory.alloc, linkrange = 5, disp = 20, start_vid = 1) {
+link_particles <- function(to.data, particle.data.folder, trajectory.data.folder, memory = memory.alloc, linkrange = 1, disp = 20, start_vid = 1) {
   
   PA_output_dir <- paste0(to.data, particle.data.folder)
   traj_out.dir <- paste0(to.data, trajectory.data.folder)
@@ -26,7 +28,7 @@ Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
     ## particle was found in one frame
     if (length(PA_data[, 1]) > 0) {
       
-      dir <- paste0(to.data,gsub(".cxd", "", sub(".ijout.txt", "", all.files[j])))
+      dir <- paste0(to.data, gsub(".cxd", "", sub(".ijout.txt", "", all.files[j])))
       dir.create(dir)
       
       for (i in 1:max(PA_data$Slice)) {
@@ -44,14 +46,14 @@ Link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
       if (.Platform$OS.type == "unix") {
         cmd <- paste0("java -Xmx", memory, "m -Dparticle.linkrange=", linkrange, " -Dparticle.displacement=", disp, 
                       " -jar ", to.particlelinker, "/ParticleLinker.jar ", "'", dir, "'", " \"", traj_out.dir,"/ParticleLinker_", 
-                      all.files[j], ".txt\"")
+                      all.files[j],"\"")
         system(cmd)
       }
       
       if (.Platform$OS.type == "windows") {
         cmd <- paste0("C:/Progra~2/java/jre7/bin/javaw.exe -Xmx", memory, "m -Dparticle.linkrange=", linkrange, 
                       " -Dparticle.displacement=", disp, " -jar ", to.particlelinker, "/ParticleLinker.jar ", "'", dir, "'", " \"", 
-                      traj_out.dir, "/ParticleLinker_", all.files[j], ".txt\"")
+                      traj_out.dir, "/ParticleLinker_", all.files[j], "\"")
         system(cmd)
       }
       
