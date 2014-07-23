@@ -1,19 +1,18 @@
-#' Function to create an overlay between the raw data and the trajectories; different colours are used to indicate the different
-#' species identities
+#' Function to create an overlay between the raw video data and the extracted trajectories; different colours are used to indicate the different species
 #'  
 #' A function to overlay the trajectories of different species with different colours with the original video 
 #' using plots created in R and then processed in ImageJ
-#' @param data A dataframe containing the X- and Y-coordinates, the frame, the filename from which the data was extracted, 
-#' the unique trajectory ID and a column (predict_spec) with the species labels
-#' @param path Path to the output saved from the ParticleLinker and the raw video directory
-#' @param width The width of the raw video
+#' @param data dataframe containing the X- and Y-coordinates, the frame, the filename from which the data was extracted, the unique trajectory ID and a column (predict_spec) with the species labels
+#' @param path path to the output saved from the ParticleLinker and the raw video directory
+#' @param prediction.folder directory where the overlays are saved
+#' @param width width of the raw video
 #' @param height The height of the raw video
 #' @param difference_lag Numeric value specifying the offset between two video frames to 
 #' compute the difference image
 #' @param memory Numeric value specifying the amount of memory available to ImageJ
 #' @export
 
-create_prediction_plots <- function(data,path,width,height,difference.lag,original.vid.contrast.enhancement = 1, memory = memory.alloc){
+create_prediction_plots <- function(data, path, prediction.folder, width, height, difference.lag, original.vid.contrast.enhancement = 1, memory = memory.alloc){
 
   trajectory.data <- data
   video.dir <- paste(to.data, raw.video.folder, sep="")
