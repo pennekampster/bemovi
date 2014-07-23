@@ -36,6 +36,7 @@ close(vid1); // execute the macro till this line
 
 setBatchMode(false);
 // play with the min and max threshold
+setThreshold(10,255);
 run("Threshold...");
 }
 
@@ -70,5 +71,6 @@ close(vid1); // execute the macro till this line
 
 setBatchMode(false);
 // play with the min and max threshold
+setThreshold(10,255);
 run("Threshold...");
 }
