@@ -1,39 +1,44 @@
-\name{Create_overlay_videos}
-\alias{Create_overlay_videos}
+\name{create_overlay_videos}
+\alias{create_overlay_videos}
 \title{Function to create an overlay between the raw data and the extracted trajectories}
 \usage{
-Create_overlay_videos(to.data, trajectory.data.folder, raw.video.folder,
+create_overlay_videos(to.data, trajectory.data.folder, raw.video.folder,
   temp.overlay.folder, overlay.folder, width, height, difference.lag,
-  type = "traj", original.vid.contrast.enhancement = 1,
+  type = "traj", original.vid.contrast.enhancement = 0,
   memory = memory.alloc)
 }
 \arguments{
-  \item{path}{Path to the output saved from the
-  ParticleLinker and the raw video directory}
+  \item{to.data}{path to the working directory}
 
-  \item{temp.overlay.folder}{A temporary directory to save
+  \item{trajectory.data.folder}{directory where the output
+  of the ParticleLinker is saved}
+
+  \item{raw.video.folder}{directory with the raw video
+  files}
+
+  \item{temp.overlay.folder}{temporary directory to save
   the overlay created with R}
 
-  \item{overlay.folder}{A folder where the overlay videos
+  \item{overlay.folder}{directory where the overlay videos
   are saved}
 
-  \item{width}{The width of the raw video}
+  \item{width}{width of the raw video}
 
-  \item{height}{The height of the raw video}
+  \item{height}{height of the raw video}
 
-  \item{difference_lag}{Numeric value specifying the offset
+  \item{difference_lag}{numeric value specifying the offset
   between two video frames to compute the difference image}
 
-  \item{type}{A character string indicating the
-  visualization type (i.e. 'label' or 'traj'): either the
-  overlay is showing the trajectory ID and outlines the
-  detected particle (type='label') or the whole trajectory
-  remains plotted (type='traj').}
+  \item{type}{string indicating the visualization type
+  (i.e. 'label' or 'traj'): either the overlay is showing
+  the trajectory ID and outlines the detected particle
+  (type='label') or the whole trajectory remains plotted
+  (type='traj').}
 
-  \item{original.vid.contrast.enhancement}{A numeric value
-  to increase the contrast of the raw video}
+  \item{original.vid.contrast.enhancement}{numeric value to
+  increase the contrast of the raw video}
 
-  \item{memory}{Numeric value specifying the amount of
+  \item{memory}{numeric value specifying the amount of
   memory available to ImageJ}
 }
 \description{

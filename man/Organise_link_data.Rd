@@ -1,18 +1,19 @@
-\name{Organise_link_data}
-\alias{Organise_link_data}
+\name{organise_link_data}
+\alias{organise_link_data}
 \title{Function to merge the output of the ParticleLinker into one large database}
 \usage{
-Organise_link_data(to.data, trajectory.data.folder)
+organise_link_data(to.data, trajectory.data.folder)
 }
 \arguments{
-  \item{path}{Path to the directory where ParticleLinker
-  output is stored}
+  \item{to.data}{path to the working directory}
+
+  \item{trajectory.data.folder}{directory where the output
+  of the ParticleLinker is saved}
 }
 \value{
-Returns a text file (trajectory.data.txt) containing the X-
-and Y coordinates of a given trajectory, the frame, the
-trajectory ID and the file name of the video from which the
-data was extracted
+saves the data containing the X- and Y coordinates of a
+given trajectory, the frame, the trajectory ID and the file
+name of the video from which the data was extracted to disk
 }
 \description{
 Merge the trajectory data from the ParticleLinker into one

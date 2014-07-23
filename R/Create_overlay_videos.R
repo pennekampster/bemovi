@@ -2,27 +2,31 @@
 #' 
 #' A function to overlay the trajectories and the original video using plots created in R and then processed in 
 #' ImageJ; two different visualization types are available
-#' @param path Path to the output saved from the ParticleLinker and the raw video directory
-#' @param temp.overlay.folder A temporary directory to save the overlay created with R
-#' @param overlay.folder A folder where the overlay videos are saved
-#' @param width The width of the raw video
-#' @param height The height of the raw video
-#' @param difference_lag Numeric value specifying the offset between two video frames to 
-#' compute the difference image
-#' @param type A character string indicating the visualization type (i.e. 'label' or 'traj'): either the overlay
+#' 
+#' @param to.data path to the working directory
+#' @param trajectory.data.folder directory where the output of the ParticleLinker is saved
+#' @param raw.video.folder directory with the raw video files 
+#' @param temp.overlay.folder temporary directory to save the overlay created with R
+#' @param overlay.folder directory where the overlay videos are saved
+#' @param width width of the raw video
+#' @param height height of the raw video
+#' @param difference_lag numeric value specifying the offset between two video frames to compute the difference image
+#' @param type string indicating the visualization type (i.e. 'label' or 'traj'): either the overlay
 #' is showing the trajectory ID and outlines the detected particle (type='label') or the whole trajectory
 #' remains plotted (type='traj').
-#' @param original.vid.contrast.enhancement A numeric value to increase the contrast of the raw video
-#' @param memory Numeric value specifying the amount of memory available to ImageJ
+#' @param original.vid.contrast.enhancement numeric value to increase the contrast of the raw video
+#' @param memory numeric value specifying the amount of memory available to ImageJ
 #' @export
-Create_overlay_videos <- function(to.data, trajectory.data.folder, raw.video.folder, temp.overlay.folder, overlay.folder, 
-                                  width, height, difference.lag, type = "traj", original.vid.contrast.enhancement = 1, memory = memory.alloc) {
+
+create_overlay_videos <- function(to.data, trajectory.data.folder, raw.video.folder, temp.overlay.folder, overlay.folder, 
+                                  width, height, difference.lag, type = "traj", original.vid.contrast.enhancement = 0, memory = memory.alloc) {
   
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   
   trackdata.dir <- paste(to.data, trajectory.data.folder, sep = "")
   
-  trajectory.data <- as.data.frame(read.table(paste(trackdata.dir, "trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
+  #trajectory.data <- as.data.frame(read.table(paste(trackdata.dir, "trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
+  load(file = paste(trackdata.dir, "trajectory.RData", sep = "/")) 
   file_names <- unique(trajectory.data$file)
   
   ## change path for output
@@ -81,9 +85,9 @@ Create_overlay_videos <- function(to.data, trajectory.data.folder, raw.video.fol
   
   ## copy master copy of ImageJ macro there for treatment
   if (.Platform$OS.type == "windows") 
-    text <- readLines(paste0(to.code,"ImageJ macros/Video_overlay.ijm"),warn = FALSE)
+    text <- readLines(paste0(system.file(package="fRanco"), "/","ImageJ macros/Video_overlay.ijm"),warn = FALSE)
   if (.Platform$OS.type == "unix") 
-    text <- readLines(paste(to.code, "ImageJ macros/Video_overlay.ijm", sep = ""))
+    text <- readLines(paste0(system.file(package="fRanco"), "/","ImageJ macros/Video_overlay.ijm"))
   
   
   ## use regular expression to insert input and output directory and contrast enhancement of original video

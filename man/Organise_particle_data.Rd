@@ -1,12 +1,14 @@
-\name{Organise_particle_data}
-\alias{Organise_particle_data}
+\name{organise_particle_data}
+\alias{organise_particle_data}
 \title{Function to merge the morphology and data on X- and Y-coordinates into one file for further processing}
 \usage{
-Organise_particle_data(to.data, particle.data.folder)
+organise_particle_data(to.data, particle.data.folder)
 }
 \arguments{
-  \item{path}{Path to the text files containing the
-  morphology and coordinate data}
+  \item{to.data}{path to the working directory}
+
+  \item{particle.data.folder}{directory to which the data
+  is saved as a text file}
 }
 \description{
 This function merges the files containing morphology and

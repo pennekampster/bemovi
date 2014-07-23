@@ -2,11 +2,16 @@
 \alias{summarize_trajectories2}
 \title{Function to summarize the average morphology and movement and their variability on the trajectory level}
 \usage{
-summarize_trajectories2(data, write = FALSE)
+summarize_trajectories2(data, write = FALSE, to.data, merged.data.folder)
 }
 \arguments{
   \item{data}{dataframe with the information on morphology
   and movement for each frame}
+
+  \item{to.data}{path to the working directory}
+
+  \item{merged.data.folder}{directory where the global
+  database is saved}
 
   \item{write}{logical argument to indicate whether
   aggregated information should be saved to disk}

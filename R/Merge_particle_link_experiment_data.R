@@ -3,24 +3,26 @@
 #' Merges the morphology data, the trajectory data with the description file of the experiment containing
 #' the information on sampling units, treatments and replication. The files are merged by the use of the
 #' video file names
-#' @param path Path to the data
-#' @param particle.data.folder Directory containing the global morphology data
-#' @param trajectory.data.folder Directory containing the global trajectory data
-#' @param video.description.folder Directory containing the video description file
-#' @param video.description.file Name of the video description file
-#' @param merged.data.folder Directory where the global database is saved
-#' @return Saves the global database to the merged.data.folder
+#' @param to.data path to the working directory 
+#' @param particle.data.folder directory containing the global morphology data
+#' @param trajectory.data.folder directory containing the global trajectory data
+#' @param video.description.folder directory containing the video description file
+#' @param video.description.file name of the video description file
+#' @param merged.data.folder directory where the global database is saved
+#' @return saves the global database to the merged.data.folder
 #' @export
-Merge_particle_link_experiment_data <- function(to.data, particle.data.folder, trajectory.data.folder, video.description.folder, 
+
+merge_particle_link_experiment_data <- function(to.data, particle.data.folder, trajectory.data.folder, video.description.folder, 
                                                 video.description.file, merged.data.folder) {
   
   # read the file that gives the important information about each video
-  file.sample.info <- read.table(paste(to.data, video.description.folder, video.description.file, sep = ""), sep = "\t", 
-                                 header = TRUE)
+  file.sample.info <- read.table(paste(to.data, video.description.folder, video.description.file, sep = ""), sep = "\t", header = TRUE)
   
   ## load the two datasets
-  morphology.data <- read.table(paste0(to.data, particle.data.folder, "particle.data.txt"), row.names = 1)
-  trajectory.data <- read.table(paste0(to.data, trajectory.data.folder, "trajectory.data.txt"), header = TRUE, sep = "\t")
+  #morphology.data <- read.table(paste0(to.data, particle.data.folder, "particle.data.txt"), row.names = 1)
+  load(paste0(to.data, particle.data.folder,"particle.RData"))
+  #trajectory.data <- read.table(paste0(to.data, trajectory.data.folder, "trajectory.data.txt"), header = TRUE, sep = "\t")
+  load(paste0(to.data, trajectory.data.folder,"trajectory.RData"))
   
   # Prep for merging the trajectory data 
   # Note that the next lines also swap the x and y
@@ -39,8 +41,7 @@ Merge_particle_link_experiment_data <- function(to.data, particle.data.folder, t
   morphology.data$file <- sub(".cxd", "", morphology.data$file)
   
   ## merge the two datasets
-  merged1 <- merge(morphology.data, trajectory.data, by.x = c("X", "Y", "frame", "file"), by.y = c("X", "Y", "frame", 
-                                                                                                   "file"), all = T)
+  merged1 <- merge(morphology.data, trajectory.data, by.x = c("X", "Y", "frame", "file"), by.y = c("X", "Y", "frame","file"), all = T)
   ## make the merge of the file names case insensitive
   merged1$file <- tolower(merged1$file)
   file.sample.info$video <- tolower(file.sample.info$video)
@@ -50,6 +51,7 @@ Merge_particle_link_experiment_data <- function(to.data, particle.data.folder, t
   
   dir.create(paste0(to.data, merged.data.folder), showWarnings = F)
   
-  write.csv(merged2, file = paste(paste0(to.data, merged.data.folder), "MasterData.csv", sep = "/"), row.names = F)
+  trajectory.data <- merged2
+  save(trajectory.data, file = paste0(to.data, merged.data.folder,"Master.RData")) 
   
 } 

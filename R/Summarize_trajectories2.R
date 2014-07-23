@@ -2,11 +2,13 @@
 #' 
 #' Takes the data comprising the information for each frame and calculates mean and sd along the trajectory
 #' @param data dataframe with the information on morphology and movement for each frame
+#' @param to.data path to the working directory
+#' @param merged.data.folder directory where the global database is saved
 #' @param write logical argument to indicate whether aggregated information should be saved to disk
 #' @return returns a dataframe with the aggregated morphology and movement information for each trajectory 
 #' @export
 
-summarize_trajectories2 <- function(data, write=FALSE){
+summarize_trajectories2 <- function(data, write=FALSE, to.data, merged.data.folder){
 
 data <- as.data.table(data) 
 
@@ -50,6 +52,7 @@ mvt_complete <- merge(turning,mvt_properties,by=c("traj"), all=T)
 morph_mvt <- merge(morphology,mvt_complete,by=c("traj"), all=T)
 
 #output summary data
-if (write==TRUE){write.csv(morph_mvt, file = paste(paste0(to.data, merged.data.folder), "Morph_mvt.csv", sep = "/"), row.names = F)}
+if (write==TRUE){save(morph_mvt, file = paste0(to.data, merged.data.folder,"Morph_mvt.RData"))}
 return(as.data.frame(morph_mvt))
+
 }

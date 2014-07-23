@@ -2,10 +2,11 @@
 #' 
 #' This function merges the files containing morphology and coordinates (one for each video) into large dataset,
 #' and saves it to the directory where the single files are located
-#' @param path Path to the text files containing the morphology and coordinate data
-#' @return NULL
+#' @param to.data path to the working directory
+#' @param particle.data.folder directory to which the data is saved as a text file
 #' @export
-Organise_particle_data <- function(to.data, particle.data.folder) {
+
+organise_particle_data <- function(to.data, particle.data.folder) {
   
   IJ_output.dir <- paste(to.data, particle.data.folder, sep = "")
   
@@ -31,6 +32,7 @@ Organise_particle_data <- function(to.data, particle.data.folder) {
     }
   }
   
-  assign("particle.data", dd, envir = .GlobalEnv)
-  write.table(particle.data, file = paste(IJ_output.dir, "particle.data.txt", sep = "/"), sep = "\t")
+  assign("morphology.data", dd, envir = .GlobalEnv)
+  save(morphology.data, file = paste(IJ_output.dir, "particle.RData", sep = "/"))
+  #write.table(particle.data, file = paste(IJ_output.dir, "particle.data.txt", sep = "/"), sep = "\t")
 } 

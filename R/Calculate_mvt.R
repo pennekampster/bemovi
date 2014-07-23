@@ -133,11 +133,11 @@ mvt_summary <- data[,list(frame = frame_,
 
 mvt_summary <- mvt_summary[ , list(id,frame,step_length, step_duration, step_speed, gross_disp, net_disp, abs_angle, rel_angle)]
 
-data <- merge(data_full,mvt_summary,by=c("id","frame"), all.x=T)
+trajectory.data <- merge(data_full,mvt_summary,by=c("id","frame"), all.x=T)
 
-if (write==TRUE){save(data, file = paste0(out.dir,"MasterData.Rdata"))}
+if (write==TRUE){save(trajectory.data, file = paste0(out.dir,"Master.Rdata"))}
 
-return(data)
+return(trajectory.data)
 }
 
 
