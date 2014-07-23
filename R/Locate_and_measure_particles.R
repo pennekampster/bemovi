@@ -2,23 +2,25 @@
 #' 
 #' Function calls ImageJ software and its ParticleAnalyzer function to extract for each frame of the video
 #' several morphological descriptors and the X- and Y-coordinates of all moving particles
-#' @param path Path to the raw videos to be treated
-#' @param particle.data.folder Directory to which the data is saved as a text file
-#' @param difference_lag Numeric value specifying the offset between two video frames to 
+#' @param to.data path to the working directory
+#' @param raw.video.folder directory with the raw video files 
+#' @param particle.data.folder directory to which the data is saved as a text file
+#' @param difference_lag numeric value specifying the offset between two video frames to 
 #' compute the difference image
-#' @param min_size Minimum size for detection of particles
-#' @param max_size Maximum size for detection of particles
-#' @param thresholds Numeric vector containing the min and max threshold values
-#' @param memory Numeric value specifying the amount of memory available to ImageJ
-#' @return Saves the output of the ParticleAnalyzer function of ImageJ as a text file in the output directory
+#' @param min_size minimum size for detection of particles
+#' @param max_size maximum size for detection of particles
+#' @param thresholds vector containing the min and max threshold values (e.g. c(10,255))
+#' @param memory numeric value specifying the amount of memory available to ImageJ
+#' @return saves the output of the ParticleAnalyzer function of ImageJ as a text file in the output directory
 #' @export 
-Locate_and_measure_particles <- function(to.data, raw.video.folder, particle.data.folder, difference.lag, min_size=0, max_size=10000, 
+
+locate_and_measure_particles <- function(to.data, raw.video.folder, particle.data.folder, difference.lag, min_size=0, max_size=10000, 
 thresholds = c(0, 1000), memory = memory.alloc) {
   
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   
   ## copy master copy of ImageJ macro there for treatment
-  text <- readLines(paste(to.code, "ImageJ macros/Video_to_morphology.ijm", sep = ""))
+  text <- readLines(paste0(system.file(package="fRanco"), "/", "ImageJ macros/Video_to_morphology.ijm"))
   
   ## use regular expression to insert input & output directory as well as difference lag
   text[grep("avi_input = ", text)] <- paste("avi_input = ", "'", video.dir, "';", sep = "")

@@ -1,32 +1,35 @@
-\name{Locate_and_measure_particles}
-\alias{Locate_and_measure_particles}
+\name{locate_and_measure_particles}
+\alias{locate_and_measure_particles}
 \title{Function to extract morphological measurements and X- and Y-coordinates for moving particles}
 \usage{
-Locate_and_measure_particles(to.data, raw.video.folder, particle.data.folder,
+locate_and_measure_particles(to.data, raw.video.folder, particle.data.folder,
   difference.lag, min_size = 0, max_size = 10000, thresholds = c(0, 1000),
   memory = memory.alloc)
 }
 \arguments{
-  \item{path}{Path to the raw videos to be treated}
+  \item{to.data}{path to the working directory}
 
-  \item{particle.data.folder}{Directory to which the data
+  \item{raw.video.folder}{directory with the raw video
+  files}
+
+  \item{particle.data.folder}{directory to which the data
   is saved as a text file}
 
-  \item{difference_lag}{Numeric value specifying the offset
+  \item{difference_lag}{numeric value specifying the offset
   between two video frames to compute the difference image}
 
-  \item{min_size}{Minimum size for detection of particles}
+  \item{min_size}{minimum size for detection of particles}
 
-  \item{max_size}{Maximum size for detection of particles}
+  \item{max_size}{maximum size for detection of particles}
 
-  \item{thresholds}{Numeric vector containing the min and
-  max threshold values}
+  \item{thresholds}{vector containing the min and max
+  threshold values (e.g. c(10,255))}
 
-  \item{memory}{Numeric value specifying the amount of
+  \item{memory}{numeric value specifying the amount of
   memory available to ImageJ}
 }
 \value{
-Saves the output of the ParticleAnalyzer function of ImageJ
+saves the output of the ParticleAnalyzer function of ImageJ
 as a text file in the output directory
 }
 \description{
