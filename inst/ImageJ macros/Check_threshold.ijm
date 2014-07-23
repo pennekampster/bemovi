@@ -1,10 +1,10 @@
-setBatchMode(false);
+setBatchMode(true);
 
 // input user information;
 
 avi_input = '/Users/Frank/Documents/Postdoc/Temporary projects/test/1 - raw/';
 // choose the video to work on, remember that the numbering starts at 0 in ImageJ
-i=0;
+i = 0;
 lag = 10;
 
 list = getFileList(avi_input);
@@ -34,11 +34,9 @@ close();
 selectWindow(vid4);
 close(vid1); // execute the macro till this line
 
+setBatchMode(false);
 // play with the min and max threshold
-setThreshold(10,255);
-
-// run the following command to see the resulting difference image
-run("Convert to Mask", "method=Default background=Default");
+run("Threshold...");
 }
 
 if (endsWith(list[i],"cxd")){
@@ -70,9 +68,7 @@ close();
 selectWindow(vid4);
 close(vid1); // execute the macro till this line
 
+setBatchMode(false);
 // play with the min and max threshold
-setThreshold(10,255);
-
-// run the following command to see the resulting difference image
-run("Convert to Mask", "method=Default background=Default");
+run("Threshold...");
 }
