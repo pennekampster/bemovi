@@ -24,20 +24,19 @@ create_overlay_videos <- function(to.data, trajectory.data.folder, raw.video.fol
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   
   trackdata.dir <- paste(to.data, trajectory.data.folder, sep = "")
-  
-  #trajectory.data <- as.data.frame(read.table(paste(trackdata.dir, "trajectory.data.txt", sep = ""), header = TRUE, sep = "\t"))
   load(file = paste(trackdata.dir, "trajectory.RData", sep = "/")) 
   file_names <- unique(trajectory.data$file)
   
   ## change path for output
-  dir.create(sub(trajectory.data.folder, temp.overlay.folder, trackdata.dir), showWarnings = F)
-  for (i in 1:length(file_names)) {
-    dir.create(paste0(sub(trajectory.data.folder, temp.overlay.folder, trackdata.dir), file_names[i]), showWarnings = F)
+  #dir.create(sub(trajectory.data.folder, temp.overlay.folder, trackdata.dir), showWarnings = F)
+  dir.create(paste0(to.data, temp.overlay.folder), showWarnings = F)
+    for (i in 1:length(file_names)) {
+    dir.create(paste0(to.data, temp.overlay.folder, file_names[i]), showWarnings = F)
     trajectory.data_tmp <- subset(trajectory.data, file == file_names[i])
     j <- 0
     if (type == "traj") {
       while (j < max(trajectory.data$frame) + 1) {
-        jpeg(paste(sub(trajectory.data.folder, temp.overlay.folder, trackdata.dir), file_names[i], "/", "frame_", 
+        jpeg(paste(to.data, temp.overlay.folder, file_names[i], "/", "frame_", 
                    j, ".jpg", sep = ""), width = as.numeric(width), height = as.numeric(height), quality = 100)
         par(mar = rep(0, 4), xaxs = c("i"), yaxs = c("i"))
         print <- subset(trajectory.data_tmp, trajectory.data_tmp$frame <= j, select = c("X", "Y", "trajectory"))
@@ -60,7 +59,7 @@ create_overlay_videos <- function(to.data, trajectory.data.folder, raw.video.fol
     
     if (type == "label") {
       while (j < max(trajectory.data$frame) + 1) {
-        jpeg(paste(sub(trajectory.data.folder, temp.overlay.folder, trackdata.dir), file_names[i], "/", "frame_", 
+        jpeg(paste(to.data, temp.overlay.folder, file_names[i], "/", "frame_", 
                    j, ".jpg", sep = ""), width = as.numeric(width), height = as.numeric(height), quality = 100)
         par(mar = rep(0, 4), xaxs = c("i"), yaxs = c("i"))
         print <- subset(trajectory.data_tmp, trajectory.data_tmp$frame == j, select = c("X", "Y", "trajectory"))
@@ -91,18 +90,19 @@ create_overlay_videos <- function(to.data, trajectory.data.folder, raw.video.fol
   
   
   ## use regular expression to insert input and output directory and contrast enhancement of original video
-  text[grep("avi_input = ", text)] <- paste("avi_input = ", "'", sub(trajectory.data.folder, raw.video.folder, trackdata.dir), 
-                                            "';", sep = "")
-  text[grep("overlay_input = ", text)] <- paste("overlay_input = ", "'", sub(trajectory.data.folder, temp.overlay.folder, 
-                                                                             trackdata.dir), "';", sep = "")
-  text[grep("overlay_output = ", text)] <- paste("overlay_output = ", "'", sub(trajectory.data.folder, overlay.folder, 
-                                                                               trackdata.dir), "';", sep = "")
-  text[grep("lag =", text)] <- paste("lag = ", difference.lag, ";", sep = "")
-  text[grep("Enhance Contrast", text)] <- paste("run(\"Enhance Contrast...\", \"saturated=", original.vid.contrast.enhancement, 
-                                                " process_all\");", sep = "")
+#   text[grep("avi_input = ", text)] <- paste("avi_input = ", "'", sub(trajectory.data.folder, raw.video.folder, trackdata.dir), "';", sep = "")
+#   text[grep("overlay_input = ", text)] <- paste("overlay_input = ", "'", sub(trajectory.data.folder, temp.overlay.folder, trackdata.dir), "';", sep = "")
+#   text[grep("overlay_output = ", text)] <- paste("overlay_output = ", "'", sub(trajectory.data.folder, overlay.folder, trackdata.dir), "';", sep = "")
+#   text[grep("lag =", text)] <- paste("lag = ", difference.lag, ";", sep = "") 
+#   text[grep("Enhance Contrast", text)] <- paste("run(\"Enhance Contrast...\", \"saturated=", original.vid.contrast.enhancement, " process_all\");", sep = "")
   
+  text[grep("avi_input = ", text)] <- paste("avi_input = ", "'", paste0(to.data, raw.video.folder), "';", sep = "")
+  text[grep("overlay_input = ", text)] <- paste("overlay_input = ", "'", paste0(to.data, temp.overlay.folder), "';", sep = "")
+  text[grep("overlay_output = ", text)] <- paste("overlay_output = ", "'", paste0(to.data, overlay.folder), "';", sep = "")
+  text[grep("lag =", text)] <- paste("lag = ", difference.lag, ";", sep = "") 
+  text[grep("Enhance Contrast", text)] <- paste("run(\"Enhance Contrast...\", \"saturated=", original.vid.contrast.enhancement, " process_all\");", sep = "")
   
-  ## re-create ImageJ macro for batch processing of video files with ParticleTracker
+    ## re-create ImageJ macro for batch processing of video files with ParticleTracker
   if (.Platform$OS.type == "windows") 
     writeLines(text, con = paste("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm", sep = ""), sep = "\n")
   if (.Platform$OS.type == "unix") {
@@ -111,12 +111,12 @@ create_overlay_videos <- function(to.data, trajectory.data.folder, raw.video.fol
   }
   
   ## create directory to store overlays
-  dir.create(sub(trajectory.data.folder, overlay.folder, trackdata.dir), showWarnings = F)
+  dir.create(paste0(to.data, overlay.folder), showWarnings = F)
   
   ## call IJ macro to merge original video with the trajectory data
   if (.Platform$OS.type == "unix") 
     cmd <- paste0("java -Xmx", memory, "m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", 
-                  paste0("'", sub(raw.video.folder, ijmacs.folder, video.dir), "Video_overlay_tmp.ijm", "'"))
+                  paste0("'", paste0(to.data, ijmacs.folder), "Video_overlay_tmp.ijm", "'"))
   
   if (.Platform$OS.type == "windows") 
     cmd <- c("\"C:/Program Files/FIJI.app/fiji-win64.exe\" -macro Video_overlay_tmp.ijm")
