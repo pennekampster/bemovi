@@ -59,11 +59,19 @@ link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
       
       # delete working dir
       unlink(dir, recursive = TRUE)
-      
+                
     }
     
     if (length(PA_data[, 1]) == 0) {
       print(paste("***** No particles were detected in video", all.files[j], " -- check the raw video and also threshold values"))
+      
     }
+    
   }
+  
+  # merge all files into one database
+  data <- organise_link_data(to.data, trajectory.data.folder) 
+  
+  #calculate movement metrics for each fix and save to disk
+  calculate_mvt(data,to.data,trajectory.data.folder)
 }
