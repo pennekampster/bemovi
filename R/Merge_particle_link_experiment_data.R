@@ -19,9 +19,7 @@ merge_particle_link_experiment_data <- function(to.data, particle.data.folder, t
   file.sample.info <- read.table(paste(to.data, video.description.folder, video.description.file, sep = ""), sep = "\t", header = TRUE)
   
   ## load the two datasets
-  #morphology.data <- read.table(paste0(to.data, particle.data.folder, "particle.data.txt"), row.names = 1)
   load(paste0(to.data, particle.data.folder,"particle.RData"))
-  #trajectory.data <- read.table(paste0(to.data, trajectory.data.folder, "trajectory.data.txt"), header = TRUE, sep = "\t")
   load(paste0(to.data, trajectory.data.folder,"trajectory.RData"))
   
   # Prep for merging the trajectory data 
