@@ -52,4 +52,6 @@ thresholds = c(0, 1000), memory = memory.alloc) {
   if (.Platform$OS.type == "windows") 
     file.remove("C:/Program Files/Fiji.app/macros/Video_to_morphology_tmp.ijm")
   
+  organise_particle_data(to.data, particle.data.folder)
+  
 }

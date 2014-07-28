@@ -4,7 +4,6 @@
 #' and saves it to the directory where the single files are located
 #' @param to.data path to the working directory
 #' @param particle.data.folder directory to which the data is saved as a text file
-#' @export
 
 organise_particle_data <- function(to.data, particle.data.folder) {
   
@@ -34,5 +33,4 @@ organise_particle_data <- function(to.data, particle.data.folder) {
   
   assign("morphology.data", dd, envir = .GlobalEnv)
   save(morphology.data, file = paste(IJ_output.dir, "particle.RData", sep = "/"))
-  #write.table(particle.data, file = paste(IJ_output.dir, "particle.data.txt", sep = "/"), sep = "\t")
 } 
