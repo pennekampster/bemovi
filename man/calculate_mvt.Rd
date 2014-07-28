@@ -2,14 +2,11 @@
 \alias{calculate_mvt}
 \title{A function to calculate movement metrics for each trajectory, which can be used to predict the species identity}
 \usage{
-calculate_mvt(data, write = FALSE, to.data, merged.data.folder)
+calculate_mvt(data, to.data, merged.data.folder)
 }
 \arguments{
   \item{data}{dataframe containing the X- and
   Y-coordinates, the frame and the trajectory ID}
-
-  \item{write}{Saves the original dataframe with movement
-  metrics attached to the disk}
 
   \item{to.data}{path to the working directory}
 
