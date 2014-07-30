@@ -3,7 +3,7 @@
 \title{Function to extract morphological measurements and X- and Y-coordinates for moving particles}
 \usage{
 locate_and_measure_particles(to.data, raw.video.folder, particle.data.folder,
-  difference.lag, min_size = 0, max_size = 10000, thresholds = c(0, 1000),
+  difference.lag, min_size = 0, max_size = 10000, thresholds = c(10, 255),
   memory = memory.alloc)
 }
 \arguments{

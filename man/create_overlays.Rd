@@ -1,8 +1,8 @@
-\name{create_overlay_videos}
-\alias{create_overlay_videos}
+\name{create_overlays}
+\alias{create_overlays}
 \title{Function to create an overlay between the raw data and the extracted trajectories}
 \usage{
-create_overlay_videos(to.data, merged.data.folder, raw.video.folder,
+create_overlays(to.data, merged.data.folder, raw.video.folder,
   temp.overlay.folder, overlay.folder, width, height, difference.lag,
   type = "traj", predict_spec = F, contrast.enhancement = 0,
   memory = memory.alloc)

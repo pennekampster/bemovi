@@ -4,7 +4,7 @@
 properly identified}
 \usage{
 check_threshold_values(to.data, raw.video.folder, ijmacs.folder,
-  vid_select = 0, difference.lag, thresholds, memory)
+  vid_select = 0, difference.lag, thresholds, memory = memory.alloc)
 }
 \arguments{
   \item{to.data}{path to the working directory}
@@ -24,7 +24,7 @@ check_threshold_values(to.data, raw.video.folder, ijmacs.folder,
   \item{thresholds}{Numeric vector containing the min and
   max threshold values}
 
-  \item{memory}{memory allocated to ImageJ}
+  \item{memory}{memory (in MB) allocated to ImageJ}
 }
 \description{
 This function creates an ImageJ macro that can be helpful
