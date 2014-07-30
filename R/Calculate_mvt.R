@@ -36,20 +36,20 @@ calculate_mvt <- function(data,to.data,merged.data.folder){
   setnames(data, c("file","X","Y","frame","id","trajectory"), c("file","X","Y","frame_","id","trajectory"))
 
   mvt_summary <- data[,list(frame = frame_,
-                         step_length = step_length(X,Y),
+                         step_length = round(step_length(X,Y),2),
                          step_duration = step_duration(frame_),
-                         step_speed = step_length(X,Y)/step_duration(frame_),
-                         gross_disp = cumsum(step_length(X,Y)),
-                         net_disp = net_displacement(X,Y),
-                         abs_angle = anglefun(diff(X),diff(Y)),
-                         rel_angle = rel.angle(anglefun(diff(X),diff(Y)))), by=id]
+                         step_speed = round(step_length(X,Y)/step_duration(frame_),2),
+                         gross_disp = round(cumsum(step_length(X,Y)),2),
+                         net_disp = round(net_displacement(X,Y),0),
+                         abs_angle = round(anglefun(diff(X),diff(Y)),2),
+                         rel_angle = round(rel.angle(anglefun(diff(X),diff(Y))),2)), by=id]
 
   mvt_summary <- mvt_summary[ , list(id,frame,step_length, step_duration, step_speed, gross_disp, net_disp, abs_angle, rel_angle)]
 
   trajectory.data <- merge(data_full,mvt_summary,by=c("id","frame"), all.x=T)
 
   save(trajectory.data, file = paste0(out.dir,"trajectory.RData"))
-  #return(trajectory.data)
+
 }
 
 

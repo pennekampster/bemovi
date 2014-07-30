@@ -4,7 +4,7 @@
 #' ImageJ; two different visualization types are available
 #' 
 #' @param to.data path to the working directory
-#' @param trajectory.data.folder directory where the output of the ParticleLinker is saved
+#' @param merged.data.folder directory where the global database is saved
 #' @param raw.video.folder directory with the raw video files 
 #' @param temp.overlay.folder temporary directory to save the overlay created with R
 #' @param overlay.folder directory where the overlay videos are saved
@@ -14,68 +14,105 @@
 #' @param type string indicating the visualization type (i.e. 'label' or 'traj'): either the overlay
 #' is showing the trajectory ID and outlines the detected particle (type='label') or the whole trajectory
 #' remains plotted (type='traj').
-#' @param original.vid.contrast.enhancement numeric value to increase the contrast of the raw video
+#' @param predict_spec logical If TRUE, the Master.RData file has have a column called predict_spec, indicating the species to which the trajectory belongs
+#' @param contrast.enhancement numeric value to increase the contrast of the raw video
 #' @param memory numeric value specifying the amount of memory available to ImageJ
 #' @export
 
-create_overlay_videos <- function(to.data, trajectory.data.folder, raw.video.folder, temp.overlay.folder, overlay.folder, 
-                                  width, height, difference.lag, type = "traj", original.vid.contrast.enhancement = 0, memory = memory.alloc) {
+create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.overlay.folder, overlay.folder, 
+                                  width, height, difference.lag, type = "traj",  predict_spec=F, contrast.enhancement = 0, memory = memory.alloc) {
   
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   
-  trackdata.dir <- paste(to.data, trajectory.data.folder, sep = "")
-  load(file = paste(trackdata.dir, "trajectory.RData", sep = "/")) 
+  load(file = paste(to.data,merged.data.folder, "Master.RData", sep = "/")) 
   file_names <- unique(trajectory.data$file)
   
   ## change path for output
-  #dir.create(sub(trajectory.data.folder, temp.overlay.folder, trackdata.dir), showWarnings = F)
   dir.create(paste0(to.data, temp.overlay.folder), showWarnings = F)
     for (i in 1:length(file_names)) {
     dir.create(paste0(to.data, temp.overlay.folder, file_names[i]), showWarnings = F)
     trajectory.data_tmp <- subset(trajectory.data, file == file_names[i])
-    j <- 0
+    j <- 1
+    
     if (type == "traj") {
-      while (j < max(trajectory.data$frame) + 1) {
-        jpeg(paste(to.data, temp.overlay.folder, file_names[i], "/", "frame_", 
-                   j, ".jpg", sep = ""), width = as.numeric(width), height = as.numeric(height), quality = 100)
+      while (j <= max(trajectory.data$frame)) {
+        jpeg(paste(to.data, temp.overlay.folder, file_names[i], "/", "frame_", j, ".jpg", sep = ""), width = as.numeric(width), height = as.numeric(height), quality = 100)
         par(mar = rep(0, 4), xaxs = c("i"), yaxs = c("i"))
+        
+        if (predict_spec==F){
+        
         print <- subset(trajectory.data_tmp, trajectory.data_tmp$frame <= j, select = c("X", "Y", "trajectory"))
         
         ## plot the particle(s) so long as there are some
         if (length(print[, 1]) != 0) {
-          plot(print$Y, print$X + as.numeric(height), xlim = c(0, as.numeric(width)), ylim = c(0, as.numeric(height)), 
-               col = "#FFFF00", pch = 15, cex = 1, asp = 1)
+          plot(print$X, print$Y, xlim = c(0, as.numeric(width)), ylim = c(as.numeric(height), 0), col = "blue", pch = 15, cex = 1, asp = 1)
         }
         
         ## otherwise just plot the empty frame
         if (length(print[, 1]) == 0) {
-          plot(NA, NA, xlim = c(0, as.numeric(width)), ylim = c(0, as.numeric(height)), col = "blue", pch = 1, 
-               cex = 6, asp = 1)
+          plot(NA, NA, xlim = c(0, as.numeric(width)), ylim = c(as.numeric(height), 0), col = "blue", pch = 1, cex = 6, asp = 1)
         }
+        }
+        
+        if (predict_spec==T){
+          
+          print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame <= j, select=c("X","Y","trajectory","predict_spec"))
+          
+          ## plot the particle(s) so long as there are some
+          if (length(print[, 1]) != 0) {
+            plot(print$X, print$Y, xlim=c(0, as.numeric(width)), ylim=c(as.numeric(height), 0),  col=as.factor(print$predict_spec), pch=15, cex=1, asp=1)
+          }
+          
+          ## otherwise just plot the empty frame
+          if (length(print[, 1]) == 0) {
+            plot(NA, NA, xlim = c(0, as.numeric(width)), ylim = c(as.numeric(height), 0), col = "blue", pch = 1, cex = 1, asp = 1)
+          }
+        }
+        
         dev.off()
         j <- j + 1
       }
     }
     
     if (type == "label") {
-      while (j < max(trajectory.data$frame) + 1) {
+      while (j <= max(trajectory.data$frame)) {
         jpeg(paste(to.data, temp.overlay.folder, file_names[i], "/", "frame_", 
                    j, ".jpg", sep = ""), width = as.numeric(width), height = as.numeric(height), quality = 100)
         par(mar = rep(0, 4), xaxs = c("i"), yaxs = c("i"))
+        
+        if (predict_spec==F){
+        
         print <- subset(trajectory.data_tmp, trajectory.data_tmp$frame == j, select = c("X", "Y", "trajectory"))
         
         ## plot the particle(s) so long as there are some
         if (length(print[, 1]) != 0) {
-          plot(print$Y, print$X + as.numeric(height), xlim = c(0, as.numeric(width)), ylim = c(0, as.numeric(height)), 
-               col = "blue", pch = 1, cex = 6, asp = 1)
-          text(print$Y, print$X + as.numeric(height) - 20, print$traject, cex = 2, col = "red")
+          plot(print$X, print$Y, xlim = c(0, as.numeric(width)), ylim = c(as.numeric(height), 0), col = "blue", pch = 1, cex = 6, asp = 1)
+          text(print$X, print$Y - 20, print$trajectory, cex = 2, col = "red")
         }
         
         ## otherwise just plot the empty frame
         if (length(print[, 1]) == 0) {
-          plot(NA, NA, xlim = c(0, as.numeric(width)), ylim = c(0, as.numeric(height)), col = "blue", pch = 1, 
-               cex = 6, asp = 1)
+          plot(NA, NA, xlim = c(0, as.numeric(width)), ylim = c(as.numeric(height), 0), col = "blue", pch = 1, cex = 6, asp = 1)
         }
+        }
+        
+        if (predict_spec==T){
+          
+          print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame == j, select=c("X","Y","trajectory","predict_spec"))
+                    
+          ## plot the particle(s) so long as there are some
+          if (length(print[, 1]) != 0) {
+            plot(print$X, print$Y, xlim=c(0,as.numeric(width)), ylim=c(as.numeric(height), 0), col=as.factor(print$predict_spec), pch=1, cex=6, asp=1)
+            text(print$X, print$Y-20,print$trajectory,cex=2,col=as.numeric(print$predict_spec))
+            }
+          
+          ## otherwise just plot the empty frame
+          if (length(print[, 1]) == 0) {
+            plot(NA, NA, xlim = c(0, as.numeric(width)), ylim = c(as.numeric(height), 0), col = "blue", pch = 1, 
+                 cex = 6, asp = 1)
+          }
+        }
+        
         dev.off()
         j <- j + 1
       }
@@ -88,20 +125,13 @@ create_overlay_videos <- function(to.data, trajectory.data.folder, raw.video.fol
   if (.Platform$OS.type == "unix") 
     text <- readLines(paste0(system.file(package="fRanco"), "/","ImageJ macros/Video_overlay.ijm"))
   
-  
-  ## use regular expression to insert input and output directory and contrast enhancement of original video
-#   text[grep("avi_input = ", text)] <- paste("avi_input = ", "'", sub(trajectory.data.folder, raw.video.folder, trackdata.dir), "';", sep = "")
-#   text[grep("overlay_input = ", text)] <- paste("overlay_input = ", "'", sub(trajectory.data.folder, temp.overlay.folder, trackdata.dir), "';", sep = "")
-#   text[grep("overlay_output = ", text)] <- paste("overlay_output = ", "'", sub(trajectory.data.folder, overlay.folder, trackdata.dir), "';", sep = "")
-#   text[grep("lag =", text)] <- paste("lag = ", difference.lag, ";", sep = "") 
-#   text[grep("Enhance Contrast", text)] <- paste("run(\"Enhance Contrast...\", \"saturated=", original.vid.contrast.enhancement, " process_all\");", sep = "")
-  
   text[grep("avi_input = ", text)] <- paste("avi_input = ", "'", paste0(to.data, raw.video.folder), "';", sep = "")
   text[grep("overlay_input = ", text)] <- paste("overlay_input = ", "'", paste0(to.data, temp.overlay.folder), "';", sep = "")
   text[grep("overlay_output = ", text)] <- paste("overlay_output = ", "'", paste0(to.data, overlay.folder), "';", sep = "")
   text[grep("lag =", text)] <- paste("lag = ", difference.lag, ";", sep = "") 
-  text[grep("Enhance Contrast", text)] <- paste("run(\"Enhance Contrast...\", \"saturated=", original.vid.contrast.enhancement, " process_all\");", sep = "")
-  
+  text[grep("Enhance Contrast", text)] <- paste("run(\"Enhance Contrast...\", \"saturated=", contrast.enhancement, " process_all\");", sep = "")
+  if (predict_spec==T){text[grep("RGB Color", text)] <- paste('run(\"RGB Color\");')}
+  text
     ## re-create ImageJ macro for batch processing of video files with ParticleTracker
   if (.Platform$OS.type == "windows") 
     writeLines(text, con = paste("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm", sep = ""), sep = "\n")

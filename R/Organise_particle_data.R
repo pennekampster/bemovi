@@ -30,7 +30,6 @@ organise_particle_data <- function(to.data, particle.data.folder) {
       dd <- rbind(dd, dd.t)
     }
   }
-  
-  assign("morphology.data", dd, envir = .GlobalEnv)
+  morphology.data <- dd
   save(morphology.data, file = paste(IJ_output.dir, "particle.RData", sep = "/"))
 } 

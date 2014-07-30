@@ -29,7 +29,6 @@ organise_link_data <- function(to.data, trajectory.data.folder) {
   colnames(data.full) <- c("frame", "X", "Y", "trajectory", "file")
   
   trajectory.data <- data.full
-  #save(trajectory.data, file = paste(here, "trajectory.RData", sep = "/")) 
   return(trajectory.data)
 } 
 

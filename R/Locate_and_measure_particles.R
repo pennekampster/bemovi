@@ -15,7 +15,7 @@
 #' @export 
 
 locate_and_measure_particles <- function(to.data, raw.video.folder, particle.data.folder, difference.lag, min_size=0, max_size=10000, 
-thresholds = c(0, 1000), memory = memory.alloc) {
+thresholds = c(10, 255), memory = memory.alloc) {
   
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   
@@ -24,26 +24,26 @@ thresholds = c(0, 1000), memory = memory.alloc) {
   
   ## use regular expression to insert input & output directory as well as difference lag
   text[grep("avi_input = ", text)] <- paste("avi_input = ", "'", video.dir, "';", sep = "")
-  text[grep("avi_output = ", text)] <- paste("avi_output = ", "'", sub("1 - raw/", particle.data.folder, video.dir), "';", sep = "")
+  text[grep("avi_output = ", text)] <- paste("avi_output = ", "'", to.data, particle.data.folder, "';", sep = "")
   text[grep("lag = ", text)] <- paste("lag = ", difference.lag, ";", sep = "")
   text[grep("setThreshold", text)] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep = "")
   text[grep("size=", text)] <- paste('run("Analyze Particles...", "size=',min_size,'-',max_size,' circularity=0.00-1.00 show=Nothing clear stack");',sep = "")
     
   ## re-create ImageJ macro for batch processing of video files with Particle Analyzer
-  if (.Platform$OS.type == "windows") 
-    writeLines(text, con = paste("C:/Program Files/Fiji.app/macros/Video_to_morphology_tmp.ijm", sep = ""), sep = "\n")
+  if (.Platform$OS.type == "windows") {
+    dir.create(paste0(to.data, ijmacs.folder), showWarnings = F)
+    writeLines(text, con = paste("C:/Program Files/Fiji.app/macros/Video_to_morphology_tmp.ijm", sep = ""), sep = "\n")}
   if (.Platform$OS.type == "unix") {
-    dir.create(sub(raw.video.folder, ijmacs.folder, video.dir), showWarnings = F)
-    writeLines(text, con = paste(sub(raw.video.folder, ijmacs.folder, video.dir), "Video_to_morphology_tmp.ijm", sep = ""))
-  }
+    dir.create(paste0(to.data, ijmacs.folder), showWarnings = F)
+    writeLines(text, con = paste0(to.data, ijmacs.folder, "Video_to_morphology_tmp.ijm"))}
   
   ## create directory to store Particle Analyzer data
-  dir.create(sub(raw.video.folder, particle.data.folder, video.dir), showWarnings = FALSE)
+  dir.create(paste0(to.data, particle.data.folder), showWarnings = FALSE)
   
   ## run to process video files by calling ImageJ
   if (.Platform$OS.type == "unix") 
     cmd <- paste0("java -Xmx", memory, "m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ","'", 
-                  paste0(sub("1 - raw", "ijmacs", video.dir), "Video_to_morphology_tmp.ijm'"))
+                  to.data, ijmacs.folder, "Video_to_morphology_tmp.ijm'")
   if (.Platform$OS.type == "windows") 
     cmd <- c("\"C:/Program Files/FIJI.app/fiji-win64.exe\" -macro Video_to_morphology_tmp.ijm")
   system(cmd)
