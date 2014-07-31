@@ -15,7 +15,7 @@ locate_and_measure_particles(to.data, raw.video.folder, particle.data.folder,
   \item{particle.data.folder}{directory to which the data
   is saved as a text file}
 
-  \item{difference_lag}{numeric value specifying the offset
+  \item{difference.lag}{numeric value specifying the offset
   between two video frames to compute the difference image}
 
   \item{min_size}{minimum size for detection of particles}

@@ -26,7 +26,7 @@ create_overlays(to.data, merged.data.folder, raw.video.folder,
 
   \item{height}{height of the raw video}
 
-  \item{difference_lag}{numeric value specifying the offset
+  \item{difference.lag}{numeric value specifying the offset
   between two video frames to compute the difference image}
 
   \item{type}{string indicating the visualization type

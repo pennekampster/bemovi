@@ -18,7 +18,7 @@ check_threshold_values(to.data, raw.video.folder, ijmacs.folder,
   \item{vid_select}{video selected to find appropriate
   thresholds; default is the first video}
 
-  \item{difference_lag}{numeric value specifying the offset
+  \item{difference.lag}{numeric value specifying the offset
   between two frames of a video}
 
   \item{thresholds}{Numeric vector containing the min and
