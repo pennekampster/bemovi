@@ -11,7 +11,7 @@ calculate_mvt(data, to.data, merged.data.folder)
   \item{to.data}{path to the working directory}
 
   \item{merged.data.folder}{directory where the data is
-  saved, if write is TRUE}
+  saved}
 }
 \value{
 returns a data.table with the movement metrics for each fix

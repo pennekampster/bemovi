@@ -4,8 +4,8 @@ Title: A package to extract abundance, morphological and behavioural data from
 Description: A package to automatically measure the abundance and traits of
     aquatic microbes using digital video processing and machine learning
 Version: 0.1
-Author: Frank Pennekamp <Frank.Pennekamp@ieu.uzh.ch>,
-    Owen Petchey <Owen.Petchey@ieu.uzh.ch>
+Author: Frank Pennekamp <Frank.Pennekamp@ieu.uzh.ch>, Owen Petchey
+    <Owen.Petchey@ieu.uzh.ch>
 Maintainer: Frank Pennekamp <Frank.Pennekamp@ieu.uzh.ch>
 Depends:
     R (>= 3.0.2),
