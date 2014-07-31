@@ -10,7 +10,7 @@
 #' @param overlay.folder directory where the overlay videos are saved
 #' @param width width of the raw video
 #' @param height height of the raw video
-#' @param difference_lag numeric value specifying the offset between two video frames to compute the difference image
+#' @param difference.lag numeric value specifying the offset between two video frames to compute the difference image
 #' @param type string indicating the visualization type (i.e. 'label' or 'traj'): either the overlay
 #' is showing the trajectory ID and outlines the detected particle (type='label') or the whole trajectory
 #' remains plotted (type='traj').

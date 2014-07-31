@@ -5,7 +5,7 @@
 #' @param to.data path to the working directory
 #' @param raw.video.folder directory with the raw video files 
 #' @param particle.data.folder directory to which the data is saved as a text file
-#' @param difference_lag numeric value specifying the offset between two video frames to 
+#' @param difference.lag numeric value specifying the offset between two video frames to 
 #' compute the difference image
 #' @param min_size minimum size for detection of particles
 #' @param max_size maximum size for detection of particles

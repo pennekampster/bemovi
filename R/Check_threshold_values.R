@@ -9,7 +9,7 @@
 #' @param raw.video.folder directory with the raw video files 
 #' @param ijmacs.folder directory where the check_trehsolds macro is saved
 #' @param vid_select video selected to find appropriate thresholds; default is the first video
-#' @param difference_lag numeric value specifying the offset between two frames of a video
+#' @param difference.lag numeric value specifying the offset between two frames of a video
 #' @param thresholds Numeric vector containing the min and max threshold values
 #' @param memory memory (in MB) allocated to ImageJ
 #' @export

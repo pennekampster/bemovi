@@ -5,6 +5,7 @@
 #' @param trajectory.data.folder directory where the output of the ParticleLinker is saved
 #' @return saves the data containing the X- and Y coordinates of a given trajectory, the frame, the trajectory ID and the file name of the video 
 #' from which the data was extracted to disk
+#' @export
 
 organise_link_data <- function(to.data, trajectory.data.folder) {
   
