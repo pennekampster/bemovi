@@ -1,8 +1,8 @@
-#' Function to create global database containg morphology data and trajectory information
+#' Function to create global database containg morphology, trajectory, and video (e.g., experimental) information
 #' 
-#' Merges the morphology data, the trajectory data with the description file of the experiment containing
-#' the information on sampling units, treatments and replication. The files are merged by the use of the
-#' video file names
+#' Merges the morphology data, the trajectory data with the video descriptions, which can / should contain 
+#' the information on sampling units, video date and time, treatments and replicate etc. The files are merged by the use of the
+#' video file names.
 #' @param to.data path to the working directory 
 #' @param particle.data.folder directory containing the global morphology data
 #' @param trajectory.data.folder directory containing the global trajectory data

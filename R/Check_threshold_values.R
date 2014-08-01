@@ -1,9 +1,9 @@
-#' Function to adjust the thresholds used for the segmentation of the difference video. If you run fRanco for the first time, verify with this function that all target objects are
+#' Function to assist finding good thresholds used for the segmentation of the difference video. If you run fRanco for the first time, verify with this function that all target objects are
 #' properly identified
 #'  
 #' This function creates an ImageJ macro that can be helpful for checking the thresholds specified in the user section; the macro will be saved in the ImageJ macro directory in the working directory and
-#' then automatically opened in ImageJ. Depending on the video size, it might take some time to open the video and the thresholding menu. First, the tresholds are set to the values 
-#' given in the user section, but by playing with the treshold manually, a correct value is determined and if need be changed in the user section.
+#' then automatically opened in ImageJ. Depending on the video size, it might take some time to open the video and the thresholding menu. The default thresholds values 
+#' should be adjusted in the ImageJ macro, until appropriate values are found. These values should then be used in the R functions / script, e.g., when calling the Locate_and_measure_particles function.
 #' 
 #' @param to.data path to the working directory
 #' @param raw.video.folder directory with the raw video files 

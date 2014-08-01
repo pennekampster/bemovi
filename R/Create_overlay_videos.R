@@ -1,7 +1,7 @@
-#' Function to create an overlay between the raw data and the extracted trajectories
+#' Function to create a new video with the extracted trajectories overlayed onto the original video
 #' 
-#' A function to overlay the trajectories and the original video using plots created in R and then processed in 
-#' ImageJ; two different visualization types are available
+#' A function to overlay the extracted trajectories onto the original video, using plots created in R and then processed in 
+#' ImageJ; two visualization types are available
 #' 
 #' @param to.data path to the working directory
 #' @param merged.data.folder directory where the global database is saved
@@ -14,8 +14,8 @@
 #' @param type string indicating the visualization type (i.e. 'label' or 'traj'): either the overlay
 #' is showing the trajectory ID and outlines the detected particle (type='label') or the whole trajectory
 #' remains plotted (type='traj').
-#' @param predict_spec logical If TRUE, the Master.RData file has have a column called predict_spec, indicating the species to which the trajectory belongs
-#' @param contrast.enhancement numeric value to increase the contrast of the raw video
+#' @param predict_spec logical If TRUE, the Master.RData file must have a column called predict_spec, indicating the species to which the trajectory belongs
+#' @param contrast.enhancement numeric value to increase the contrast of the original video
 #' @param memory numeric value specifying the amount of memory available to ImageJ
 #' @export
 

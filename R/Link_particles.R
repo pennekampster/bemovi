@@ -1,10 +1,10 @@
 #' Function to link the particle coordinates through time
 #' 
-#' The function converts the XY-coordinates of the ParticleAnalyzer into a temporary structure (e.g. folder 
-#' with all coordinates per frame in a separate text file) that can be read by the standalone ParticleLinker
+#' The function takes the XY-coordinates provided by the ImageJ ParticleAnalyzer and uses a standalone version of the ImageJ MOSAIC plugin ParticleLinker to create trajectories. 
+#' This requires some creation of temporary files, which are subsequently deleted.
 #' @param to.data path to the working directory 
-#' @param particle.data.folder directory where the ParticleAnalyzer output is saved (as text files)
-#' @param trajectory.data.folder directory where the ParticleLinker is saved (as text files)
+#' @param particle.data.folder directory where the ParticleAnalyzer output is saved (as text files) (temporary)
+#' @param trajectory.data.folder directory where the ParticleLinker is saved (as text files) (temporary???)
 #' @param memory numeric value specifying the max amount of memory allocated to the ParticleLinker
 #' @param linkrange numeric value passed to the ParticleLinker specifying the range of adjacent frames which
 #' are taken into account when a trajectory is re-constructed 

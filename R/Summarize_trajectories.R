@@ -1,4 +1,4 @@
-#' Function to summarize the average morphology and movement and their variability on the trajectory level
+#' Function to summarize the morphology, movement and their variability on the trajectory level
 #' 
 #' Takes the data comprising the information for each frame and calculates mean and sd along the trajectory
 #' @param data dataframe with the information on morphology and movement for each frame

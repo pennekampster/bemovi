@@ -7,7 +7,7 @@
 #' @param to.data path to the working directory 
 #' @param merged.data.folder directory where the data is saved
 #' @return returns a data.table with the movement metrics for each fix appended to the original data (NB: movement metrics often need two (e.g. step length), sometimes even 
-#' three fixes (turning angles) to be calculated; fixes for which metrics cannot be calculated are padded with NA)
+#' three (e.g., turning angles) fixes; fixes for which metrics cannot be calculated are padded with NA)
 #' @export
 
 calculate_mvt <- function(data,to.data,merged.data.folder){

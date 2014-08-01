@@ -1,7 +1,7 @@
 #' Function to extract morphological measurements and X- and Y-coordinates for moving particles 
 #' 
 #' Function calls ImageJ software and its ParticleAnalyzer function to extract for each frame of the video
-#' several morphological descriptors and the X- and Y-coordinates of all moving particles
+#' several morphological descriptors and the X- and Y-coordinates of all moving particles. All videos in the raw.video.folder are analyses, separately.
 #' @param to.data path to the working directory
 #' @param raw.video.folder directory with the raw video files 
 #' @param particle.data.folder directory to which the data is saved as a text file
