@@ -18,7 +18,8 @@ calculate_mvt <- function(data,to.data,merged.data.folder){
   # create unique ID consisting of trajectory ID and file
   id <- paste(data$file,data$trajectory,sep="-")
   data <- as.data.table(cbind(data,id))
-
+  data$id <- as.character(data$id)
+  
   # keep a copy of the original data for left join later, but drop redundant columns
   data_full <- data
 
@@ -29,14 +30,15 @@ calculate_mvt <- function(data,to.data,merged.data.folder){
   data <- data[!is.na(data$trajectory),]
   
   #filter out duplicate positions, if available
-  data <- data[-which(diff(data$X) == 0 & diff(data$Y) == 0),]
+  #data <- data[-which(diff(data$X) == 0 & diff(data$Y) == 0),]
   
   #subset dataset to only include relevant movement information
   data <- data[,list(file,X,Y,frame,id,trajectory)]
   #rename frame column to avoid clashes with frame() function
   setnames(data, c("file","X","Y","frame","id","trajectory"), c("file","X","Y","frame_","id","trajectory"))
 
-  mvt_summary <- data[,list(frame = frame_,
+  data$frame_ <- data$frame
+  mvt_summary <- data[,list(frame=frame_,
                          step_length = round(step_length(X,Y),2),
                          step_duration = step_duration(frame_),
                          step_speed = round(step_length(X,Y)/step_duration(frame_),2),
@@ -45,7 +47,7 @@ calculate_mvt <- function(data,to.data,merged.data.folder){
                          abs_angle = round(anglefun(diff(X),diff(Y)),2),
                          rel_angle = round(rel.angle(anglefun(diff(X),diff(Y))),2)), by=id]
 
-  mvt_summary <- mvt_summary[ , list(id,frame,step_length, step_duration, step_speed, gross_disp, net_disp, abs_angle, rel_angle)]
+  mvt_summary <- mvt_summary[ , list(id, frame, step_length, step_duration, step_speed, gross_disp, net_disp, abs_angle, rel_angle)]
 
   trajectory.data <- merge(data_full,mvt_summary,by=c("id","frame"), all.x=T)
 
