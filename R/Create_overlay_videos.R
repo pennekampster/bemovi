@@ -16,11 +16,12 @@
 #' remains plotted (type='traj').
 #' @param predict_spec logical If TRUE, the Master.RData file must have a column called predict_spec, indicating the species to which the trajectory belongs
 #' @param contrast.enhancement numeric value to increase the contrast of the original video
-#' @param memory numeric value specifying the amount of memory available to ImageJ
+#' @param IJ.path path to ImageJ executable 
+#' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
 #' @export
 
 create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.overlay.folder, overlay.folder, 
-                                  width, height, difference.lag, type = "traj",  predict_spec=F, contrast.enhancement = 0, memory = memory.alloc) {
+                                  width, height, difference.lag, type = "traj",  predict_spec=F, contrast.enhancement = 0, IJ.path, memory = 512) {
   
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   
@@ -121,9 +122,9 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
   
   ## copy master copy of ImageJ macro there for treatment
   if (.Platform$OS.type == "windows") 
-    text <- readLines(paste0(system.file(package="fRanco"), "/","ImageJ macros/Video_overlay.ijm"),warn = FALSE)
+    text <- readLines(paste0(system.file(package="fRanco"), "/","ImageJ_macros/Video_overlay.ijm"),warn = FALSE)
   if (.Platform$OS.type == "unix") 
-    text <- readLines(paste0(system.file(package="fRanco"), "/","ImageJ macros/Video_overlay.ijm"))
+    text <- readLines(paste0(system.file(package="fRanco"), "/","ImageJ_macros/Video_overlay.ijm"))
   
   text[grep("avi_input = ", text)] <- paste("avi_input = ", "'", paste0(to.data, raw.video.folder), "';", sep = "")
   text[grep("overlay_input = ", text)] <- paste("overlay_input = ", "'", paste0(to.data, temp.overlay.folder), "';", sep = "")
@@ -131,7 +132,7 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
   text[grep("lag =", text)] <- paste("lag = ", difference.lag, ";", sep = "") 
   text[grep("Enhance Contrast", text)] <- paste("run(\"Enhance Contrast...\", \"saturated=", contrast.enhancement, " process_all\");", sep = "")
   if (predict_spec==T){text[grep("RGB Color", text)] <- paste('run(\"RGB Color\");')}
-  text
+
     ## re-create ImageJ macro for batch processing of video files with ParticleTracker
   if (.Platform$OS.type == "windows") 
     writeLines(text, con = paste("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm", sep = ""), sep = "\n")
@@ -145,7 +146,7 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
   
   ## call IJ macro to merge original video with the trajectory data
   if (.Platform$OS.type == "unix") 
-    cmd <- paste0("java -Xmx", memory, "m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ", 
+    cmd <- paste0("java -Xmx", memory, "m -jar ", IJ.path, " -ijpath /Applications/ImageJ -macro ", 
                   paste0("'", paste0(to.data, ijmacs.folder), "Video_overlay_tmp.ijm", "'"))
   
   if (.Platform$OS.type == "windows") 

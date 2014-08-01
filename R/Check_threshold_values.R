@@ -11,17 +11,18 @@
 #' @param vid_select video selected to find appropriate thresholds; default is the first video
 #' @param difference.lag numeric value specifying the offset between two frames of a video
 #' @param thresholds Numeric vector containing the min and max threshold values
-#' @param memory memory (in MB) allocated to ImageJ
+#' @param IJ.path path to ImageJ executable 
+#' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
 #' @export
 
-check_threshold_values <- function(to.data, raw.video.folder, ijmacs.folder, vid_select = 0, difference.lag, thresholds, memory=memory.alloc) {
+check_threshold_values <- function(to.data, raw.video.folder, ijmacs.folder, vid_select = 0, difference.lag, thresholds, IJ.path, memory = 512) {
   
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   ## generate the folders if not already existing
   dir.create(paste0(to.data, ijmacs.folder), showWarnings = FALSE)
   
   ## copy master copy of ImageJ macro there for treatment
-  text <- readLines(paste(system.file(package="fRanco"), "/", "ImageJ macros/Check_threshold.ijm", sep = ""))
+  text <- readLines(paste(system.file(package="fRanco"), "/", "ImageJ_macros/Check_threshold.ijm", sep = ""))
   
   ## use regular expression to insert input and output directory
   text[grep("avi_input =", text)] <- paste("avi_input = ", "'", video.dir, "';", sep = "")
@@ -37,7 +38,7 @@ check_threshold_values <- function(to.data, raw.video.folder, ijmacs.folder, vid
   
   ## run to process video files by calling ImageJ
   if (.Platform$OS.type == "unix") 
-    cmd <- paste0("java -Xmx",memory ,"m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ","'", 
+    cmd <- paste0("java -Xmx",memory ,"m -jar ", IJ.path, " -ijpath /Applications/ImageJ -macro ","'", 
                   to.data,  ijmacs.folder, "Check_threshold_tmp.ijm'")
   if (.Platform$OS.type == "windows") 
     cmd <- c("\"C:/Program Files/FIJI.app/fiji-win64.exe\" -macro Check_threshold_tmp.ijm")

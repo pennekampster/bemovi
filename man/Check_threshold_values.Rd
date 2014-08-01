@@ -1,10 +1,10 @@
 \name{check_threshold_values}
 \alias{check_threshold_values}
-\title{Function to adjust the thresholds used for the segmentation of the difference video. If you run fRanco for the first time, verify with this function that all target objects are
+\title{Function to assist finding good thresholds used for the segmentation of the difference video. If you run fRanco for the first time, verify with this function that all target objects are
 properly identified}
 \usage{
 check_threshold_values(to.data, raw.video.folder, ijmacs.folder,
-  vid_select = 0, difference.lag, thresholds, memory = memory.alloc)
+  vid_select = 0, difference.lag, thresholds, IJ.path, memory = 512)
 }
 \arguments{
   \item{to.data}{path to the working directory}
@@ -24,7 +24,10 @@ check_threshold_values(to.data, raw.video.folder, ijmacs.folder,
   \item{thresholds}{Numeric vector containing the min and
   max threshold values}
 
-  \item{memory}{memory (in MB) allocated to ImageJ}
+  \item{IJ.path}{path to ImageJ executable}
+
+  \item{memory}{numeric value specifying the amount of
+  memory available to ImageJ (defaults to 512)}
 }
 \description{
 This function creates an ImageJ macro that can be helpful
@@ -32,10 +35,10 @@ for checking the thresholds specified in the user section;
 the macro will be saved in the ImageJ macro directory in
 the working directory and then automatically opened in
 ImageJ. Depending on the video size, it might take some
-time to open the video and the thresholding menu. First,
-the tresholds are set to the values given in the user
-section, but by playing with the treshold manually, a
-correct value is determined and if need be changed in the
-user section.
+time to open the video and the thresholding menu. The
+default thresholds values should be adjusted in the ImageJ
+macro, until appropriate values are found. These values
+should then be used in the R functions / script, e.g., when
+calling the Locate_and_measure_particles function.
 }
 

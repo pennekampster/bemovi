@@ -1,11 +1,11 @@
 \name{create_overlays}
 \alias{create_overlays}
-\title{Function to create an overlay between the raw data and the extracted trajectories}
+\title{Function to create a new video with the extracted trajectories overlayed onto the original video}
 \usage{
 create_overlays(to.data, merged.data.folder, raw.video.folder,
   temp.overlay.folder, overlay.folder, width, height, difference.lag,
-  type = "traj", predict_spec = F, contrast.enhancement = 0,
-  memory = memory.alloc)
+  type = "traj", predict_spec = F, contrast.enhancement = 0, IJ.path,
+  memory = 512)
 }
 \arguments{
   \item{to.data}{path to the working directory}
@@ -36,18 +36,20 @@ create_overlays(to.data, merged.data.folder, raw.video.folder,
   (type='traj').}
 
   \item{predict_spec}{logical If TRUE, the Master.RData
-  file has have a column called predict_spec, indicating
+  file must have a column called predict_spec, indicating
   the species to which the trajectory belongs}
 
   \item{contrast.enhancement}{numeric value to increase the
-  contrast of the raw video}
+  contrast of the original video}
+
+  \item{IJ.path}{path to ImageJ executable}
 
   \item{memory}{numeric value specifying the amount of
-  memory available to ImageJ}
+  memory available to ImageJ (defaults to 512)}
 }
 \description{
-A function to overlay the trajectories and the original
-video using plots created in R and then processed in
-ImageJ; two different visualization types are available
+A function to overlay the extracted trajectories onto the
+original video, using plots created in R and then processed
+in ImageJ; two visualization types are available
 }
 

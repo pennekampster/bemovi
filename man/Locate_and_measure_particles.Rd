@@ -4,7 +4,7 @@
 \usage{
 locate_and_measure_particles(to.data, raw.video.folder, particle.data.folder,
   difference.lag, min_size = 0, max_size = 10000, thresholds = c(10, 255),
-  memory = memory.alloc)
+  IJ.path, memory = 512)
 }
 \arguments{
   \item{to.data}{path to the working directory}
@@ -23,10 +23,12 @@ locate_and_measure_particles(to.data, raw.video.folder, particle.data.folder,
   \item{max_size}{maximum size for detection of particles}
 
   \item{thresholds}{vector containing the min and max
-  threshold values (e.g. c(10,255))}
+  threshold values (defaults to c(10,255))}
+
+  \item{IJ.path}{path to ImageJ executable}
 
   \item{memory}{numeric value specifying the amount of
-  memory available to ImageJ}
+  memory available to ImageJ (defaults to 512)}
 }
 \value{
 saves the output of the ParticleAnalyzer function of ImageJ
@@ -36,6 +38,7 @@ as a text file in the output directory
 Function calls ImageJ software and its ParticleAnalyzer
 function to extract for each frame of the video several
 morphological descriptors and the X- and Y-coordinates of
-all moving particles
+all moving particles. All videos in the raw.video.folder
+are analyses, separately.
 }
 

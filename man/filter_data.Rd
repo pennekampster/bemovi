@@ -1,13 +1,13 @@
 \name{filter_data}
 \alias{filter_data}
-\title{Improved function to filter trajectories based on movement and detection}
+\title{Function to filter trajectories based on movement and detection rate characteristics}
 \usage{
 filter_data(raw_data, net_filter, duration_filter, detect_filter,
   median_step_filter)
 }
 \arguments{
-  \item{raw_data}{dataframe containing the rawdata on X-
-  and Y-coordinates, frame, file and trajectory name,
+  \item{raw_data}{dataframe containing the rawdata: X- and
+  Y-coordinates, frame, file and trajectory name,
   morphology and movement metrics}
 
   \item{net_filter}{minimum net displacement to be
@@ -26,10 +26,9 @@ filter_data(raw_data, net_filter, duration_filter, detect_filter,
 returns a dataset with all fixes of valid trajectories
 }
 \description{
-The function will create a dataframe containing all
+The function creates a dataframe containing all
 trajectories that are valid for further analysis by
 selecting on minimum net displacement, detection rate,
-trajectory length and the median step_length which needs to
-surpass 2 pixels per frame
+trajectory length and the median step_length
 }
 

@@ -9,18 +9,19 @@
 #' compute the difference image
 #' @param min_size minimum size for detection of particles
 #' @param max_size maximum size for detection of particles
-#' @param thresholds vector containing the min and max threshold values (e.g. c(10,255))
-#' @param memory numeric value specifying the amount of memory available to ImageJ
+#' @param thresholds vector containing the min and max threshold values (defaults to c(10,255))
+#' @param IJ.path path to ImageJ executable 
+#' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
 #' @return saves the output of the ParticleAnalyzer function of ImageJ as a text file in the output directory
 #' @export 
 
 locate_and_measure_particles <- function(to.data, raw.video.folder, particle.data.folder, difference.lag, min_size=0, max_size=10000, 
-thresholds = c(10, 255), memory = memory.alloc) {
+thresholds = c(10, 255), IJ.path, memory = 512) {
   
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   
   ## copy master copy of ImageJ macro there for treatment
-  text <- readLines(paste0(system.file(package="fRanco"), "/", "ImageJ macros/Video_to_morphology.ijm"))
+  text <- readLines(paste0(system.file(package="fRanco"), "/", "ImageJ_macros/Video_to_morphology.ijm"))
   
   ## use regular expression to insert input & output directory as well as difference lag
   text[grep("avi_input = ", text)] <- paste("avi_input = ", "'", video.dir, "';", sep = "")
@@ -42,7 +43,7 @@ thresholds = c(10, 255), memory = memory.alloc) {
   
   ## run to process video files by calling ImageJ
   if (.Platform$OS.type == "unix") 
-    cmd <- paste0("java -Xmx", memory, "m -jar /Applications/ImageJ/ImageJ64.app/Contents/Resources/Java/ij.jar -ijpath /Applications/ImageJ -macro ","'", 
+    cmd <- paste0("java -Xmx", memory, "m -jar ", IJ.path," -ijpath /Applications/ImageJ -macro ","'", 
                   to.data, ijmacs.folder, "Video_to_morphology_tmp.ijm'")
   if (.Platform$OS.type == "windows") 
     cmd <- c("\"C:/Program Files/FIJI.app/fiji-win64.exe\" -macro Video_to_morphology_tmp.ijm")

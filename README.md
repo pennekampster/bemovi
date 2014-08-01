@@ -4,13 +4,12 @@ franco
 R and imageJ code for video-based counting and identification of aquatic
 microbes, with methods to visualising and check the results.
 
-
-
 Applications to install
 -----------------------------------------------------------------------------
 Windows or Mac:
-ImageJ + mosaic plugin + bioformats plugin
-R + plyr package
+ImageJ + LOCI bioformats plugin
+ParticleLinker
+R
 VLC
 Mac:
 X11
@@ -19,21 +18,15 @@ Tips:
 - Use only the 64-bit version of imagej. Ensure this by deleting the 32-bit version. (The code of franco calls only the 64-bit version.)
 - Use Fiji for interactive imagej sessions. (The code of franco calls imagej, however, so you must have it.)
 
-
 Preliminaries
 -----------------------------------------------------------------------------
 Make sure imagej has sufficient memory (edit, options, memory & threads).
-
-
 
 Setting up for an analysis
 -----------------------------------------------------------------------------
 Put the videos to be analysed in one folder (this folder must contain only the videos you want to analyse). Put this folder of videos in another folder.
 Get a copy of the "worker code" and put it in the latter folder.
 In the worker code, set all the parameters of the analysis, there are some tricky ones, so read carefully the instructions for them.
-
-
-
 
 There are several folders:
 

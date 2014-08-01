@@ -39,21 +39,16 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   morphology.data <- as.data.table(morphology.data)
   morphology.data$frame <- morphology.data$Slice
   morphology.data$Slice <- NULL
-#  morphology.data$X <- morphology.data$X
-#  morphology.data$Y <- morphology.data$Y
   morphology.data$file <- sub(".cxd|.avi", "", morphology.data$file)
   
   ## merge the two datasets
   merged1 <- merge(morphology.data, trajectory.data, by = c("X", "Y", "frame", "file"), all = T)
   ## make the merge of the file names case insensitive
   merged1 <- merged1[, file:=tolower(file)]
-  #merged1$file <- tolower(merged1$file)
 
   setkey(merged1, file)
   setkey(file.sample.info, file)
-  #merged2 <- merge(merged1, file.sample.info, by.x = "file", by.y = "video", all = F)
   merged2 <- merge(merged1, file.sample.info, all = F)
-  #merged2 <- merged2[, is.na(match(names(merged2), c("X1", "Y1")))]
   
   dir.create(paste0(to.data, merged.data.folder), showWarnings = F)
   # drop particles which are not part of trajectories

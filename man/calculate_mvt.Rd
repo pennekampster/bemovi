@@ -16,9 +16,9 @@ calculate_mvt(data, to.data, merged.data.folder)
 \value{
 returns a data.table with the movement metrics for each fix
 appended to the original data (NB: movement metrics often
-need two (e.g. step length), sometimes even three fixes
-(turning angles) to be calculated; fixes for which metrics
-cannot be calculated are padded with NA)
+need two (e.g. step length), sometimes even three (e.g.,
+turning angles) fixes; fixes for which metrics cannot be
+calculated are padded with NA)
 }
 \description{
 The function takes the X- and Y-coordinates for each unqiue

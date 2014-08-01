@@ -1,6 +1,6 @@
 \name{summarize_trajectories}
 \alias{summarize_trajectories}
-\title{Function to summarize the average morphology and movement and their variability on the trajectory level}
+\title{Function to summarize the morphology, movement and their variability on the trajectory level}
 \usage{
 summarize_trajectories(data, write = FALSE, to.data, merged.data.folder)
 }
