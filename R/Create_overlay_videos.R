@@ -135,10 +135,10 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
 
     ## re-create ImageJ macro for batch processing of video files with ParticleTracker
   if (.Platform$OS.type == "windows") 
-    writeLines(text, con = paste("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm", sep = ""), sep = "\n")
+    writeLines(text, con = paste(to.data, ijmacs.folder, "Video_overlay_tmp.ijm", sep = ""))
   if (.Platform$OS.type == "unix") {
-    ijmacs.folder1 <- sub(raw.video.folder, ijmacs.folder, video.dir)
-    writeLines(text, con = paste(ijmacs.folder1, "/Video_overlay_tmp.ijm", sep = ""))
+   # ijmacs.folder1 <- sub(raw.video.folder, ijmacs.folder, video.dir)
+    writeLines(text, con = paste(to.data, ijmacs.folder, "/Video_overlay_tmp.ijm", sep = ""))
   }
   
   ## create directory to store overlays
@@ -150,13 +150,13 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
                   paste0("'", paste0(to.data, ijmacs.folder), "Video_overlay_tmp.ijm", "'"))
   
   if (.Platform$OS.type == "windows") 
-    cmd <- c("\"C:/Program Files/FIJI.app/fiji-win64.exe\" -macro Video_overlay_tmp.ijm")
-  
+    cmd <- paste0("\"", IJ.path, "\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Video_overlay_tmp.ijm", "\"")
+    
   ## run ImageJ macro
   system(cmd)
   
-  ## delete temporary file after execution
-  if (.Platform$OS.type == "windows") 
-    file.remove("C:/Program Files/Fiji.app/macros/Video_overlay_tmp.ijm")
+#   ## delete temporary file after execution
+#   if (.Platform$OS.type == "windows") 
+#     file.remove(paste0(to.data,ijmacs.folder,"Video_overlay_tmp.ijm")
   
 }

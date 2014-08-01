@@ -32,7 +32,7 @@ check_threshold_values <- function(to.data, raw.video.folder, ijmacs.folder, vid
     
   ## re-create ImageJ macro for batch processing of video files with ParticleTracker and put this in a subdirectory of the data folder
   if (.Platform$OS.type == "windows") {
-    writeLines(text, con = paste(to.data, ijmacs.folder, "Check_threshold_tmp.ijm", sep = ""), sep = "\n")}
+    writeLines(text, con = paste(to.data, ijmacs.folder, "Check_threshold_tmp.ijm", sep = ""))}
   if (.Platform$OS.type == "unix") {
     writeLines(text, con = paste(to.data, ijmacs.folder, "Check_threshold_tmp.ijm", sep = ""))}
   
@@ -41,9 +41,9 @@ check_threshold_values <- function(to.data, raw.video.folder, ijmacs.folder, vid
     cmd <- paste0("java -Xmx",memory ,"m -jar ", IJ.path, " -ijpath /Applications/ImageJ -macro ","'", 
                   to.data,  ijmacs.folder, "Check_threshold_tmp.ijm'")
   if (.Platform$OS.type == "windows") 
-    cmd <- c("\"C:/Program Files/FIJI.app/fiji-win64.exe\" -macro Check_threshold_tmp.ijm")
-  
-  system(cmd)
+    cmd <- paste0("\"", IJ.path,"\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "check_threshold_tmp.ijm", "\"")
+    
+system(cmd)
 } 
 
 

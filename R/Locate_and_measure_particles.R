@@ -33,7 +33,8 @@ thresholds = c(10, 255), IJ.path, memory = 512) {
   ## re-create ImageJ macro for batch processing of video files with Particle Analyzer
   if (.Platform$OS.type == "windows") {
     dir.create(paste0(to.data, ijmacs.folder), showWarnings = F)
-    writeLines(text, con = paste("C:/Program Files/Fiji.app/macros/Video_to_morphology_tmp.ijm", sep = ""), sep = "\n")}
+    
+    writeLines(text, con = paste(to.data,ijmacs.folder,"Video_to_morphology_tmp.ijm", sep = ""))}
   if (.Platform$OS.type == "unix") {
     dir.create(paste0(to.data, ijmacs.folder), showWarnings = F)
     writeLines(text, con = paste0(to.data, ijmacs.folder, "Video_to_morphology_tmp.ijm"))}
@@ -45,13 +46,14 @@ thresholds = c(10, 255), IJ.path, memory = 512) {
   if (.Platform$OS.type == "unix") 
     cmd <- paste0("java -Xmx", memory, "m -jar ", IJ.path," -ijpath /Applications/ImageJ -macro ","'", 
                   to.data, ijmacs.folder, "Video_to_morphology_tmp.ijm'")
-  if (.Platform$OS.type == "windows") 
-    cmd <- c("\"C:/Program Files/FIJI.app/fiji-win64.exe\" -macro Video_to_morphology_tmp.ijm")
+  if (.Platform$OS.type == "windows")
+    cmd <- paste0("\"", IJ.path, "\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Video_to_morphology_tmp.ijm", "\"")
+  
   system(cmd)
   
   ## delete temporary file after execution
-  if (.Platform$OS.type == "windows") 
-    file.remove("C:/Program Files/Fiji.app/macros/Video_to_morphology_tmp.ijm")
+#   if (.Platform$OS.type == "windows") 
+#     file.remove("C:/Program Files/Fiji.app/macros/Video_to_morphology_tmp.ijm")
   
   organise_particle_data(to.data, particle.data.folder)
   
