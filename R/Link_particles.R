@@ -45,7 +45,7 @@ link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
       ## run ParticleLinker
       if (.Platform$OS.type == "unix") {
         cmd <- paste0("java -Xmx", memory, "m -Dparticle.linkrange=", linkrange, " -Dparticle.displacement=", disp, 
-                      " -jar ", to.particlelinker, "/ParticleLinker.jar ", "'", dir, "'", " \"", traj_out.dir,"/ParticleLinker_", 
+                      " -jar ", " \"", to.particlelinker, "/ParticleLinker.jar","\" ", "'", dir, "'", " \"", traj_out.dir,"/ParticleLinker_", 
                       all.files[j],"\"")
         system(cmd)
       }
