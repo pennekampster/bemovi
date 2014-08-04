@@ -30,7 +30,7 @@ calculate_mvt <- function(data,to.data,merged.data.folder){
   data <- data[!is.na(data$trajectory),]
   
   #filter out duplicate positions, if available
-  #data <- data[-which(diff(data$X) == 0 & diff(data$Y) == 0),]
+  data <- data[!(diff(X) == 0 & diff(Y) == 0),]
   
   #subset dataset to only include relevant movement information
   data <- data[,list(file,X,Y,frame,id,trajectory)]
