@@ -32,7 +32,7 @@ vid4 = getTitle();
 selectWindow(vid5);
 close();
 selectWindow(vid4);
-close(vid1); // execute the macro till this line
+close(vid1);
 
 setBatchMode(false);
 // play with the min and max threshold
