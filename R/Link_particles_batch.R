@@ -30,16 +30,18 @@ link_particles_batch <- function(to.data, particle.data.folder, trajectory.data.
       
       dir <- paste0(to.data, gsub(".cxd", "", sub(".ijout.txt", "", all.files[j])))
       dir.create(dir)
-      
+      frame_counter <- 1
       for (i in 1:max(PA_data$Slice)) {
         frame <- subset(PA_data, Slice == i)[, c(6, 7)]
         frame$Z <- rep(0, length(frame[, 1]))
         sink(paste0(dir, "/frame_", sprintf("%04d", i - 1), ".txt"))
-        cat(paste0("frame ", i - 1))
+        cat(paste0("frame ", frame_counter))
         cat("\n")
         sink()
         write.table(frame, file = paste0(dir, "/frame_", sprintf("%04d", i - 1), ".txt"), append = T, col.names = F, 
                     row.names = F)
+        frame_counter <- frame_counter+1
+        if (i %% (batch_size) == 0) frame_counter <- 1
       }
       
        for (k in 1:((max(PA_data$Slice)/batch_size)+1)){
@@ -86,3 +88,4 @@ link_particles_batch <- function(to.data, particle.data.folder, trajectory.data.
   #calculate movement metrics for each fix and save to disk
   calculate_mvt(data,to.data,trajectory.data.folder)
 }
+
