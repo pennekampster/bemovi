@@ -5,5 +5,5 @@
 #'
 #' @references NULL
 #' @docType package
-#' @name fRanco
+#' @name bemovi
 NULL
