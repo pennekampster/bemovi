@@ -78,28 +78,3 @@ link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
   #calculate movement metrics for each fix and save to disk
   calculate_mvt(data,to.data,trajectory.data.folder)
 }
-
-
-# 
-# linkrange <- 5
-# memory <- 512
-# disp <- 20
-# 
-# to.particlelinker <- "C:/Users/Frank/Documents/PhD/Programming/Franco_data"
-# 
-# dir1 <- paste(gsub('/',"\\\\","C:\Users\Frank\Documents\PhD\Programming\Franco_data\data\Data38")
-# traj_out.dir <- ""
-# 
-# all.files <- c("1","2")
-# j <- 1
-# 
-# cmd <- paste0("C:/Progra~2/java/jre7/bin/javaw.exe -Xmx", memory, "m -Dparticle.linkrange=", linkrange, 
-#               " -Dparticle.displacement=", disp, " -jar ", to.particlelinker, "/ParticleLinker.jar ", 
-#               "'", "C:/Users/Frank/Documents/PhD/Programming/Franco_data/data/Data38", traj_out.dir, "/ParticleLinker_", all.files[j], "'")
-# 
-# 
-# gsub('\\', "\\\\", traj_out.dir)
-# 
-# 
-# 
-# 

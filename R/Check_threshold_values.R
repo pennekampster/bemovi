@@ -1,4 +1,4 @@
-#' Function to assist finding good thresholds used for the segmentation of the difference video. If you run fRanco for the first time, verify with this function that all target objects are
+#' Function to assist finding good thresholds used for the segmentation of the difference video. If you run bemovi for the first time, verify with this function that all target objects are
 #' properly identified
 #'  
 #' This function creates an ImageJ macro that can be helpful for checking the thresholds specified in the user section; the macro will be saved in the ImageJ macro directory in the working directory and
@@ -22,7 +22,7 @@ check_threshold_values <- function(to.data, raw.video.folder, ijmacs.folder, vid
   dir.create(paste0(to.data, ijmacs.folder), showWarnings = FALSE)
   
   ## copy master copy of ImageJ macro there for treatment
-  text <- readLines(paste(system.file(package="fRanco"), "/", "ImageJ_macros/Check_threshold.ijm", sep = ""))
+  text <- readLines(paste(system.file(package="bemovi"), "/", "ImageJ_macros/Check_threshold.ijm", sep = ""))
   
   ## use regular expression to insert input and output directory
   text[grep("avi_input =", text)] <- paste("avi_input = ", "'", video.dir, "';", sep = "")

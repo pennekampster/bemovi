@@ -1,6 +1,6 @@
-#' fRanco - an R package to quantify abundance, traits and behaviour of organisms in videos
+#' Bemovi, software for extracting BEhaviour and MOrphology from VIdeos.
 #'
-#' fRanco provides functions to segment videos of organisms, identify individuals and their traits (morphology and movement) and
+#' bemovi provides functions to segment videos of organisms, identify individuals and their traits (morphology and movement) and
 #' measure their abundances
 #'
 #' @references NULL
