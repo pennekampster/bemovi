@@ -21,14 +21,15 @@ filter_data <- function(raw_data, net_filter, duration_filter, detect_filter, me
   raw_data$id_ <- raw_data$id
   
   # aggregate data
-  agg_data <- raw_data[ , list(duration=max(frame_)-min(frame_)+1, N_frames=length(net_disp), 
+  agg_data <- raw_data[ , list(duration=(max(frame_)-min(frame_)+1)/fps, 
+                               N_frames=length(net_disp)/fps, 
                                max_net_disp=max(sqrt(net_disp), na.rm=T), 
                                median_step = median(step_length, na.rm=T)), by=id_] 
   
   agg_data[,detect:=N_frames/duration]
   
   # filter data based on specifications given as arguments
-  agg_data <- agg_data[max_net_disp>net_filter & duration/fps > duration_filter & detect > detect_filter & median_step > median_step_filter,]
+  agg_data <- agg_data[max_net_disp>net_filter & duration > duration_filter & detect > detect_filter & median_step > median_step_filter,]
   
   # set keys
   setkey(agg_data, id_)
