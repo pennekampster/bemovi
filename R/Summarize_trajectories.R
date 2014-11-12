@@ -30,7 +30,7 @@ morphology <- data[, list(grey = mean(Mean),
 #sumarize movement properties
 turning <- data[!is.na(rel_angle), list(mean_turning= round(circ.mean(rel_angle),2), sd_turning=round(sd.circular(rel_angle),2)), by=id_]
 
-mvt_properties <- data[,list(duration=(max(frame, na.rm=T)-min(frame, na.rm=T)+1),
+mvt_properties <- data[,list(duration=(max(frame, na.rm=T)-min(frame, na.rm=T)+1)*25,
                             N_frames=length(frame),
                             max_net = round(max(sqrt(net_disp), na.rm=T), digits=2),
                             # select last value of net displacement

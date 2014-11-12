@@ -68,6 +68,8 @@ step_duration <- function(frame_){
   step_duration <- diff(frame_)
   step_duration <- c(step_duration,-9999)
   step_duration[step_duration == -9999] <- NA
+  # scale to seconds
+  step_duration <- step_duration/fps
   return(step_duration)  
   
 }

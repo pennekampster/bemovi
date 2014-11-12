@@ -1,4 +1,4 @@
-#' A function to calculate movement metrics for each trajectory, which can be used to predict the species identity
+#' A function to calculate movement metrics for each trajectory
 #' 
 #' The function takes the X- and Y-coordinates for each unqiue trajectory and calculates movement metrics
 #' such as the gross and net displacement, absolute and relative angles and duration
@@ -10,7 +10,7 @@
 #' three (e.g., turning angles) fixes; fixes for which metrics cannot be calculated are padded with NA)
 #' @export
 
-calculate_mvt <- function(data,to.data,merged.data.folder){
+calculate_mvt <- function(data,to.data,merged.data.folder, pixel_to_scale=1, fps=25){
 
   # output path
   out.dir <- paste0(to.data,merged.data.folder)
@@ -34,14 +34,19 @@ calculate_mvt <- function(data,to.data,merged.data.folder){
   
   #subset dataset to only include relevant movement information
   data <- data[,list(file,X,Y,frame,id,trajectory)]
+  
   #rename frame column to avoid clashes with frame() function
   setnames(data, c("file","X","Y","frame","id","trajectory"), c("file","X","Y","frame_","id","trajectory"))
 
+  # convert to real dimensions
+  data$X <- data$X * pixel_to_scale
+  data$Y <- data$Y * pixel_to_scale
+  
   data$frame_ <- data$frame
   mvt_summary <- data[,list(frame=frame_,
                          step_length = round(step_length(X,Y),2),
-                         step_duration = step_duration(frame_),
-                         step_speed = round(step_length(X,Y)/step_duration(frame_),2),
+                         step_duration = step_duration(frame_)/fps,
+                         step_speed = round(step_length(X,Y)/(step_duration(frame_)/fps),2),
                          gross_disp = round(cumsum(step_length(X,Y)),2),
                          net_disp = round(net_displacement(X,Y),0),
                          abs_angle = round(anglefun(diff(X),diff(Y)),2),

@@ -76,5 +76,5 @@ link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
   data <- organise_link_data(to.data, trajectory.data.folder) 
   
   #calculate movement metrics for each fix and save to disk
-  calculate_mvt(data,to.data,trajectory.data.folder)
+  calculate_mvt(data,to.data,trajectory.data.folder,pixel_to_scale,fps)
 }
