@@ -12,8 +12,10 @@
 #' @param thresholds vector containing the min and max threshold values (defaults to c(10,255))
 #' @param IJ.path path to ImageJ executable 
 #' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
-#' @return saves the output of the ParticleAnalyzer function of ImageJ as a text file in the output directory 
-#' and then assembles the data into a single database called particle.RData
+#' @return saves the output of the ParticleAnalyzer function of ImageJ as a text file in the output directory and then assembles the data into a single database 
+#' called 'particle.RData'. This data.frame contains information about the following properties: the area (transversal cut), 
+#' the mean, minimum and maximum of the grey value, the perimeter, width, length and angle with the dominant-axis of a fitted ellipse, and finally shape parameters such as
+#' circularity, aspect ratio, roundness and solidity. For details of the morphological output, please refer to http://rsbweb.nih.gov/ij/docs/guide/146-30.html 
 #' @export 
 
 locate_and_measure_particles <- function(to.data, raw.video.folder, particle.data.folder, difference.lag, min_size=0, max_size=10000, 

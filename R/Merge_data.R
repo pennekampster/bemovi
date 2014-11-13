@@ -2,7 +2,7 @@
 #' 
 #' Merges the morphology data, the trajectory data with the video descriptions, which can / should contain 
 #' the information on sampling units, video date and time, treatments and replicate etc. The files are merged by the use of the
-#' video file names.
+#' video file names. For the exact meaning of each of the columns, please refer to the locate_and_measure_particles() and link_particles() functions.
 #' @param to.data path to the working directory 
 #' @param particle.data.folder directory containing the global morphology data
 #' @param trajectory.data.folder directory containing the global trajectory data

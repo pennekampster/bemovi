@@ -7,7 +7,11 @@
 #' @param to.data path to the working directory 
 #' @param merged.data.folder directory where the data is saved
 #' @return returns a data.table with the movement metrics for each fix appended to the original data (NB: movement metrics often need two (e.g. step length), sometimes even 
-#' three (e.g., turning angles) fixes; fixes for which metrics cannot be calculated are padded with NA)
+#' three (e.g., turning angles) fixes; fixes for which metrics cannot be calculated are padded with NA). The movement parameters are the step length, the step duration, 
+#' the step speed (step length/step duration), the gross displacement as the cumulative sum of the step lengths, the net displacement between the first fix of a given trajectory 
+#' and the current fix and finally the relative angle (turning angle) and absolute angle (in radians). For details on these metrics, please refer to a dedicated textbook 
+#' (e.g. Turch (1998): Quantitative Analysis of Movement: Measuring and Modeling Population Redistribution in Animals and Plants, Sinauer Associates, Sunderland).
+#' 
 #' @export
 
 calculate_mvt <- function(data,to.data,merged.data.folder, pixel_to_scale=1, fps=25){
