@@ -4,9 +4,9 @@
 #' trajectory length and the median step_length
 #' 
 #' @param raw_data dataframe containing the rawdata: X- and Y-coordinates, frame, file and trajectory name, morphology and movement metrics
-#' @param net_filter minimum net displacement to be considered a valid trajectory
-#' @param duration_filter minimum duration to be considered a valid trajectory
-#' @param detect_filter minimum detection rate to be considered a valid trajectory
+#' @param net_filter minimum net displacement to be considered a valid trajectory (in the length scale specified)
+#' @param duration_filter minimum duration to be considered a valid trajectory (in seconds)
+#' @param detect_filter minimum detection rate to be considered a valid trajectory (a proportion between 0 and 1)
 #' @param median_step_filter threshold such that half of the step lengths are above the specified value
 #' @return returns a dataset with all fixes of valid trajectories
 #' @export
@@ -21,7 +21,11 @@ filter_data <- function(raw_data, net_filter, duration_filter, detect_filter, me
   raw_data$id_ <- raw_data$id
   
   # aggregate data
-  agg_data <- raw_data[ , list(duration=max(frame_)-min(frame_)+1, N_frames=length(net_disp), max_net_disp=max(sqrt(net_disp), na.rm=T), median_step = median(step_length, na.rm=T)), by=id_] 
+  agg_data <- raw_data[ , list(duration=(max(frame_)-min(frame_)+1)/fps, 
+                               N_frames=length(net_disp)/fps, 
+                               max_net_disp=max(sqrt(net_disp), na.rm=T), 
+                               median_step = median(step_length, na.rm=T)), by=id_] 
+  
   agg_data[,detect:=N_frames/duration]
   
   # filter data based on specifications given as arguments

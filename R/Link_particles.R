@@ -10,7 +10,12 @@
 #' are taken into account when a trajectory is re-constructed 
 #' @param disp numeric value that specifies the maximum displacement of a given particle between two frames
 #' @param start_vid numeric value to indicate whether the linking should be started with a video other than the first
-#' @return Returns a single text file per video containing the X- and Y-coordinates, the frame and a trajectory ID
+#' @return Returns a single text file per video containing the X- and Y-coordinates, the frame and a trajectory ID. The files are than automatically merged into a data.table
+#' with the movement metrics for each fix appended to the original data (NB: movement metrics often need two (e.g. step length), sometimes even 
+#' three (e.g., turning angles) fixes; fixes for which metrics cannot be calculated are padded with NA). The movement parameters are the step length, the step duration, 
+#' the step speed (step length/step duration), the gross displacement as the cumulative sum of the step lengths, the net displacement between the first fix of a given trajectory 
+#' and the current fix and finally the relative angle (turning angle) and absolute angle (in radians). For details on these metrics, please refer to a dedicated textbook 
+#' (e.g. Turch (1998): Quantitative Analysis of Movement: Measuring and Modeling Population Redistribution in Animals and Plants, Sinauer Associates, Sunderland).
 #' @export
 link_particles <- function(to.data, particle.data.folder, trajectory.data.folder, linkrange = 1, disp = 10, start_vid = 1, memory = 512) {
   
@@ -76,5 +81,5 @@ link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
   data <- organise_link_data(to.data, trajectory.data.folder) 
   
   #calculate movement metrics for each fix and save to disk
-  calculate_mvt(data,to.data,trajectory.data.folder)
+  calculate_mvt(data,to.data,trajectory.data.folder,pixel_to_scale,fps)
 }

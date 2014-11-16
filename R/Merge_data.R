@@ -2,14 +2,14 @@
 #' 
 #' Merges the morphology data, the trajectory data with the video descriptions, which can / should contain 
 #' the information on sampling units, video date and time, treatments and replicate etc. The files are merged by the use of the
-#' video file names.
+#' video file names. For the exact meaning of each of the columns, please refer to the locate_and_measure_particles() and link_particles() functions.
 #' @param to.data path to the working directory 
 #' @param particle.data.folder directory containing the global morphology data
 #' @param trajectory.data.folder directory containing the global trajectory data
 #' @param video.description.folder directory containing the video description file
 #' @param video.description.file name of the video description file
 #' @param merged.data.folder directory where the global database is saved
-#' @return saves the global database to the merged.data.folder
+#' @return saves the global database Master.RData to the merged.data.folder
 #' @export
 
 merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, video.description.folder,video.description.file, merged.data.folder) {
@@ -39,7 +39,7 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   morphology.data <- as.data.table(morphology.data)
   morphology.data$frame <- morphology.data$Slice
   morphology.data$Slice <- NULL
-  morphology.data$file <- sub(".cxd|.avi", "", morphology.data$file)
+  morphology.data$file <- sub(".cxd | .avi", "", morphology.data$file)
   
   ## merge the two datasets
   merged1 <- merge(morphology.data, trajectory.data, by = c("X", "Y", "frame", "file"), all = T)
