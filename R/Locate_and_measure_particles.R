@@ -24,7 +24,7 @@ thresholds = c(10, 255), IJ.path, memory = 512) {
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   
   ## copy master copy of ImageJ macro there for treatment
-  text <- readLines(paste0(system.file(package="fRanco"), "/", "ImageJ_macros/Video_to_morphology.ijm"))
+  text <- readLines(paste0(system.file(package="bemovi"), "/", "ImageJ_macros/Video_to_morphology.ijm"))
   
   ## use regular expression to insert input & output directory as well as difference lag
   text[grep("avi_input = ", text)] <- paste("avi_input = ", "'", video.dir, "';", sep = "")
