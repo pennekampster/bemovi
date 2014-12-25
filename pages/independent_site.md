@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Making an independent website
+title: Installing bemovi
 ---
 
 This is what to do if you just want a website. (This page is a bit
