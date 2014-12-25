@@ -1,7 +1,6 @@
 ---
 layout: page
-title: Bemovi
-tagline: Software to extract BEhaviour and MOrphology from VIdeos
+title: Overview
 description: Web site containing documentation for the bemovi R package
 ---
 
