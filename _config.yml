@@ -8,8 +8,7 @@ highlighter: pygments
 # Themes are encouraged to use these universal variables 
 # so be sure to set them if your theme uses them.
 #
-title : bemovi
-tagline: Software to extract BEhaviour and MOrphology from VIdeos
+title : Bemovi, software to extract BEhaviour and MOrphology from VIdeos
 author :
   name : Frank Pennekamp
   email : Frank.Pennekamp@ieu.uzh.ch
