@@ -8,9 +8,14 @@ Bemovi is an R package that allows to extract abundance, behaviour and morpholog
 organisms from video sequences. The package relies on R - the statistical computing environment
 and ImageJ, as well as the ParticleTracker plug-in developed for ImageJ. 
 
-This web site provides information how to get started with bemovi, from
-installing the necessary dependencies, to conducting analyses and processing the data to 
-identify trait information and predict species identities based on these traits. 
+For a high level description of the package and its functions, as well as information to its application and
+validation see the following preprint: [Pennekamp, Frank, Nicolas Schtickzelle, and Owen L. Petchey. 2014. 
+“Bemovi, Software for Extracting BEhaviour and MOrphology from VIdeos.” 
+bioRxiv, November. doi:10.1101/011072.](http://biorxiv.org/content/early/2014/11/07/011072)
+
+This web site provides accompanying information how to get started with bemovi, from
+installing the necessary dependencies, conducting analyses and processing the data, to measuring morphological and 
+behavioural traits and predict species identities based on these traits. 
 
 Start by reading the [installation page](pages/installation.html), which
 explains how to install the bemovi package as well as its dependencies. Then download the
@@ -21,8 +26,7 @@ example videos and  go through the [analysis](pages/analysis.html) and [processi
 - [Video analysis](pages/analysis.html)
 - [Process data](pages/processing.html)
 
-
-If anything here is confusing (or _wrong_!), or if I've missed
+If anything here or about the package is confusing (or _wrong_!), or if I've missed
 important details, please [submit an issue](https://github.com/pennekampster/bemovi/issues), or (even
 better) fork [the GitHub repository for this website](http://github.com/pennekampster/bemovi),
 make modifications, and submit a pull request.
