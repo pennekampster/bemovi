@@ -11,12 +11,13 @@ and ImageJ, as well as the ParticleTracker plug-in developed for ImageJ.
 This web site provides information how to use bemovi, from
 installing the necessary software, to conducting analyses. 
 
-Start by reading the [Installation page](pages/installation.html), which
-explains how to install the bemovi package as well as its dependencies. Then read the
-[worked example](pages/example.html). 
+Start by reading the [installation page](pages/installation.html), which
+explains how to install the bemovi package as well as its dependencies. Then download the
+example videos and  go through the [analysis](pages/analysis.html). 
 
-- [installation](pages/installation.html)
-- [example](pages/example.html)
+- [Package and dependency installation](pages/installation.html)
+- [Example videos](pages/example.html)
+- [Analysis](pages/analysis.html)
 
 If anything here is confusing (or _wrong_!), or if I've missed
 important details, please [submit an issue](https://github.com/pennekampster/bemovi/issues), or (even
