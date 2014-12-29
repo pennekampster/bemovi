@@ -13,11 +13,13 @@ installing the necessary software, to conducting analyses.
 
 Start by reading the [installation page](pages/installation.html), which
 explains how to install the bemovi package as well as its dependencies. Then download the
-example videos and  go through the [analysis](pages/analysis.html). 
+example videos and  go through the [analysis](pages/analysis.html) and [processing demonstration](pages/processing.html). 
 
 - [Package and dependency installation](pages/installation.html)
 - [Example videos](pages/example.html)
-- [Analysis](pages/analysis.html)
+- [Video analysis](pages/analysis.html)
+- [Process data](pages/processing.html)
+
 
 If anything here is confusing (or _wrong_!), or if I've missed
 important details, please [submit an issue](https://github.com/pennekampster/bemovi/issues), or (even
