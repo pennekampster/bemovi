@@ -26,15 +26,15 @@ example videos and  go through the [analysis](pages/analysis.html) and [processi
 1. Setup
 + [Package and dependency installation](pages/installation.html)
 + [Technical considerations and compatibility](pages/tech_specs.html)
-
+  
 2. Worked example
-+[Example videos of microbes](pages/example.html)
++ [Example videos of microbes](pages/example.html)
 + [Video analysis](pages/analysis.html)
 + [Process data](pages/processing.html)
-
+  
 3. Other examples
 + [Non-microbe example videos](pages/other_models.html)
-
+  
 If anything here or about the package is confusing (or _wrong_!), or if I've missed
 important details, please [submit an issue](https://github.com/pennekampster/bemovi/issues), or (even
 better) fork [the GitHub repository for this website](http://github.com/pennekampster/bemovi),
