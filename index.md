@@ -9,7 +9,8 @@ organisms from video sequences. The package relies on R - the statistical comput
 and ImageJ, as well as the ParticleTracker plug-in developed for ImageJ. 
 
 For a high level description of the package and its functions, as well as information to its application and
-validation see the following preprint: [Pennekamp, Frank, Nicolas Schtickzelle, and Owen L. Petchey. 2014. 
+validation see the following preprint: 
+[Pennekamp, Frank, Nicolas Schtickzelle, and Owen L. Petchey. 2014. 
 “Bemovi, Software for Extracting BEhaviour and MOrphology from VIdeos.” 
 bioRxiv, November. doi:10.1101/011072.](http://biorxiv.org/content/early/2014/11/07/011072)
 
@@ -22,9 +23,10 @@ explains how to install the bemovi package as well as its dependencies. Then dow
 example videos and  go through the [analysis](pages/analysis.html) and [processing demonstration](pages/processing.html). 
 
 - [Package and dependency installation](pages/installation.html)
-- [Example videos](pages/example.html)
+- [Example videos of microbes](pages/example.html)
 - [Video analysis](pages/analysis.html)
 - [Process data](pages/processing.html)
+- [Non-microbe example videos](pages/other_models.html)
 
 If anything here or about the package is confusing (or _wrong_!), or if I've missed
 important details, please [submit an issue](https://github.com/pennekampster/bemovi/issues), or (even
