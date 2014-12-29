@@ -4,12 +4,10 @@ title: Example videos
 description: Example videos provided with the bemovi R package
 ---
 
-The example works on some demonstration videos that are available in a dropbox folder
-[here](https://www.dropbox.com/sh/i9u2opuc1l8y764/AADy-AWdNfMbu5DLsLhKaP0ja). 
-In the folder “1 - raw” are videos for use in this worked example. In
-the folder “Software” is the ParticleLinker mentioned below. Each of
-the videos is a five second video taken at 25 frames per second, of
+The example is baded on some demonstration videos that are available in a dropbox folder
+[here](https://www.dropbox.com/sh/se803jhiv9kqvg3/AACP_9wGbbdntqQ_3HKaIVoZa?dl=0).
+ 
+In the folder “1 - raw” are the example videos. In the folder “Software” is the ParticleLinker
+mentioned . Each of the videos is a five second video taken at 25 frames per second, of
 monocultures or mixed cultures of three species of ciliate.
 
-Please note we use the terms “directory” and “folder” interchangeably
-in the worked example.

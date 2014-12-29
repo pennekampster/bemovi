@@ -6,10 +6,11 @@ description: Web site containing documentation for the bemovi R package
 
 Bemovi is an R package that allows to extract abundance, behaviour and morphology of individual 
 organisms from video sequences. The package relies on R - the statistical computing environment
-and ImageJ, as well as the ParticleTracker plug-in developed for ImageJ.
+and ImageJ, as well as the ParticleTracker plug-in developed for ImageJ. 
 
-This web site provides information how to use bemovi, from
-installing the necessary software, to conducting analyses. 
+This web site provides information how to get started with bemovi, from
+installing the necessary dependencies, to conducting analyses and processing the data to 
+identify trait information and predict species identities based on these traits. 
 
 Start by reading the [installation page](pages/installation.html), which
 explains how to install the bemovi package as well as its dependencies. Then download the
