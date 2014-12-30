@@ -9,11 +9,9 @@ showing how you use bemovi, please get in touch with me!
 
 ## Drosophila
 
-<div class="less-fancy-video-header">
-      <iframe
-        class="yt-embed"
-        src="http://www.youtube.com/embed/1irP8jm6sk8&rel=0&showinfo=0&autohide=1&hd=1&wmode=transparent"
-        frameborder="0"
-        allowfullscreen="true"
-        > </iframe>
-    </div>
+<iframe 
+     width="532" 
+     height="400" 
+     src="//www.youtube.com/embed/iqUG2_cmZ6I" 
+     frameborder="0" 
+     allowfullscreen="allowfullscreen"> </iframe>
