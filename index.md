@@ -32,8 +32,10 @@ example videos and  go through the [analysis](pages/analysis.html) and [processi
 + [Video analysis](pages/analysis.html)
 + [Process data](pages/processing.html)
   
-3. Other examples
-+ [Non-microbe example videos](pages/other_models.html)
+3. [Non-microbe example videos](pages/other_models.html)
+
+4. [Bemovi related publications](pages/pubs.html)
+
   
 If anything here or about the package is confusing (or _wrong_!), or if I've missed
 important details, please [submit an issue](https://github.com/pennekampster/bemovi/issues), or (even
