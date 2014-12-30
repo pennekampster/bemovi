@@ -26,12 +26,12 @@ example videos and  go through the [analysis](pages/analysis.html) and [processi
 1. Setup
 + [Package and dependency installation](pages/installation.html)
 + [Technical considerations and compatibility](pages/tech_specs.html)
-  
+    
 2. Worked example
 + [Example videos of microbes](pages/example.html)
 + [Video analysis](pages/analysis.html)
 + [Process data](pages/processing.html)
-  
+     
 3. [Non-microbe example videos](pages/other_models.html)
 
 4. [Bemovi related publications](pages/pubs.html)
