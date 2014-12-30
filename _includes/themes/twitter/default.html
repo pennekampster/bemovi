@@ -32,6 +32,12 @@
       <div class="navbar-inner">
         <div class="container-narrow">
           <a class="brand" href="{{ HOME_PATH }}">{{ site.title }}</a>
+          <ul class="nav">
+			<li><a href="{{ BASE_PATH }}/pages/installation.html">Setup</a></li>
+			<li><a href="{{ BASE_PATH }}/pages/example.html">Example videos</a></li>
+			<li><a href="{{ BASE_PATH }}/pages/talks.html">Analysis</a></li>
+			<li><a href="{{ BASE_PATH }}/pages/pubs.html">References</a></li>
+			</ul>
         </div>
       </div>
     </div>
@@ -42,11 +48,10 @@
         {{ content }}
       </div>
       <hr>
-      <footer>
-        <p><small>
-        </small></p>
-      </footer>
-
+<footer>
+<p><small>
+</small></p>
+</footer>
     </div>
 
     {% include JB/analytics %}
