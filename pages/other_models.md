@@ -10,6 +10,6 @@ showing how you use bemovi, please get in touch with me!
 Drosophila
 ----------
 
-{% youtube http://youtu.be/1irP8jm6sk8 %}
+{% youtube http://youtu.be/1irP8jm6sk8 640 480 %}
 
 
