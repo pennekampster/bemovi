@@ -9,7 +9,9 @@ showing how you use bemovi, please get in touch with me!
 
 Drosophila
 ----------
-
-{% youtube 1irP8jm6sk8 640 480 %}
-
-
+ <iframe
+width="420"
+height="315"
+src="http://www.youtube.com/embed/1irP8jm6sk8"
+frameborder="0"
+allowfullscreen="allowfullscreen"> </iframe>
