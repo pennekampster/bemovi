@@ -49,12 +49,6 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </style>
 <div class="container-fluid main-container">
 
-
-<div id="header">
-<h1 class="title">bemovi installation</h1>
-</div>
-
-
 <div id="installing-package-dependencies" class="section level3">
 <h3>Installing package dependencies</h3>
 <p>To use bemovi several programs need to be installed beforehand:</p>

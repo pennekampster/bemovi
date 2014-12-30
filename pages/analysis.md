@@ -50,11 +50,6 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div class="container-fluid main-container">
 
 
-<div id="header">
-<h1 class="title">Running a bemovi analysis</h1>
-</div>
-
-
 <p>First the previously loaded package:</p>
 <pre class="r"><code>library(bemovi)</code></pre>
 <pre><code>## Loading required package: data.table

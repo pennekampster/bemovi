@@ -47,12 +47,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
   margin-right: auto;
 }
 </style>
-<div class="container-fluid main-container">
-
-
-<div id="header">
-<h1 class="title">bemovi processing</h1>
-</div>
+<div class="container-fluid main-container"
 
 
 <div id="merge-data" class="section level3">
