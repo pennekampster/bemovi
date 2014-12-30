@@ -12,6 +12,6 @@ showing how you use bemovi, please get in touch with me!
 <iframe 
      width="420" 
      height="315" 
-     src="//www.youtube.com/embed/1irP8jm6sk8" 
+     src="http://www.youtube.com/embed/1irP8jm6sk8" 
      frameborder="0" 
      allowfullscreen="allowfullscreen"> </iframe>
