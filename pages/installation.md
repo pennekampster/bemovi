@@ -1,13 +1,8 @@
 ---
 layout: page
 title: bemovi installation
-description:
+description: bemovi installation description
 ---
-
-
-test
-
-<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 

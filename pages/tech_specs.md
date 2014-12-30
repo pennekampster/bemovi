@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Technical considerations and compatibility
-description: 
+description: Hardware requirements
 ---
 
 Bemovi was tested on Windows 7 & 8, as well as Mac OS X and Ubuntu 14.04.
