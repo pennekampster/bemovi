@@ -3,7 +3,6 @@ layout: page
 title: Processing bemovi output
 description: Example analysis using the bemovi R package
 ---
-<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
