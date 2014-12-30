@@ -13,7 +13,7 @@ showing how you use bemovi, please get in touch with me!
 <div class="less-fancy-video-header">
       <iframe
         class="yt-embed"
-        src="http://www.youtube.com/embed/1irP8jm6sk8?&rel=0&showinfo=0&autohide=1&hd=1&wmode=transparent"
+        src="http://www.youtube.com/embed/1irP8jm6sk8&rel=0&showinfo=0&autohide=1&hd=1&wmode=transparent"
         frameborder="0"
         allowfullscreen="true"
         ></iframe>
