@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Analysis
+title: Running a bemovi analysis
 description: Example analysis using the bemovi R package
 ---
 
