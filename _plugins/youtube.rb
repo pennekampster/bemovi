@@ -1,29 +1,37 @@
 class YouTube < Liquid::Tag
-# Syntax = /^\s*([^\s]+)(\s+(\d+)\s+(\d+)\s*)?/
-Syntax = /^\s*([^\s]+)(?:\s+(\d+)\s+(\d+)\s*)?/
 def initialize(tagName, markup, tokens)
 super
  
-if markup =~ Syntax then
-@id = $1
- 
-if $2.nil? then
-@width = 560
-@height = 420
-else
-@width = $2.to_i
-@height = $3.to_i
-end
-else
-raise "No YouTube ID provided in the \"youtube\" tag"
+args = markup.split(' ')
+@id = args[0]
+@width = 500
+@height = 281
+if args[1]
+@width = args[1]
+@height = args[2]
 end
 end
- 
 def render(context)
-# "<iframe width=\"#{@width}\" height=\"#{@height}\" src=\"http://www.youtube.com/embed/#{@id}\" frameborder=\"0\"allowfullscreen></iframe>"
-#"<iframe width=\"#{@width}\" height=\"#{@height}\" src=\"http://www.youtube.com/embed/#{@id}?color=white&theme=light\"></iframe>"
-"<iframe width=\"#{@width}\" height=\"#{@height}\" src=\"http://www.youtube.com/embed/#{@id}?color=white&amp;theme=light\">&nbsp; </iframe>"
+"<div class=\"youtube\"><iframe width=\"#{@width}\" height=\"#{@height}\" src=\"http://www.youtube.com/embed/#{@id}?color=white&theme=light\"> </iframe></div>"
+end
+Liquid::Template.register_tag("youtube", self)
 end
  
-Liquid::Template.register_tag "youtube", self
+class Vimeo < Liquid::Tag
+def initialize(tagName, markup, tokens)
+super
+ 
+args = markup.split(' ')
+@id = args[0]
+@width = 500
+@height = 281
+if args[1]
+@width = args[1]
+@height = args[2]
+end
+end
+def render(context)
+"<div class=\"vimeo\"><iframe src='http://player.vimeo.com/video/#{@id}\" width=\"#{@width}\" height=\"#{@height}\" frameborder=\"0\" webkitAllowFullScreen mozallowfullscreen allowFullScreen> </iframe></div>"
+end
+Liquid::Template.register_tag("vimeo", self)
 end 
