@@ -56,7 +56,7 @@ link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
         if (kill_after == -1){        
         system(paste0(cmd, " \\&"))
       } else{
-        system(paste0("~/desktop/timeout.sh -t ",kill_after," ",cmd," \\&"))
+        system(paste0(system.file(package="bemovi"), "/","bash_script/timeout.sh -t ",kill_after," ",cmd," \\&"))
       }
       }
       
