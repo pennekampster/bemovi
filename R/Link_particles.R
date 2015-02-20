@@ -17,7 +17,7 @@
 #' and the current fix and finally the relative angle (turning angle) and absolute angle (in radians). For details on these metrics, please refer to a dedicated textbook 
 #' (e.g. Turch (1998): Quantitative Analysis of Movement: Measuring and Modeling Population Redistribution in Animals and Plants, Sinauer Associates, Sunderland).
 #' @export
-link_particles <- function(to.data, particle.data.folder, trajectory.data.folder, linkrange = 1, disp = 10, start_vid = 1, memory = 512) {
+link_particles <- function(to.data, particle.data.folder, trajectory.data.folder, linkrange = 1, disp = 10, start_vid = 1, memory = 512, kill_after = -1) {
   
   PA_output_dir <- paste0(to.data, particle.data.folder)
   traj_out.dir <- paste0(to.data, trajectory.data.folder)
@@ -52,7 +52,12 @@ link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
         cmd <- paste0("java -Xmx", memory, "m -Dparticle.linkrange=", linkrange, " -Dparticle.displacement=", disp, 
                       " -jar ", " \"", to.particlelinker, "/ParticleLinker.jar","\" ", "'", dir, "'", " \"", traj_out.dir,"/ParticleLinker_", 
                       all.files[j],"\"")
+      
+        if (kill_after == -1){        
         system(paste0(cmd, " \\&"))
+      } else{
+        system(paste0("~/desktop/timeout.sh -t ",kill_after," ",cmd," \\&"))
+      }
       }
       
       if (.Platform$OS.type == "windows") {
@@ -61,8 +66,10 @@ link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
                       gsub("/","\\\\", paste0(" \"" ,to.particlelinker,"/ParticleLinker.jar")),"\" ",
                       gsub("/","\\\\", paste0(" ","\"" ,dir,"\"")),
                       gsub("/","\\\\", paste0(" ","\"", traj_out.dir, "/ParticleLinker_", all.files[j], "\"")))
-          
+       
+       if (kill_after == -1){  
         system(cmd)
+      }
       }
       
       #delete working dir
