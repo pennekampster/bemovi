@@ -12,9 +12,9 @@
 
 summarize_trajectories <- function(data, write=FALSE, to.data, merged.data.folder, give.fps=NA){
 
-if(!exists(fps) & is.na(give.fps)) stop("frames per second not specified")
+if(!exists("fps") & is.na(give.fps)) stop("frames per second not specified")
 
-if(!exists(fps) & !is.na(give.fps)) fps <- give.fps
+if(!exists("fps") & !is.na(give.fps)) fps <- give.fps
   
 data <- as.data.table(data)
 data[,id_:=id]
