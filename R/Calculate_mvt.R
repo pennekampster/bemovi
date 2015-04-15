@@ -6,6 +6,8 @@
 #' @param data dataframe containing the X- and Y-coordinates, the frame and the trajectory ID
 #' @param to.data path to the working directory 
 #' @param merged.data.folder directory where the data is saved
+#' @param pixel_to_scale specify how a pixel scales to real dimensions
+#' @param fps specify the frame rate of the video
 #' @return returns a data.table with the movement metrics for each fix appended to the original data (NB: movement metrics often need two (e.g. step length), sometimes even 
 #' three (e.g., turning angles) fixes; fixes for which metrics cannot be calculated are padded with NA). The movement parameters are the step length, the step duration, 
 #' the step speed (step length/step duration), the gross displacement as the cumulative sum of the step lengths, the net displacement between the first fix of a given trajectory 

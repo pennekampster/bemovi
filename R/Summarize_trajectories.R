@@ -6,11 +6,16 @@
 #' @param to.data path to the working directory
 #' @param merged.data.folder directory where the global database is saved
 #' @param write logical argument to indicate whether aggregated information should be saved to disk
-#' @return returns a data.table with the aggregated morphology and movement information for each trajectory 
+#' @param give.fps Give frames per second (in object named fps) if it is not already defined globally
+#' @return returns a data.table with the aggregated morphology and movement information for each trajectory
 #' @export
 
-summarize_trajectories <- function(data, write=FALSE, to.data, merged.data.folder){
+summarize_trajectories <- function(data, write=FALSE, to.data, merged.data.folder, give.fps=NA){
 
+if(!exists("fps") & is.na(give.fps)) stop("frames per second not specified")
+
+if(!exists("fps") & !is.na(give.fps)) fps <- give.fps
+  
 data <- as.data.table(data)
 data[,id_:=id]
 
