@@ -4,11 +4,10 @@
 # function does not use forking and so is cross platform
 #the makeCluster function is used to set up clusters
 #the clusterExport function is used to transfer objects from function environments to cluster environments
-#the clusterApply function is used to perform function in parallel;its syntax is similar to other apply loops but browser cant be used and objects must be specially supplied
-
+#the clusterApplyLB function is used to perform function in parallel;its syntax is similar to other apply loops but browser cant be used and objects must be specially supplied
+#LB stands for load balancing : useful for when jobs are of differing sizes
 
 require(parallel)
-require(snow)
 n.cores<-detectCores(all.tests = FALSE, logical = TRUE)
 
 
@@ -24,13 +23,17 @@ create_overlays_mc <-  function (to.data, merged.data.folder, raw.video.folder, 
   file_names <- unique(trajectory.data$file)
   dir.create(paste0(to.data, temp.overlay.folder), showWarnings = F)
  
+ system("defaults write org.R-project.R force.LANG en_US.UTF-8")
+
  # set up cluster
  cl <- makeCluster(n.cores)
  # which objects do all clusters need to know???
  clusterExport(cl, varlist=c("to.data", "merged.data.folder", "raw.video.folder", "temp.overlay.folder",     "overlay.folder", "width", "height","difference.lag", "type", "predict_spec", "contrast.enhancement", "IJ.path", "memory", "trajectory.data", "file_names"),environment())
  
   # run the cluster
- clusterApply(cl,1:length(file_names), fun=function(i){
+ #clusterApplyLB(cl,1:length(file_names), fun=function(i){
+ 	parLapplyLB(cl,1:length(file_names), fun=function(i){
+
     dir.create(paste0(to.data, temp.overlay.folder, file_names[i]), 
                showWarnings = F)
     trajectory.data_tmp <- subset(trajectory.data, file == 
