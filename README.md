@@ -1,5 +1,6 @@
 Bemovi, software for extracting BEhaviour and MOrphology from VIdeos.
 =============================================================================
-Frank Pennekamp, Nicolas Schtickzelle, Owen L. Petchey (2014): Bemovi, software for extracting BEhaviour and MOrphology from VIdeos. BioRxiv, doi: http://dx.doi.org/10.1101/011072
+The article introducing BEMOVI is currently under review, but a pre-print can be found here:
+Frank Pennekamp, Nicolas Schtickzelle, Owen L. Petchey (2014): BEMOVI, software for extracting BEhaviour and MOrphology from VIdeos. BioRxiv, doi: http://dx.doi.org/10.1101/011072
 
-*** Insert reference / hyperlink to document providing worked example (all necessary information for using bemovi is in this worked example (and the paper).
+A detailed description how to install BEMOVI and its dependencies, as well as a worked example similar to the illustration in the article introducing BEMOVI can be found here: http://bemovi.info
