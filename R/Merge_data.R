@@ -52,10 +52,14 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   
   dir.create(paste0(to.data, merged.data.folder), showWarnings = F)
   # drop particles which are not part of trajectories
-  trajectory.data <- merged2[!is.na(merged2$id), ]
+  trajectory.data.beta <- merged2[!is.na(merged2$id), ]
   
-  setkey(trajectory.data, file, id, frame)
+  setkey(trajectory.data.beta, file, id, frame)
   
-  save(trajectory.data, file = paste0(to.data, merged.data.folder,"Master.RData")) 
+  ## Merge the information in trajectory.data with the information contained in video.description.file:
+  trajectory.data <- merge(trajectory.data.beta, video.description.file, by = "file")
   
+  ## create Master.RData
+  
+  save(trajectory.data, file = paste0(to.data, merged.data.folder,"Master.RData"))
 } 

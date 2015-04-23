@@ -1,0 +1,49 @@
+?paste0
+?save
+x <- stats::runif(20)#
+y <- list(a = 1, b = TRUE, c = "oops")#
+save(x, y, file = "xy.RData")
+wd()
+getwd()
+load("/Users/marcoplebani/Dropbox/rlunch-archive/bemovi/R/xy.RData")
+ls()
+rm(list=ls())
+ls()
+load("/Users/marcoplebani/Dropbox/rlunch-archive/bemovi/R/xy.RData")
+ls()
+x
+y
+? setkey
+?? setkey
+library(bemovi)
+library(devtools)
+install_github("pennekampster/bemovi")
+library(bemovi)
+?setkey
+?merge
+mean.or.median <- function(x, mean.or.median){#
+	if(mean.or.median){mean(x)} else {median(x)}#
+}#
+#
+mean.or.median(1:10, mean.or.median=T)#
+mean.or.median(1:10, mean.or.median=F)
+#Try a function#
+#
+mean.or.median <- function(x, mean.or.median){#
+	if(mean.or.median){mean(x)} else {median(x)}#
+}#
+aa<-c(1,1,2,2,2,2,2,3,4,4,6,7,8,9,9,9,9)#
+mean.or.median(aa, mean.or.median=T)#
+mean.or.median(aa, mean.or.median=F)
+#Try a function#
+#
+mean.or.median <- function(x, mean.or.median){#
+	if(mean.or.median){#
+		mean(x)#
+		} else {#
+			median(x)#
+			}#
+}#
+aa<-c(1,1,2,2,2,2,2,3,4,4,6,7,8,9,9,9,9)#
+mean.or.median(aa, mean.or.median=T)#
+mean.or.median(aa, mean.or.median=F)
