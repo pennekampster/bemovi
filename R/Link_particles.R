@@ -61,8 +61,8 @@ link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
       }
       
       if (.Platform$OS.type == "windows") {
-        
-       cmd <- paste0("C:/Progra~2/java/jre7/bin/javaw.exe -Xmx", memory,"m -Dparticle.linkrange=", linkrange, " -Dparticle.displacement=", disp," -jar",
+      # previously hardcoded as "C:/Progra~2/java/jre7/bin/javaw.exe"
+       cmd <- paste0(java.path, " -Xmx", memory,"m -Dparticle.linkrange=", linkrange, " -Dparticle.displacement=", disp," -jar",
                       gsub("/","\\\\", paste0(" \"" ,to.particlelinker,"/ParticleLinker.jar")),"\" ",
                       gsub("/","\\\\", paste0(" ","\"" ,dir,"\"")),
                       gsub("/","\\\\", paste0(" ","\"", traj_out.dir, "/ParticleLinker_", all.files[j], "\"")))
