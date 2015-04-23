@@ -31,29 +31,30 @@ tt <- trajectory.data
 # accuracy <- 0.5
  
 percent_change <- function(dt){
-  #dt <- tt[tt$id=="data00001-28",]
-  
-  for (i in 1:length(morphological_parameter)) {
-    #i=1
-    new_data <- c(0) # corresponding to the 1st row of each id
-    for (j in 2:nrow(dt)){
-      #j=2
-      dataB <- dt[j,which(colnames(dt)==morphological_parameter[i]), with=FALSE]
-      dataA <- dt[j-1,which(colnames(dt)==morphological_parameter[i]), with=FALSE]
-      
-      percent <- abs(dataB-dataA)/dataA
-      new_data <- c(new_data, percent)
-    }# end of j (nrow) loop
-    dt[,paste0("diff_",morphological_parameter[i])] <- new_data
-    
-  }# end of i (morphological parameters) loop
-  return(dt)
-}# end of percent_change function
+    #dt <- tt[tt$id=="data00003-6",] 
+    meta_data <-dt[,c("file","frame","trajectory","X","Y",morphological_parameter),with=F]
+    frm   <- dt[1:(nrow(dt)-1),morphological_parameter,with=F]
+    twrds <- dt[2:nrow(dt),morphological_parameter,with=F]  
+    dfrnce  <- twrds-frm
+    perc_change <- abs(dfrnce)/frm 
 
+    zeros<-data.frame(t(rep(0,length(morphological_parameter))))
+    names(zeros)<-names(perc_change)
+    perc_change <- rbind(zeros,perc_change)    
+    setnames(perc_change,
+       old=morphological_parameter,
+       new=paste0("diff_",morphological_parameter))
+    out<-cbind(meta_data ,perc_change)
+    return(out)
+  }# end of percent_change function
+ 
 # # for ONE video
-# sub_tt <- tt[tt$file=="data00001",]
-# setkey(sub_tt, id)
-# new_tt <- sub_tt[,percent_change(.SD), by=list(id), .SDcols=c("file","frame","trajectory","X","Y",morphological_parameter)]
+#sub_tt <- tt[tt$file=="data00001",]
+#setkey(sub_tt, id)
+ 
+#new_tt <- sub_tt[,percent_change(.SD),by=list(id), .SDcols=c("file","frame","trajectory","X","Y",morphological_parameter)]
+
+
 
 # for ALL video in the folder
 setkey(tt, id)
@@ -72,6 +73,7 @@ new_tt[,"TRUE_diff"] <- ifelse(TRUE_diff != 0, "YES", "NO")
 new_tt[,"new_trajectory"] <- new_tt[,trajectory]
 new_tt2 <- new_tt
 
+# subset of mismatch with the previous 
 yes_new_tt2 <- new_tt2[TRUE_diff=="YES"]
 for (i in 1:nrow(yes_new_tt2)) {
   #i=1
@@ -85,7 +87,7 @@ for (i in 1:nrow(yes_new_tt2)) {
 # attribute a new identity
 new_tt2[,"new_id"] <- paste(new_tt2[,file], new_tt2[,new_trajectory], sep="-")
 
-
+library(plyr)
 ## STEP 3: summarise morphological information to search similar individuals
 # summarize information to find correspondance between trajectories of the same organisms...
 new_tt3 <- ddply(as.data.frame(new_tt2), .(new_id), summarize, 
@@ -110,7 +112,7 @@ new_tt3 <- as.data.table(new_tt3)
 
 
 for (k in 1:length(unique(new_tt3$new_id))){
-  # k<- 65  # example 
+  # k<- 2# example 
   sub_new_tt3<-subset(new_tt3, new_id==unique(new_tt3$new_id)[k])
   other <- subset(new_tt3, file==sub_new_tt3$file
                   & frame_start > sub_new_tt3$frame_end 
@@ -140,7 +142,7 @@ real_tt$new_traj <- NA
 real_tt <- as.data.frame(real_tt)
 
 for(i in 1:nrow(new_tt3)){
-  # i=1  #example
+  # i=2  #example
   id.wanted <- new_tt3[i,]$old_id
   frame_start <- new_tt3[i,]$frame_start
   frame_end <- new_tt3[i,]$frame_end
@@ -156,6 +158,7 @@ real_tt2 <- subset(real_tt, select=-new_traj)
 
 # save the new file
 trajectory.data <- as.data.table(real_tt2)
+dir.create(paste0(to.data,stitch.data.folder),showWarnings=F)
 #traj28 <- trajectory.data[which(trajectory.data$trajectory=="28"),]
 save(trajectory.data, file=paste0(to.data, stitch.data.folder,"Master.RData"))
 
