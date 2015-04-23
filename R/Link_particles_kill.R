@@ -17,7 +17,7 @@
 #' and the current fix and finally the relative angle (turning angle) and absolute angle (in radians). For details on these metrics, please refer to a dedicated textbook 
 #' (e.g. Turch (1998): Quantitative Analysis of Movement: Measuring and Modeling Population Redistribution in Animals and Plants, Sinauer Associates, Sunderland).
 #' @export
-link_particles <- function(to.data, particle.data.folder, trajectory.data.folder, linkrange = 1, disp = 10, start_vid = 1, memory = 512) {
+link_particles_kill <- function(to.data, particle.data.folder, trajectory.data.folder, linkrange = 1, disp = 10, start_vid = 1, memory = 512, kill_after = -1) {
 
   if(!exists("to.particlelinker")) stop("Path to ParticleLinker not found. Please specify path in global options.")
   
@@ -54,12 +54,18 @@ link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
         cmd <- paste0("java -Xmx", memory, "m -Dparticle.linkrange=", linkrange, " -Dparticle.displacement=", disp, 
                       " -jar ", " \"", to.particlelinker, "/ParticleLinker.jar","\" ", "'", dir, "'", " \"", traj_out.dir,"/ParticleLinker_", 
                       all.files[j],"\"")
+      
+        if (kill_after == -1){        
+        system(paste0(cmd, " \\&"))
+      } else{
+        system(paste0(system.file(package="bemovi"), "/","bash_script/timeout.sh -t ",kill_after," ",cmd," \\&"))
+      }
       }
       
       if (.Platform$OS.type == "windows") {
         
-        if(!exists("java.path")) stop("Java path not found. Please specify path in global options.")
-        
+      if(!exists("java.path")) stop("Java path not specified in global options")
+          
       # previously hardcoded as "C:/Progra~2/java/jre7/bin/javaw.exe"
        cmd <- paste0(java.path, " -Xmx", memory,"m -Dparticle.linkrange=", linkrange, " -Dparticle.displacement=", disp," -jar",
                       gsub("/","\\\\", paste0(" \"" ,to.particlelinker,"/ParticleLinker.jar")),"\" ",
