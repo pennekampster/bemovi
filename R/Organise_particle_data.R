@@ -20,7 +20,7 @@ organise_particle_data <- function(to.data, particle.data.folder) {
   colnames(dd) <- c("obs", "Area", "Mean", "Min", "Max", "X", "Y", "Perimeter", "Major", "Minor", "Angle", "Circ.", "Slice", 
                     "AR", "Round", "Solidity", "file")
   
-  if (length(ijout.files) > 2) {
+  if (length(ijout.files) > 1) {
     for (i in 2:length(ijout.files)) {
       dd.t <- read.delim(paste(IJ_output.dir, ijout.files[i], sep = "//"))
       dd.t$file <- rep(gsub(".ijout.txt", "", ijout.files[i]), length(dd.t[, 1]))
