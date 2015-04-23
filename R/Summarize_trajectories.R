@@ -10,7 +10,10 @@
 #' @return returns a data.table with the aggregated morphology and movement information for each trajectory
 #' @export
 
-summarize_trajectories <- function(data, write=FALSE, to.data, merged.data.folder, give.fps=NA){
+# NOTE: the data has to be loaded from the merged database (Master.RData), which is produced by the function merge_data() and placed in the merged.data.folder.
+# GOAL: improve summarize_trajectories function to keep information about treatments
+
+summarize_trajectories <- function(data, calculate.median, write=FALSE, to.data, merged.data.folder, give.fps=NA){
 
 if(!exists("fps") & is.na(give.fps)) stop("frames per second not specified")
 
@@ -20,18 +23,27 @@ data <- as.data.table(data)
 data[,id_:=id]
 
 #summarize morphology
-morphology <- data[, list(grey = mean(Mean),
-                          sd_grey = sd(Mean),
-                          area = mean(Area), 
-                          sd_area = sd(Area),
-                          perimeter = mean(Perimeter),
-                          sd_perimeter = sd(Perimeter),
-                          major = mean(Major), 
-                          sd_major = sd(Major),
-                          minor = mean(Minor), 
-                          sd_minor = sd(Minor),
-                          ar = mean(AR),
-                          sd_ar = sd(AR)), by=id_]
+morphology <- if(calculate.median){
+						data[, list(median_grey = median(Mean),
+                		median_area = median(Area),
+             		    median_perimeter = median(Perimeter),
+             		    median_major = median(Major),
+             		    median_minor = median(Minor),
+             		    ar = median(AR), by=id_]
+              			} else {
+                 			data[, list(mean_grey = mean(Mean),
+                 			sd_grey = sd(Mean),
+                 			mean_area = mean(Area),
+                 			sd_area = sd(Area),
+                 			mean_perimeter = mean(Perimeter),
+	                        sd_perimeter = sd(Perimeter),
+	                        mean_major = mean(Major), 
+	                        sd_major = sd(Major),
+	                        mean_minor = mean(Minor), 
+	                        sd_minor = sd(Minor),
+	                        mean_ar = mean(AR),
+	                        sd_ar = sd(AR)), by=id_]	
+                 			}
 
 #sumarize movement properties
 turning <- data[!is.na(rel_angle), list(mean_turning= round(circ.mean(rel_angle),2), sd_turning=round(sd.circular(rel_angle),2)), by=id_]
