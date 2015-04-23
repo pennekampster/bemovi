@@ -66,9 +66,6 @@ link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
                       gsub("/","\\\\", paste0(" ","\"" ,dir,"\"")),
                       gsub("/","\\\\", paste0(" ","\"", traj_out.dir, "/ParticleLinker_", all.files[j], "\"")))
        
-       if (kill_after == -1){  
-        system(cmd)
-      }
       }
       
       #delete working dir
