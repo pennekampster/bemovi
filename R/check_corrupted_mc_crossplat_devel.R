@@ -35,7 +35,7 @@ check_corrupted_mc <- function(to.data, raw.data.folder){
 	
 
  # set up cluster
- system("defaults write org.R-project.R force.LANG en_US.UTF-8")
+ #system("defaults write org.R-project.R force.LANG en_US.UTF-8")
  cl <- makeCluster(n.cores)
  # which objects do all clusters need to know???
  clusterExport(cl, varlist=c("to.data", "raw.video.folder",  "path_showinf", "path_bad_files", "files"),environment())
@@ -44,10 +44,18 @@ check_corrupted_mc <- function(to.data, raw.data.folder){
   clusterApplyLB(cl,1:length(files), fun=function(i){
   	#mclapply( 1:length(files), FUN=function(i){
   
- 
-   # Run showinf via console and print info into text file named check_file.txt
-   system(paste0(path_showinf, "showinf -nopix ", "'", to.data, raw.video.folder  ,"'", files[i], " > " ,
-          "'", to.data, raw.video.folder , "check_",files[i],".txt","'"))
+    
+    if (.Platform$OS.type == "unix") {
+      # Run showinf via console and print info into text file named check_file.txt
+      system(paste0(path_showinf, "showinf -nopix ", "'", to.data, raw.video.folder  ,"'", files[i], " > " ,
+                    "'", to.data, raw.video.folder , "check_",files[i],".txt","'")) }
+    
+    if (.Platform$OS.type == "windows") {
+      # Run showinf via console and print info into text file named check_file.txt
+      sink(paste0(to.data, raw.video.folder , "check_",files[i],".txt"))
+      system(paste0(path_showinf, "showinf.bat -nopix ", '"', to.data, raw.video.folder, files[i], '"'))
+      sink()
+    }
    
    #read file and check it is not just a short error message
    check <- readLines(paste0(to.data, raw.video.folder , "check_",files[i],".txt")) 
@@ -69,7 +77,7 @@ check_corrupted_mc <- function(to.data, raw.data.folder){
 }
 
 
-to.data <- "/Volumes/LaCie/Franco validation/Repeated sampling/Original/"
+to.data <- "/Volumes/Work MAC backup/Franco validation/Repeated sampling/Original/"
 raw.video.folder <- "1 - raw/"
   
 check_corrupted_mc(to.data, raw.data.folder)
