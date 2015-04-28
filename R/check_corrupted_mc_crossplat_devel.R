@@ -11,22 +11,23 @@
 require(parallel)
 n.cores<-detectCores(all.tests = FALSE, logical = TRUE)
 
+# path to command line showinf tool (provided by BIO-LOCI)
+path_showinf <- "/Users/Frank/Documents/Postdoc/Software/bftools/"
+
 check_corrupted_mc <- function(to.data, raw.data.folder){
- # path to command line showinf tool (provided by BIO-LOCI)
- path_showinf <- "/Users/jason/Documents/20150115test_bemovi_jg_vid/Software/bftools/"
  
  # Check showinf.exe exists in specified folder
- if(file.exists(paste0(path_showinf,"showinf"))==F) stop("bftools software not found, perhaps the file pah is wrong")
+ if(file.exists(paste0(path_showinf,"showinf"))==F) stop("bftools software not found, perhaps the file path is wrong")
  
  # test the file path to the raw data is correct
- if(file.info( paste0(to.data, raw.video.folder))[1,"isdir"]!=TRUE) stop("the file paths provided for the raw data is wrong")
+ if(is.na(file.info(paste0(to.data, raw.video.folder))[1,"isdir"])) stop("the file paths provided for the raw data is wrong")
  
  # Create output directory for corrupted files
  path_bad_files <- paste0(to.data, raw.video.folder , "bad files/")
  dir.create(path_bad_files, showWarnings=FALSE)
  
  # Important test to ensure the bad files folder is made
- if(file.info(path_bad_files)[1,"isdir"]!=TRUE) stop("the file paths provided for bad data file do not exist")
+ if(is.na(file.info(path_bad_files)[1,"isdir"])) stop("the file paths provided for bad data file do not exist")
  
  # find names of all .cdx files in raw data directory 
  files <- list.files(paste0(to.data, raw.video.folder))
@@ -46,24 +47,29 @@ check_corrupted_mc <- function(to.data, raw.data.folder){
  
    # Run showinf via console and print info into text file named check_file.txt
    system(paste0(path_showinf, "showinf -nopix ", "'", to.data, raw.video.folder  ,"'", files[i], " > " ,
-          "'", to.data, raw.video.folder , "check_file.txt","'"))
+          "'", to.data, raw.video.folder , "check_",files[i],".txt","'"))
    
    #read file and check it is not just a short error message
-   check <- readLines(paste0(to.data, raw.video.folder , "check_file.txt")) 
+   check <- readLines(paste0(to.data, raw.video.folder , "check_",files[i],".txt")) 
    # If read-out is short, there is a problem, therefore copy this file to the bad file directory
    if (length(check) < 4){
         file.rename(from= paste0(to.data, raw.video.folder, files[i]), to= paste0(path_bad_files, files[i]))
     } else{ 
-    	cat(paste0("Files ",i," is not corrupted"))
+    	cat(paste0("File ",files[i]," is not corrupted"))
    }
+   # delete check_file
+   unlink(paste0(to.data, raw.video.folder , "check_",files[i],".txt"))
   })
 
-
- # delete check_file
- #unlink(paste0(to.data, raw.video.folder , "check_file.txt"))
-
  #output result
- if (length(list.files(path_bad_files)) > 0){cat(paste0("The following corrupted files were found: ", "\n", list.files(path_bad_files)))}  else {cat("No corrupted files found!")}
-
+ if (length(list.files(path_bad_files)) > 0){cat(paste0("The following corrupted file(s) were found: ", "\n", list.files(path_bad_files)))}  else {cat("No corrupted files found!")}
+ 
+ # stop cluster at end
+ stopCluster(cl)
 }
 
+
+to.data <- "/Volumes/LaCie/Franco validation/Repeated sampling/Original/"
+raw.video.folder <- "1 - raw/"
+  
+check_corrupted_mc(to.data, raw.data.folder)
