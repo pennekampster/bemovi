@@ -73,6 +73,22 @@ morph_mvt <- merge(morphology,mvt_complete,by=c("id_"), all=T)
 morph_mvt$id <- morph_mvt$id_
 morph_mvt$id_ <- NULL
 
+#names(morph_mvt)[names(morph_mvt) == 'id'] <- 'file_id'
+
+# extract morph_mvt$file from morph_mvt$id
+morph_mvt$file <- lapply(strsplit(as.character(morph_mvt$id), "\\-"), "[", 1)
+
+# Load video.description.file:
+video.descr.file <- read.delim(paste0(to.data,
+									video.description.folder,
+									video.description.file))
+
+#morph_mvt is not normal data.frame it's list of lists. Make it a "regular" data.frame:
+morph_mvt <- as.data.frame(lapply(morph_mvt, function(X) unname(unlist(X))))
+
+# Add the information contained in video.descr.file
+morph_mvt <- merge(morph_mvt, video.descr.file, by = "file")
+  
 #output summary data
 if (write==TRUE){save(morph_mvt, file = paste0(to.data, merged.data.folder,"Morph_mvt.RData"))}
 return(as.data.frame(morph_mvt))
