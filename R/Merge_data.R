@@ -56,6 +56,7 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   
   setkey(trajectory.data, file, id, frame)
   
-  save(trajectory.data, file = paste0(to.data, merged.data.folder,"Master.RData")) 
+  ## create Master.RData
   
+  save(trajectory.data, file = paste0(to.data, merged.data.folder,"Master.RData"))
 } 
