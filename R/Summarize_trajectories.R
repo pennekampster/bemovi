@@ -6,7 +6,6 @@
 #' @param to.data path to the working directory
 #' @param merged.data.folder directory where the global database is saved
 #' @param write logical argument to indicate whether aggregated information should be saved to disk
-#' @param give.fps Give frames per second (in object named fps) if it is not already defined globally
 #' @return returns a data.table with the aggregated morphology and movement information for each trajectory
 #' @export
 
