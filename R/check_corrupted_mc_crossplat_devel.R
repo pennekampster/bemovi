@@ -75,9 +75,3 @@ check_corrupted_mc <- function(to.data, raw.data.folder){
  # stop cluster at end
  stopCluster(cl)
 }
-
-
-to.data <- "/Volumes/Work MAC backup/Franco validation/Repeated sampling/Original/"
-raw.video.folder <- "1 - raw/"
-  
-check_corrupted_mc(to.data, raw.data.folder)
