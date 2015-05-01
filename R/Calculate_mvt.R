@@ -16,13 +16,13 @@
 #' 
 #' @export
 
-calculate_mvt <- function(data,to.data,trajectory.data.folder){
+calculate_mvt <- function(data,to.data,trajectory.data.folder,pixel_to_scale,fps){
   
   if(!exists("fps")) stop("No fps information provided. Please specify path in global options.")
   if(!exists("pixel_to_scale")) stop("No pixel to real scale conversion provided. Please specify path in global options.")
 
   # output path
-  out.dir <- paste0(to.data,merged.data.folder)
+  out.dir <- paste0(to.data,trajectory.data.folder)
 
   # create unique ID consisting of trajectory ID and file
   id <- paste(data$file,data$trajectory,sep="-")
