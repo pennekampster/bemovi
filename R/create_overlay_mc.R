@@ -10,34 +10,29 @@
 require(parallel)
 n.cores<-detectCores(all.tests = FALSE, logical = TRUE)
 
-
-
-
 create_overlays_mc <-  function (to.data, merged.data.folder, raw.video.folder, temp.overlay.folder, 
           overlay.folder, width, height, difference.lag, type = "traj", 
-          predict_spec = F, contrast.enhancement = 0, IJ.path, memory = 512,n.cores) 
-{
+          predict_spec = F, contrast.enhancement = 0, IJ.path, memory = 512, n.cores=n.cores) {
   video.dir <- paste(to.data, raw.video.folder, sep = "")
-  load(file = paste(to.data, merged.data.folder, "Master.RData", 
-                    sep = "/"))
+  load(file = paste(to.data, merged.data.folder, "Master.RData", sep = "/"))
   file_names <- unique(trajectory.data$file)
   dir.create(paste0(to.data, temp.overlay.folder), showWarnings = F)
  
- system("defaults write org.R-project.R force.LANG en_US.UTF-8")
+ #system("defaults write org.R-project.R force.LANG en_US.UTF-8")
 
  # set up cluster
  cl <- makeCluster(n.cores)
  # which objects do all clusters need to know???
- clusterExport(cl, varlist=c("to.data", "merged.data.folder", "raw.video.folder", "temp.overlay.folder",     "overlay.folder", "width", "height","difference.lag", "type", "predict_spec", "contrast.enhancement", "IJ.path", "memory", "trajectory.data", "file_names"),environment())
+ clusterExport(cl, varlist=c("to.data", "merged.data.folder", "raw.video.folder", "temp.overlay.folder", "overlay.folder", 
+                             "width", "height","difference.lag", "type", "predict_spec", "contrast.enhancement", "IJ.path", 
+                            "memory", "trajectory.data", "file_names", "n.cores"), environment())
  
   # run the cluster
- #clusterApplyLB(cl,1:length(file_names), fun=function(i){
+  #clusterApplyLB(cl,1:length(file_names), fun=function(i){
  	parLapplyLB(cl,1:length(file_names), fun=function(i){
 
-    dir.create(paste0(to.data, temp.overlay.folder, file_names[i]), 
-               showWarnings = F)
-    trajectory.data_tmp <- subset(trajectory.data, file == 
-                                    file_names[i])
+    dir.create(paste0(to.data, temp.overlay.folder, file_names[i]),  showWarnings = F)
+    trajectory.data_tmp <- subset(trajectory.data, file == file_names[i])
     j <- 1
     if (type == "traj") {
       while (j <= max(trajectory.data$frame)) {
