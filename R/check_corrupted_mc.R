@@ -8,11 +8,11 @@
 #LB stands for load balancing : useful for when jobs are of differing sizes
 #perhaps not needed in this scenario,but perhaps worth testing if corrupt vs good files take different times to process.
 
-require(parallel)
-n.cores<-detectCores(all.tests = FALSE, logical = TRUE)
-
 # path to command line showinf tool (provided by BIO-LOCI)
 path_showinf <- "c:/Users/Frank/Desktop/bftools/"
+
+require(parallel)
+n.cores<-detectCores(all.tests = FALSE, logical = TRUE)
 
 check_corrupted_mc <- function(to.data, raw.data.folder){
  
@@ -75,9 +75,3 @@ check_corrupted_mc <- function(to.data, raw.data.folder){
  # stop cluster at end
  stopCluster(cl)
 }
-
-to.data <- "G:/Team_experiment/Orphaned videos/2014-10-11b"
-raw.video.folder <- ""
-check_corrupted_mc(to.data,raw.video.folder)
-
-
