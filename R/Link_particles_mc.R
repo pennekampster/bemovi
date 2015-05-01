@@ -14,20 +14,18 @@ require(parallel)
 
 n.cores<-detectCores(all.tests = FALSE, logical = TRUE)
 
-link_particles_mc<-function (to.data, particle.data.folder, trajectory.data.folder, 
-    linkrange = 1, disp = 10, start_vid = 1, memory = 512) 
-{
-    PA_output_dir <- paste0(to.data, particle.data.folder)
+link_particles_mc<-function (to.data, particle.data.folder, trajectory.data.folder, linkrange = 1, disp = 10, start_vid = 1, memory = 512){
+  
+  PA_output_dir <- paste0(to.data, particle.data.folder)
   traj_out.dir <- paste0(to.data, trajectory.data.folder)
   dir.create(traj_out.dir, showWarnings = F)
   all.files <- dir(PA_output_dir, pattern = ".ijout.txt")
-  PA_output.file <- dir(PA_output_dir, pattern = ".RData")
+  PA_output.file <- dir(PA_output_dir, pattern = "particle.RData")
     
   load(file=paste0(PA_output_dir,PA_output.file))
  # morphology.data <- data.table(morphology.data)
 #  setkey(morphology.data,file)
   file_code <- unlist(strsplit(all.files ,split=".ijout.txt"))
-
 
     ## set up cluster
     cl <- makeCluster(n.cores)
@@ -39,7 +37,8 @@ link_particles_mc<-function (to.data, particle.data.folder, trajectory.data.fold
                                 "raw.video.folder",
                                 "trajectory.data.folder", 
                                 "linkrange", "disp", "start_vid", "memory",
-                                "to.particlelinker","PA_output_dir","traj_out.dir"),
+                                "to.particlelinker",
+                                 "java.path", "PA_output_dir","traj_out.dir"),
                    environment())
  
     # run the cluster job
@@ -73,7 +72,7 @@ link_particles_mc<-function (to.data, particle.data.folder, trajectory.data.fold
                 system(paste0(cmd, " \\&"))
             }
             if (.Platform$OS.type == "windows") {
-                cmd <- paste0("C:/Progra~2/java/jre7/bin/javaw.exe -Xmx", 
+                cmd <- paste0(java.path, " -Xmx", 
                   memory, "m -Dparticle.linkrange=", linkrange, 
                   " -Dparticle.displacement=", disp, " -jar", 
                   gsub("/", "\\\\", paste0(" \"", to.particlelinker, 
@@ -95,5 +94,5 @@ link_particles_mc<-function (to.data, particle.data.folder, trajectory.data.fold
   
    #collect and organize the output & calculate movement measures
    data <- organise_link_data(to.data, trajectory.data.folder)
-   calculate_mvt(data, to.data, trajectory.data.folder, pixel_to_scale,fps)
+   out <- calculate_mvt(data, to.data, trajectory.data.folder, pixel_to_scale, fps)
 }
