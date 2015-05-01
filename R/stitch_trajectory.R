@@ -31,12 +31,12 @@ tt <- trajectory.data
 # accuracy <- 0.5
  
 percent_change <- function(dt){
-    #dt <- tt[tt$id=="data00003-6",] 
-    meta_data <-dt[,c("file","frame","trajectory","X","Y",morphological_parameter),with=F]
-    frm   <- dt[1:(nrow(dt)-1),morphological_parameter,with=F]
-    twrds <- dt[2:nrow(dt),morphological_parameter,with=F]  
-    dfrnce  <- twrds-frm
-    perc_change <- abs(dfrnce)/frm 
+#dt <- tt[tt$id=="data00003-6",] 
+meta_data <-dt[,c("file","frame","trajectory","X","Y",morphological_parameter),with=F]
+frm <- dt[1:(nrow(dt)-1),morphological_parameter,with=F]
+twrds <- dt[2:nrow(dt),morphological_parameter,with=F] 
+dfrnce <- twrds-frm
+perc_change <- abs(dfrnce)/frm
 
     zeros<-data.frame(t(rep(0,length(morphological_parameter))))
     names(zeros)<-names(perc_change)
@@ -45,9 +45,9 @@ percent_change <- function(dt){
        old=morphological_parameter,
        new=paste0("diff_",morphological_parameter))
     out<-cbind(meta_data ,perc_change)
-    return(out)
-  }# end of percent_change function
- 
+ return(out)
+}# end of percent_change function
+
 # # for ONE video
 #sub_tt <- tt[tt$file=="data00001",]
 #setkey(sub_tt, id)
