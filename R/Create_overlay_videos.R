@@ -23,6 +23,8 @@
 create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.overlay.folder, overlay.folder, 
                                   width, height, difference.lag, type = "traj",  predict_spec=F, contrast.enhancement = 0, IJ.path, memory = 512) {
   
+  #trajectory.data<-trajectory<-ijmacs.folder<-NULL
+  
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   
   load(file = paste(to.data,merged.data.folder, "Master.RData", sep = "/")) 

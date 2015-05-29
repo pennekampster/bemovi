@@ -11,6 +11,9 @@ check_video_file_names <- function(to.data, raw.video.folder) {
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   files <- dir(video.dir)
   
+  #check whether there are any files in the directory
+  if(length(files)==0){stop("No videos in selected directory, or selected directory does not exist. Please check that the path to the project directory and folder name for raw videos are correct.")}
+  
   ## check for unsupported video file format
   unsupported.files <- files[-c(grep("\\.avi", files), grep("\\.cxd", files))]
   if (length(unsupported.files) > 0) {

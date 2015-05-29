@@ -18,6 +18,8 @@
 
 calculate_mvt <- function(data,to.data,trajectory.data.folder,pixel_to_scale,fps){
 
+  #trajectory<-X<-Y<-frame_<-step_speed<-gross_disp<-net_disp<-abs_angle<-rel_angle<-NULL
+  
   if(!exists("fps")) stop("No fps information provided. Please specify path in global options.")
   if(!exists("pixel_to_scale")) stop("No pixel to real scale conversion provided. Please specify path in global options.")
 
