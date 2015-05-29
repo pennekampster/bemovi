@@ -13,6 +13,8 @@
 
 summarize_trajectories <- function(data, calculate.median=T, write=FALSE, to.data, merged.data.folder){
 
+#id_<-id<-Mean<-Area<-Perimeter<-Major<-Minor<-AR<-rel_angle<-fps<-net_disp<-gross_disp<-step_speed<-video.description.folder<-video.description.file<-NULL  
+
 # checks whether frames per second are specified
 if(!exists("fps") ) stop("frames per second not specified (fps)")
 
@@ -54,7 +56,8 @@ morphology <- if(calculate.median){
                  			}
 
 #sumarize movement properties
-turning <- data[!is.na(rel_angle), list(mean_turning= round(mean.circular(rel_angle),2), sd_turning=round(sd.circular(rel_angle),2)), by=id_]
+turning <- data[!is.na(rel_angle), list(mean_turning= round(mean.circular(as.circular(rel_angle, control.circular=list(type='angles', units="radians", template='none', modulo='asis',zero=0, rotation='counter'))),2), 
+                                        sd_turning=round(sd.circular(as.circular(rel_angle,control.circular=list(type='angles', units="radians", template='none', modulo='asis',zero=0, rotation='counter'))),2)), by=id_]
 
 mvt_properties <- data[,list(duration=(max(frame, na.rm=T)-min(frame, na.rm=T)+1)/fps,
                              N_frames=length(frame),
