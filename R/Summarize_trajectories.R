@@ -64,8 +64,9 @@ mvt_properties <- data[,list(duration=(max(frame, na.rm=T)-min(frame, na.rm=T)+1
                              max_net = round(max(sqrt(net_disp), na.rm=T), digits=2),
                              # select last value of net displacement
                              net_disp = round(sqrt(net_disp[length(net_disp)]),0),
-                             net_speed = round(sqrt(net_disp[length(net_disp)])/(max(frame)-min(frame)),2),
+                             net_speed = round(sqrt(net_disp[length(net_disp)])/((max(frame, na.rm=T)-min(frame, na.rm=T)+1)/fps),2),
                              gross_disp  = round(max(gross_disp, na.rm=T),2),
+                             gross_speed = round(max(gross_disp, na.rm=T)/((max(frame, na.rm=T)-min(frame, na.rm=T)+1)/fps),2),
                              max_step = round(max(step_length, na.rm=T),2),
                              min_step = round(min(step_length, na.rm=T),2),
                              sd_step = round(sd(step_length, na.rm=T),2),
