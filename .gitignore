@@ -1,6 +1,7 @@
+.gitignore
 .Rproj.user
 .Rhistory
 .RData
-bemovi.Rproj
+franco.Rproj
 .Rbuildignore
-.Rd
+man/.Rd
