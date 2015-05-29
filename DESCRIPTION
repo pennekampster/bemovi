@@ -1,5 +1,5 @@
 Package: bemovi
-Title: Bemovi, software for extracting BEhaviour and MOrphology from VIdeos.
+Title: BEMOVI, software for extracting BEhaviour and MOrphology from VIdeos.
 Description: An R and ImageJ based work flow to automatically measure behaviour
     and morphology from videos
 Version: 1.0
