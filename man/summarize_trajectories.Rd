@@ -4,8 +4,8 @@
 \alias{summarize_trajectories}
 \title{Function to summarize the morphology, movement and their variability on the trajectory level}
 \usage{
-summarize_trajectories(data, write = FALSE, to.data, merged.data.folder,
-  give.fps = NA)
+summarize_trajectories(data, calculate.median = T, write = FALSE, to.data,
+  merged.data.folder)
 }
 \arguments{
 \item{data}{dataframe with the information on morphology and movement for each frame}
@@ -15,8 +15,6 @@ summarize_trajectories(data, write = FALSE, to.data, merged.data.folder,
 \item{to.data}{path to the working directory}
 
 \item{merged.data.folder}{directory where the global database is saved}
-
-\item{give.fps}{Give frames per second (in object named fps) if it is not already defined globally}
 }
 \value{
 returns a data.table with the aggregated morphology and movement information for each trajectory

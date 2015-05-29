@@ -13,23 +13,16 @@ organise_link_data <- function(to.data, trajectory.data.folder) {
   
   dir.create(here, showWarnings = F)
   df <- data.frame(frame = numeric(), X = numeric(), Y = numeric(), trajectory = numeric(), file = character())
-  files <- dir(here, pattern = ".ijout.txt")
-  for (i in 1:length(files)) {
-    file <- gsub(".ijout.txt", "", gsub("ParticleLinker_", "", files[i]))
-    if (file.info(paste(here, files[i], sep = "/"))$size > 0) {
-      data <- read.table(paste(here, files[i], sep = "/"), header = T, sep = ",")
-      data$file <- rep(file, length(data$x))
-      data$y <- -data$y
-      if (i == 1) 
-        data.full <- rbind(data, df)
-      if (i > 1) 
-        data.full <- rbind(data.full, data)
-    }
-  }
-  data.full <- data.full[, c(2, 4, 3, 1, 5)]
-  colnames(data.full) <- c("frame", "X", "Y", "trajectory", "file")
+  files <- dir(here, pattern = ".ijout.txt", full.names=T)
   
-  trajectory.data <- data.full
+  mylist <- lapply(files, fread, header=T)
+  mylist <- mylist[lapply(mylist,length)>0]
+  data.full <- rbindlist(mylist)
+  data.full$file <- gsub(".ijout.txt", "", gsub("ParticleLinker_", "", rep(dir(here, pattern = ".ijout.txt"), lapply(mylist, nrow))))
+  data.full$y <- -data.full$y
+  trajectory.data <- as.data.frame(data.full)
+  trajectory.data <- trajectory.data[, c(2, 4, 3, 1, 5)]
+  colnames(trajectory.data) <- c("frame", "X", "Y", "trajectory", "file")
+  
   return(trajectory.data)
-} 
-
+}

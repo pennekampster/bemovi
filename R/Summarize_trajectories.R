@@ -6,32 +6,50 @@
 #' @param to.data path to the working directory
 #' @param merged.data.folder directory where the global database is saved
 #' @param write logical argument to indicate whether aggregated information should be saved to disk
-#' @param give.fps Give frames per second (in object named fps) if it is not already defined globally
 #' @return returns a data.table with the aggregated morphology and movement information for each trajectory
 #' @export
 
-summarize_trajectories <- function(data, write=FALSE, to.data, merged.data.folder, give.fps=NA){
+summarize_trajectories <- function(data, calculate.median=T, write=FALSE, to.data, merged.data.folder){
 
-if(!exists("fps") & is.na(give.fps)) stop("frames per second not specified")
+# checks whether frames per second are specified
+if(!exists("fps") ) stop("frames per second not specified (fps)")
 
-if(!exists("fps") & !is.na(give.fps)) fps <- give.fps
-  
 data <- as.data.table(data)
 data[,id_:=id]
 
 #summarize morphology
-morphology <- data[, list(grey = mean(Mean),
-                          sd_grey = sd(Mean),
-                          area = mean(Area), 
-                          sd_area = sd(Area),
-                          perimeter = mean(Perimeter),
-                          sd_perimeter = sd(Perimeter),
-                          major = mean(Major), 
-                          sd_major = sd(Major),
-                          minor = mean(Minor), 
-                          sd_minor = sd(Minor),
-                          ar = mean(AR),
-                          sd_ar = sd(AR)), by=id_]
+morphology <- if(calculate.median){
+						data[, list(
+                    median_grey = median(Mean),
+                		median_area = median(Area),
+             		    median_perimeter = median(Perimeter),
+             		    median_major = median(Major),
+             		    median_minor = median(Minor),
+             		    median_ar = median(AR),
+                		IQR_grey = IQR(Mean, na.rm = FALSE, type = 7),
+                		IQR_area = IQR(Area, na.rm = FALSE, type = 7),
+                		IQR_perimeter = IQR(Perimeter, na.rm = FALSE, type = 7),
+                		IQR_major = IQR(Major, na.rm = FALSE, type = 7),
+                		IQR_minor = IQR(Minor, na.rm = FALSE, type = 7),
+                		IQR_ar = IQR(AR, na.rm = FALSE, type = 7)), 
+                    by=id_]
+              			} else {
+                 			data[, 
+                      list(
+                      mean_grey = mean(Mean),
+                 			sd_grey = sd(Mean),
+                 			mean_area = mean(Area),
+                 			sd_area = sd(Area),
+                 			mean_perimeter = mean(Perimeter),
+	                        sd_perimeter = sd(Perimeter),
+	                        mean_major = mean(Major), 
+	                        sd_major = sd(Major),
+	                        mean_minor = mean(Minor), 
+	                        sd_minor = sd(Minor),
+	                        mean_ar = mean(AR),
+	                        sd_ar = sd(AR)
+                       ), by=id_]	
+                 			}
 
 #sumarize movement properties
 turning <- data[!is.na(rel_angle), list(mean_turning= round(circ.mean(rel_angle),2), sd_turning=round(sd.circular(rel_angle),2)), by=id_]
@@ -61,6 +79,22 @@ morph_mvt <- merge(morphology,mvt_complete,by=c("id_"), all=T)
 morph_mvt$id <- morph_mvt$id_
 morph_mvt$id_ <- NULL
 
+#names(morph_mvt)[names(morph_mvt) == 'id'] <- 'file_id'
+
+# extract morph_mvt$file from morph_mvt$id
+morph_mvt$file <- lapply(strsplit(as.character(morph_mvt$id), "\\-"), "[", 1)
+
+# Load video.description.file:
+video.descr.file <- read.delim(paste0(to.data,
+									video.description.folder,
+									video.description.file))
+
+#morph_mvt is not normal data.frame it's list of lists. Make it a "regular" data.frame:
+morph_mvt <- as.data.frame(lapply(morph_mvt, function(X) unname(unlist(X))))
+
+# Add the information contained in video.descr.file
+morph_mvt <- merge(morph_mvt, video.descr.file, by = "file")
+  
 #output summary data
 if (write==TRUE){save(morph_mvt, file = paste0(to.data, merged.data.folder,"Morph_mvt.RData"))}
 return(as.data.frame(morph_mvt))

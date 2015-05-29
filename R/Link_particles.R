@@ -18,6 +18,8 @@
 #' (e.g. Turch (1998): Quantitative Analysis of Movement: Measuring and Modeling Population Redistribution in Animals and Plants, Sinauer Associates, Sunderland).
 #' @export
 link_particles <- function(to.data, particle.data.folder, trajectory.data.folder, linkrange = 1, disp = 10, start_vid = 1, memory = 512) {
+
+  if(!exists("to.particlelinker")) stop("Path to ParticleLinker not found. Please specify path in global options.")
   
   PA_output_dir <- paste0(to.data, particle.data.folder)
   traj_out.dir <- paste0(to.data, trajectory.data.folder)
@@ -57,12 +59,15 @@ link_particles <- function(to.data, particle.data.folder, trajectory.data.folder
       
       if (.Platform$OS.type == "windows") {
         
-       cmd <- paste0("C:/Progra~2/java/jre7/bin/javaw.exe -Xmx", memory,"m -Dparticle.linkrange=", linkrange, " -Dparticle.displacement=", disp," -jar",
+        if(!exists("java.path")) stop("Java path not found. Please specify path in global options.")
+        
+      # previously hardcoded as "C:/Progra~2/java/jre7/bin/javaw.exe"
+       cmd <- paste0(java.path, " -Xmx", memory,"m -Dparticle.linkrange=", linkrange, " -Dparticle.displacement=", disp," -jar",
                       gsub("/","\\\\", paste0(" \"" ,to.particlelinker,"/ParticleLinker.jar")),"\" ",
                       gsub("/","\\\\", paste0(" ","\"" ,dir,"\"")),
                       gsub("/","\\\\", paste0(" ","\"", traj_out.dir, "/ParticleLinker_", all.files[j], "\"")))
-          
-        system(cmd)
+       
+      system(cmd)
       }
       
       #delete working dir

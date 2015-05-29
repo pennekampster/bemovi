@@ -4,15 +4,14 @@
 \alias{calculate_mvt}
 \title{A function to calculate movement metrics for each trajectory}
 \usage{
-calculate_mvt(data, to.data, merged.data.folder, pixel_to_scale = 1,
-  fps = 25)
+calculate_mvt(data, to.data, trajectory.data.folder, pixel_to_scale, fps)
 }
 \arguments{
 \item{data}{dataframe containing the X- and Y-coordinates, the frame and the trajectory ID}
 
 \item{to.data}{path to the working directory}
 
-\item{merged.data.folder}{directory where the data is saved}
+\item{trajectory.data.folder}{directory where the data is saved}
 
 \item{pixel_to_scale}{specify how a pixel scales to real dimensions}
 

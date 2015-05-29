@@ -5,7 +5,7 @@
 #' 
 #' @param data dataframe containing the X- and Y-coordinates, the frame and the trajectory ID
 #' @param to.data path to the working directory 
-#' @param merged.data.folder directory where the data is saved
+#' @param trajectory.data.folder directory where the data is saved
 #' @param pixel_to_scale specify how a pixel scales to real dimensions
 #' @param fps specify the frame rate of the video
 #' @return returns a data.table with the movement metrics for each fix appended to the original data (NB: movement metrics often need two (e.g. step length), sometimes even 
@@ -16,10 +16,13 @@
 #' 
 #' @export
 
-calculate_mvt <- function(data,to.data,merged.data.folder, pixel_to_scale=1, fps=25){
+calculate_mvt <- function(data,to.data,trajectory.data.folder,pixel_to_scale,fps){
+  
+  if(!exists("fps")) stop("No fps information provided. Please specify path in global options.")
+  if(!exists("pixel_to_scale")) stop("No pixel to real scale conversion provided. Please specify path in global options.")
 
   # output path
-  out.dir <- paste0(to.data,merged.data.folder)
+  out.dir <- paste0(to.data,trajectory.data.folder)
 
   # create unique ID consisting of trajectory ID and file
   id <- paste(data$file,data$trajectory,sep="-")
