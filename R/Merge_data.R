@@ -14,6 +14,8 @@
 
 merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, video.description.folder,video.description.file, merged.data.folder) {
   
+  #id<-NULL
+  
   # read the file that gives the important information about each video
   file.sample.info <- as.data.table(read.table(paste(to.data, video.description.folder, video.description.file, sep = ""), sep = "\t", header = TRUE))
   file.sample.info$file <- tolower(file.sample.info$file)

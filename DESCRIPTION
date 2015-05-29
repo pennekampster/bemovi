@@ -1,15 +1,17 @@
 Package: bemovi
-Title: Bemovi, software for extracting BEhaviour and MOrphology from VIdeos.
+Title: BEMOVI, software for extracting BEhaviour and MOrphology from VIdeos
 Description: An R and ImageJ based work flow to automatically measure behaviour
-    and morphology from videos
+    and morphology from videos. Moving individuals are identified by background subtraction, 
+    morphology extracted, and trajectories assembled through time from coordinate data. 
+    Abundance, morphology and behaviour can be summarized based on trajectory data.
 Version: 1.0
 Author: Frank Pennekamp <Frank.Pennekamp@ieu.uzh.ch>, Owen Petchey
     <Owen.Petchey@ieu.uzh.ch>
 Maintainer: Frank Pennekamp <Frank.Pennekamp@ieu.uzh.ch>
-Depends:
-    R (>= 3.0.2),
+Imports:
     data.table,
-    circular,
-    CircStats
+    circular
+Depends:
+    R (>= 3.0.2)
 License: CC BY-NC 4.0
 LazyData: true

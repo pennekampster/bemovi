@@ -3,13 +3,17 @@
 #' Takes the data comprising the information for each frame and calculates summary statistics such as mean and sd (for all morphology metrics) and mean, sd and min/max 
 #' for some of the movement metrics along the trajectory. Values are rounded to the second decimal. 
 #' @param data dataframe with the information on morphology and movement for each frame
+#' @param calculate.median logical value to indicate whether the median/IQR or the mean/SD summaries should be calculated for the morphology
 #' @param to.data path to the working directory
 #' @param merged.data.folder directory where the global database is saved
 #' @param write logical argument to indicate whether aggregated information should be saved to disk
 #' @return returns a data.table with the aggregated morphology and movement information for each trajectory
+#' @import circular
 #' @export
 
 summarize_trajectories <- function(data, calculate.median=T, write=FALSE, to.data, merged.data.folder){
+
+#id_<-id<-Mean<-Area<-Perimeter<-Major<-Minor<-AR<-rel_angle<-fps<-net_disp<-gross_disp<-step_speed<-video.description.folder<-video.description.file<-NULL  
 
 # checks whether frames per second are specified
 if(!exists("fps") ) stop("frames per second not specified (fps)")
@@ -41,7 +45,7 @@ morphology <- if(calculate.median){
                  			mean_area = mean(Area),
                  			sd_area = sd(Area),
                  			mean_perimeter = mean(Perimeter),
-	                        sd_perimeter = sd(Perimeter),
+	                    sd_perimeter = sd(Perimeter),
 	                        mean_major = mean(Major), 
 	                        sd_major = sd(Major),
 	                        mean_minor = mean(Minor), 
@@ -52,15 +56,17 @@ morphology <- if(calculate.median){
                  			}
 
 #sumarize movement properties
-turning <- data[!is.na(rel_angle), list(mean_turning= round(circ.mean(rel_angle),2), sd_turning=round(sd.circular(rel_angle),2)), by=id_]
+turning <- data[!is.na(rel_angle), list(mean_turning= round(mean.circular(as.circular(rel_angle, control.circular=list(type='angles', units="radians", template='none', modulo='asis',zero=0, rotation='counter'))),2), 
+                                        sd_turning=round(sd.circular(as.circular(rel_angle,control.circular=list(type='angles', units="radians", template='none', modulo='asis',zero=0, rotation='counter'))),2)), by=id_]
 
 mvt_properties <- data[,list(duration=(max(frame, na.rm=T)-min(frame, na.rm=T)+1)/fps,
                              N_frames=length(frame),
                              max_net = round(max(sqrt(net_disp), na.rm=T), digits=2),
                              # select last value of net displacement
                              net_disp = round(sqrt(net_disp[length(net_disp)]),0),
-                             net_speed = round(sqrt(net_disp[length(net_disp)])/(max(frame)-min(frame)),2),
+                             net_speed = round(sqrt(net_disp[length(net_disp)])/((max(frame, na.rm=T)-min(frame, na.rm=T)+1)/fps),2),
                              gross_disp  = round(max(gross_disp, na.rm=T),2),
+                             gross_speed = round(max(gross_disp, na.rm=T)/((max(frame, na.rm=T)-min(frame, na.rm=T)+1)/fps),2),
                              max_step = round(max(step_length, na.rm=T),2),
                              min_step = round(min(step_length, na.rm=T),2),
                              sd_step = round(sd(step_length, na.rm=T),2),
@@ -79,15 +85,11 @@ morph_mvt <- merge(morphology,mvt_complete,by=c("id_"), all=T)
 morph_mvt$id <- morph_mvt$id_
 morph_mvt$id_ <- NULL
 
-#names(morph_mvt)[names(morph_mvt) == 'id'] <- 'file_id'
-
 # extract morph_mvt$file from morph_mvt$id
 morph_mvt$file <- lapply(strsplit(as.character(morph_mvt$id), "\\-"), "[", 1)
 
 # Load video.description.file:
-video.descr.file <- read.delim(paste0(to.data,
-									video.description.folder,
-									video.description.file))
+video.descr.file <- read.delim(paste0(to.data, video.description.folder, video.description.file))
 
 #morph_mvt is not normal data.frame it's list of lists. Make it a "regular" data.frame:
 morph_mvt <- as.data.frame(lapply(morph_mvt, function(X) unname(unlist(X))))

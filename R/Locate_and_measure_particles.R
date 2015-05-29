@@ -21,6 +21,8 @@
 locate_and_measure_particles <- function(to.data, raw.video.folder, particle.data.folder, difference.lag, min_size=0, max_size=10000, 
 thresholds = c(10, 255), IJ.path, memory = 512) {
   
+  #ijmacs.folder<-NULL
+  
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   
   ## copy master copy of ImageJ macro there for treatment

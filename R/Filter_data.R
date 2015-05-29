@@ -13,6 +13,8 @@
 
 filter_data <- function(raw_data, net_filter, duration_filter, detect_filter, median_step_filter){
   
+  #frame_<-fps<-net_disp<-id_<-detect<-N_frames<-duration<-max_net_disp<-median_step<-id<-NULL
+  
   # filter out single coordinate detections
   raw_data <- raw_data[!is.na(raw_data$trajectory),]
   # rename frame column due to clash with frame() function in base graphics

@@ -8,6 +8,8 @@
 
 organise_particle_data <- function(to.data, particle.data.folder) {
   
+  #pixel_to_scale<-NULL
+  
   IJ_output.dir <- paste(to.data, particle.data.folder, sep = "")
   
   ## the macro file names
