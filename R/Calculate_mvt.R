@@ -13,11 +13,11 @@
 #' the step speed (step length/step duration), the gross displacement as the cumulative sum of the step lengths, the net displacement between the first fix of a given trajectory 
 #' and the current fix and finally the relative angle (turning angle) and absolute angle (in radians). For details on these metrics, please refer to a dedicated textbook 
 #' (e.g. Turch (1998): Quantitative Analysis of Movement: Measuring and Modeling Population Redistribution in Animals and Plants, Sinauer Associates, Sunderland).
-#' 
+#' @import data.table 
 #' @export
 
 calculate_mvt <- function(data,to.data,trajectory.data.folder,pixel_to_scale,fps){
-  
+
   if(!exists("fps")) stop("No fps information provided. Please specify path in global options.")
   if(!exists("pixel_to_scale")) stop("No pixel to real scale conversion provided. Please specify path in global options.")
 
