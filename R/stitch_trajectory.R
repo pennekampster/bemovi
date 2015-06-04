@@ -11,7 +11,6 @@
 #'STEP 5: replace new trajectories to use them for overlays
 #' 
 #' @author Aurélie Garnier
-#' @export
 
 stitch <- function(to.data, merged.data.folder,
                           stitch.data.folder, accuracy=.5, morphological_parameter, search_area=20){

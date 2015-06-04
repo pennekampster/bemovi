@@ -5,8 +5,8 @@
 #' further analysis.
 #' 
 #' @param to.data path to the working directory 
-#' @param raw.video.folder directory with the raw video files 
-#' @param show_inf path to the showinf executable
+#' @param raw.data.folder directory with the raw video files 
+#' @param path_showinf path to the showinf executable
 #' @import parallel
 #' @export
 

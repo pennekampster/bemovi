@@ -9,9 +9,9 @@ check_corrupted_mc(to.data, raw.data.folder, path_showinf)
 \arguments{
 \item{to.data}{path to the working directory}
 
-\item{raw.video.folder}{directory with the raw video files}
+\item{raw.data.folder}{directory with the raw video files}
 
-\item{show_inf}{path to the showinf executable}
+\item{path_showinf}{path to the showinf executable}
 }
 \description{
 The function will output the names of uncorruped and corrupted files, which would make BEMOVI bug; the files get
