@@ -89,7 +89,7 @@ morph_mvt$id_ <- NULL
 morph_mvt$file <- lapply(strsplit(as.character(morph_mvt$id), "\\-"), "[", 1)
 
 # Load video.description.file:
-video.descr.file <- read.delim(paste0(to.data, video.description.folder, video.description.file))
+video.descr.file <- read.delim(paste0(to.data, video.description.folder, video.description.file), stringsAsFactors=F)
 
 #morph_mvt is not normal data.frame it's list of lists. Make it a "regular" data.frame:
 morph_mvt <- as.data.frame(lapply(morph_mvt, function(X) unname(unlist(X))))
