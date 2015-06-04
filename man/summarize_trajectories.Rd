@@ -9,9 +9,9 @@ summarize_trajectories(data, calculate.median = T, write = FALSE, to.data,
 }
 \arguments{
 \item{data}{dataframe with the information on morphology and movement for each frame}
+
 \item{calculate.median}{logical value to indicate whether the median/IQR or the mean/SD summaries should be calculated for the morphology}
 
->>>>>>> hotfix/v1.0.1
 \item{write}{logical argument to indicate whether aggregated information should be saved to disk}
 
 \item{to.data}{path to the working directory}

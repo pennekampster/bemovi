@@ -10,7 +10,8 @@ Author: Frank Pennekamp <Frank.Pennekamp@ieu.uzh.ch>, Owen Petchey
 Maintainer: Frank Pennekamp <Frank.Pennekamp@ieu.uzh.ch>
 Imports:
     data.table,
-    circular
+    circular,
+    parallel
 Depends:
     R (>= 3.0.2)
 License: CC BY-NC 4.0

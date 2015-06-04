@@ -1,3 +1,9 @@
+#' Function to extract population level parameters easily from BEMOVI output
+#' 
+#' The function will extract population-level information from trajectory.data
+#' 
+#' @author Emanuel Fronhofer
+#' @export
 
 summarize_populations <- function(traj.data, sum.data, write=FALSE, to.data, merged.data.folder, video.description.folder, video.description.file){
   

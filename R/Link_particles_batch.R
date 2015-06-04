@@ -1,4 +1,6 @@
-#' Function to link the particle coordinates through time
+#' Modified function to link the particle coordinates through time, working on temporal chunks (e.g. 20 frames) of
+#' the original video. An overlap needs to be provided to allow stitching the short trajectories in each chunk 
+#' into trajectories spanning the whole video.
 #' 
 #' The function takes the XY-coordinates provided by the ImageJ ParticleAnalyzer and uses a standalone version of the ImageJ MOSAIC plugin ParticleLinker to create trajectories. 
 #' This requires some creation of temporary files, which are subsequently deleted.
@@ -10,8 +12,10 @@
 #' are taken into account when a trajectory is re-constructed 
 #' @param disp numeric value that specifies the maximum displacement of a given particle between two frames
 #' @param start_vid numeric value to indicate whether the linking should be started with a video other than the first
+#' @param batch_size size of the chunk in frames
+#' @param overlap in frames between chunks 
 #' @return Returns a single text file per video containing the X- and Y-coordinates, the frame and a trajectory ID
-#' @export
+
 link_particles_batch <- function(to.data, particle.data.folder, trajectory.data.folder, linkrange = 1, disp = 10, start_vid = 1, memory = 512, batch_size = 25, overlap = 5){
   
   PA_output_dir <- paste0(to.data, particle.data.folder)

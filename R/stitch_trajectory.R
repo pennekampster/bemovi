@@ -1,18 +1,17 @@
-## Function to verify and stitch the trajectories of Link_particles
-
-## in previous trajectory.data, we could find:
-# one individuals with multiple trajectories or
-# one trajectory for multiple individuals
-# the goal here is to have one trajectory for one individuals
-
-## on the script master.worker, at a new folder on the intermediate directories
-# stitch.data.folder <- "6 - stitch data/"
-
-## STEP 1: identify a change within trajectory
-## STEP 2: create a new_trajectory 
-## STEP 3: summarise morphological information to search similar individuals
-## STEP 4: search individuals in other trajectories
-## STEP 5: replace new trajectories to use them for overlays
+#' Function to verify and stitch the trajectories of Link_particles
+#'
+#' in previous trajectory.data, we could find: one individuals with multiple trajectories or one trajectory for multiple individuals
+#' the goal here is to have one trajectory for one individuals on the script master.worker, at a new folder on the intermediate directories
+#' stitch.data.folder <- "6 - stitch data/"
+#'
+#'STEP 1: identify a change within trajectory
+#'STEP 2: create a new_trajectory 
+#'STEP 3: summarise morphological information to search similar individuals
+#'STEP 4: search individuals in other trajectories
+#'STEP 5: replace new trajectories to use them for overlays
+#' 
+#' @author Aurélie Garnier
+#' @export
 
 stitch <- function(to.data, merged.data.folder,
                           stitch.data.folder, accuracy=.5, morphological_parameter, search_area=20){
@@ -21,7 +20,6 @@ stitch <- function(to.data, merged.data.folder,
 load(paste0(to.data,merged.data.folder,"Master.RData"))
 # we import the trajectory.data 
 tt <- trajectory.data
-
 
 ## STEP 1: identify a change within trajectory
 # percentage of change between the frame n+1 and n, 

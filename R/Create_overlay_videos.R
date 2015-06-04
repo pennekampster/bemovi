@@ -156,9 +156,5 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
     
   ## run ImageJ macro
   system(cmd)
-  
-#   ## delete temporary file after execution
-#   if (.Platform$OS.type == "windows") 
-#     file.remove(paste0(to.data,ijmacs.folder,"Video_overlay_tmp.ijm")
-  
+    
 }

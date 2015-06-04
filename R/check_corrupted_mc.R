@@ -1,20 +1,16 @@
-### Modification Check corrupt function by Jason Griffiths.
+#' Multicore version of check_corrupted function which uses the  showinf tool from the bftools suite (provided by BIO-LOCI)
+#' 
+#' The function will output the names of uncorruped and corrupted files, which would make BEMOVI bug; the files get
+#' transferred into a "bad files" directory in the raw.video.folder and should be either repaired or ignored for 
+#' further analysis.
+#' 
+#' @param to.data path to the working directory 
+#' @param raw.video.folder directory with the raw video files 
+#' @param show_inf path to the showinf executable
+#' @import parallel
+#' @export
 
-# the parallel package is used to allow files to be checked for corruption in parallel 
-# function does not use forking and so is cross platform
-#the makeCluster function is used to set up clusters
-#the clusterExport function is used to transfer objects from function environments to cluster environments
-#the clusterApplyLB function is used to perform function in parallel;its syntax is similar to other apply loops but browser cant be used and objects must be specially supplied
-#LB stands for load balancing : useful for when jobs are of differing sizes
-#perhaps not needed in this scenario,but perhaps worth testing if corrupt vs good files take different times to process.
-
-# path to command line showinf tool (provided by BIO-LOCI)
-path_showinf <- "c:/Users/Frank/Desktop/bftools/"
-
-require(parallel)
-n.cores<-detectCores(all.tests = FALSE, logical = TRUE)
-
-check_corrupted_mc <- function(to.data, raw.data.folder){
+check_corrupted_mc <- function(to.data, raw.data.folder, path_showinf){
  
  # Check showinf.exe exists in specified folder
  if(file.exists(paste0(path_showinf,"showinf"))==F) stop("bftools software not found, perhaps the file path is wrong")
@@ -32,8 +28,15 @@ check_corrupted_mc <- function(to.data, raw.data.folder){
  # find names of all .cdx files in raw data directory 
  files <- list.files(paste0(to.data, raw.video.folder))
  files <- files[grepl(".cxd", files)]
-	
-
+ 
+ #the makeCluster function is used to set up clusters
+ #the clusterExport function is used to transfer objects from function environments to cluster environments
+ #the clusterApplyLB function is used to perform function in parallel;its syntax is similar to other apply loops but browser cant be used and objects must be specially supplied
+ #LB stands for load balancing : useful for when jobs are of differing sizes
+ 
+ # detect number of cores to use
+ n.cores<-detectCores(all.tests = FALSE, logical = TRUE)
+ 
  # set up cluster
  #system("defaults write org.R-project.R force.LANG en_US.UTF-8")
  cl <- makeCluster(n.cores)

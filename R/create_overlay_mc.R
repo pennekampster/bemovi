@@ -1,14 +1,28 @@
-### Modification of F.Pennekamps create_overlays function from the bemovi package by Jason Griffiths.
-
-# the parallel package is used to allow multiple cores to be used to simultaneously produce overlays to show tracking of individuals and the visualize these on top of the video files
-# function does not use forking and so is cross platform
-#the makeCluster function is used to set up clusters
-#the clusterExport function is used to transfer objects from function environments to cluster environments
-#the clusterApplyLB function is used to perform function in parallel;its syntax is similar to other apply loops but browser cant be used and objects must be specially supplied
-#LB stands for load balancing : useful for when jobs are of differing sizes
-
-require(parallel)
-n.cores<-detectCores(all.tests = FALSE, logical = TRUE)
+#' Multicore version of the function to create a new video with the extracted trajectories overlayed 
+#' onto the original video (modifications of original function by Jason Griffiths)
+#' 
+#' A function to overlay the extracted trajectories onto the original video, using plots created in R and then processed in 
+#' ImageJ; two visualization types are available. The parallel package is used to allow multiple cores to be used
+#' when R writes out the stack of images used for overlaying the original video files. The actual blending of image
+#' files in ImageJ is not parallelized.
+#' 
+#' @param to.data path to the working directory
+#' @param merged.data.folder directory where the global database is saved
+#' @param raw.video.folder directory with the raw video files 
+#' @param temp.overlay.folder temporary directory to save the overlay created with R
+#' @param overlay.folder directory where the overlay videos are saved
+#' @param width width of the raw video
+#' @param height height of the raw video
+#' @param difference.lag numeric value specifying the offset between two video frames to compute the difference image
+#' @param type string indicating the visualization type (i.e. 'label' or 'traj'): either the overlay
+#' is showing the trajectory ID and outlines the detected particle (type='label') or the whole trajectory
+#' remains plotted (type='traj').
+#' @param predict_spec logical If TRUE, the Master.RData file must have a column called predict_spec, indicating the species to which the trajectory belongs
+#' @param contrast.enhancement numeric value to increase the contrast of the original video
+#' @param IJ.path path to ImageJ executable 
+#' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
+#' @import parallel
+#' @export
 
 create_overlays_mc <-  function (to.data, merged.data.folder, raw.video.folder, temp.overlay.folder, 
           overlay.folder, width, height, difference.lag, type = "traj", 
@@ -17,9 +31,15 @@ create_overlays_mc <-  function (to.data, merged.data.folder, raw.video.folder, 
   load(file = paste(to.data, merged.data.folder, "Master.RData", sep = "/"))
   file_names <- unique(trajectory.data$file)
   dir.create(paste0(to.data, temp.overlay.folder), showWarnings = F)
- 
- #system("defaults write org.R-project.R force.LANG en_US.UTF-8")
 
+  #the makeCluster function is used to set up clusters
+  #the clusterExport function is used to transfer objects from function environments to cluster environments
+  #the clusterApplyLB function is used to perform function in parallel;its syntax is similar to other apply loops but browser cant be used and objects must be specially supplied
+  #LB stands for load balancing : useful for when jobs are of differing sizes
+  
+  # detect number of cores to use
+  n.cores<-detectCores(all.tests = FALSE, logical = TRUE)
+  
  # set up cluster
  cl <- makeCluster(n.cores)
  # which objects do all clusters need to know???
