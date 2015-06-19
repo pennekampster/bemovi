@@ -31,7 +31,7 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   trajectory.data[, `:=`(Y1=-X, X=Y),]
   trajectory.data[, `:=`(Y=Y1),]
   trajectory.data[, `:=`(Y=Y1, frame=frame + 1),]
-  DT[,c("Y1"):=NULL] 
+  trajectory.data[,c("Y1"):=NULL] 
   
 #   trajectory.data$Y1 <- -trajectory.data$X
 #   trajectory.data$X1 <-  trajectory.data$Y
