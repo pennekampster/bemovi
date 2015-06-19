@@ -56,7 +56,7 @@ morphology <- if(calculate.median){
                  			}
 
 #sumarize movement properties
-turning <- data[!is.na(rel_angle), list(mean_turning= round(mean.circular(as.circular(rel_angle, control.circular=list(type='angles', units="radians", template='none', modulo='asis',zero=0, rotation='counter'))),2), 
+turning <- data[!is.na(rel_angle), list(mean_turning= round(as.numeric(mean.circular(as.circular(rel_angle, control.circular=list(type='angles', units="radians", template='none', modulo='asis',zero=0, rotation='counter')))),2), 
                                         sd_turning=round(sd.circular(as.circular(rel_angle,control.circular=list(type='angles', units="radians", template='none', modulo='asis',zero=0, rotation='counter'))),2)), by=id_]
 
 mvt_properties <- data[,list(duration=(max(frame, na.rm=T)-min(frame, na.rm=T)+1)/fps,
