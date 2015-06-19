@@ -12,7 +12,7 @@
 #' @return saves the global database Master.RData to the merged.data.folder
 #' @export
 
-merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, video.description.folder,video.description.file, merged.data.folder) {
+merge_data2 <- function(to.data, particle.data.folder, trajectory.data.folder, video.description.folder,video.description.file, merged.data.folder) {
   
   #id<-NULL
   
