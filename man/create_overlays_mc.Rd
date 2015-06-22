@@ -8,7 +8,7 @@ onto the original video (modifications of original function by Jason Griffiths)}
 create_overlays_mc(to.data, merged.data.folder, raw.video.folder,
   temp.overlay.folder, overlay.folder, width, height, difference.lag,
   type = "traj", predict_spec = F, contrast.enhancement = 0, IJ.path,
-  memory = 512, n.cores = n.cores)
+  memory = 512, n.cores = "detect")
 }
 \arguments{
 \item{to.data}{path to the working directory}
@@ -38,6 +38,8 @@ remains plotted (type='traj').}
 \item{IJ.path}{path to ImageJ executable}
 
 \item{memory}{numeric value specifying the amount of memory available to ImageJ (defaults to 512)}
+
+\item{n.cores}{either numeric value specifying the number of cores to use or character string "detect" to trigger automatic specification of cores available on machine}
 }
 \description{
 A function to overlay the extracted trajectories onto the original video, using plots created in R and then processed in

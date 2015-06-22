@@ -21,12 +21,13 @@
 #' @param contrast.enhancement numeric value to increase the contrast of the original video
 #' @param IJ.path path to ImageJ executable 
 #' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
+#' @param n.cores either numeric value specifying the number of cores to use or character string "detect" to trigger automatic specification of cores available on machine
 #' @import parallel
 #' @export
 
 create_overlays_mc <-  function (to.data, merged.data.folder, raw.video.folder, temp.overlay.folder, 
           overlay.folder, width, height, difference.lag, type = "traj", 
-          predict_spec = F, contrast.enhancement = 0, IJ.path, memory = 512, n.cores=n.cores) {
+          predict_spec = F, contrast.enhancement = 0, IJ.path, memory = 512, n.cores="detect") {
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   load(file = paste(to.data, merged.data.folder, "Master.RData", sep = "/"))
   file_names <- unique(trajectory.data$file)
@@ -37,8 +38,12 @@ create_overlays_mc <-  function (to.data, merged.data.folder, raw.video.folder, 
   #the clusterApplyLB function is used to perform function in parallel;its syntax is similar to other apply loops but browser cant be used and objects must be specially supplied
   #LB stands for load balancing : useful for when jobs are of differing sizes
   
+  if (n.cores=="detect"){
   # detect number of cores to use
-  n.cores<-detectCores(all.tests = FALSE, logical = TRUE)
+  all.cores<-detectCores(all.tests = FALSE, logical = TRUE)
+  # leave at least one core for system tasks
+  n.cores<- all.cores-1
+  }
   
  # set up cluster
  cl <- makeCluster(n.cores)
