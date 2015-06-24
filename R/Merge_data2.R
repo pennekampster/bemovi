@@ -21,7 +21,6 @@ merge_data2 <- function (to.data, particle.data.folder, trajectory.data.folder,
   file.sample.info$file <- tolower(file.sample.info$file)
   load(paste0(to.data, particle.data.folder, "particle.RData"))
   load(paste0(to.data, trajectory.data.folder, "trajectory.RData"))
-  browser()
   trajectory.data <- as.data.table(trajectory.data)
   trajectory.data[, `:=`(Y1 = -X, X = Y), ]
   trajectory.data[, `:=`(Y = Y1), ]
@@ -35,15 +34,15 @@ merge_data2 <- function (to.data, particle.data.folder, trajectory.data.folder,
   morphology.data[, `:=`(file = sub(".cxd | .avi", "", file)), ]
   keycols = c("X","Y","frame","file")
   setkeyv(morphology.data,keycols)
-  #morphology.data <- merge(morphology.data, trajectory.data, all = T)
   morphology.data <- morphology.data[trajectory.data]
+  rm(list=c("trajectory.data"))
   morphology.data[, `:=`(file, tolower(file))]
+  morphology.data[, `:=`(obs, NULL)]
   setkey(morphology.data, file)
   setkey(file.sample.info, file)
   morphology.data <- merge(file.sample.info, morphology.data, by=c("file"), all = F)
   dir.create(paste0(to.data, merged.data.folder), showWarnings = F)
   trajectory.data <- morphology.data[!is.na(morphology.data$id), ]
   setkey(trajectory.data, file, id, frame)
-  save(trajectory.data, file = paste0(to.data, merged.data.folder, 
-                                      "Master.RData"))
+  save(trajectory.data, file = paste0(to.data, merged.data.folder, "Master.RData"))
 }
