@@ -1,8 +1,7 @@
 ---
-generator: pandoc
-title: bemovi installation
-viewport: 'width=device-width, initial-scale=1'
-...
+layout: page
+title: Overview of GitHub Pages
+---
 
 ### Installing package dependencies
 
