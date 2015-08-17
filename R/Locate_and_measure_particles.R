@@ -6,7 +6,7 @@
 #' @param raw.video.folder directory with the raw video files 
 #' @param particle.data.folder directory to which the data is saved as a text file
 #' @param difference.lag numeric value specifying the offset between two video frames to 
-#' compute the difference image
+#' compute the difference image. If 0, then no differencing applied.
 #' @param min_size minimum size for detection of particles
 #' @param max_size maximum size for detection of particles
 #' @param thresholds vector containing the min and max threshold values (defaults to c(10,255))
@@ -26,7 +26,14 @@ thresholds = c(10, 255), IJ.path, memory = 512) {
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   
   ## copy master copy of ImageJ macro there for treatment
-  text <- readLines(paste0(system.file(package="bemovi"), "/", "ImageJ_macros/Video_to_morphology.ijm"))
+  ## if there is differencing (i.e., difference.lag>0)
+  if(difference.lag>0)
+    text <- readLines(paste0(system.file(package="bemovi"), "/", "ImageJ_macros/Video_to_morphology.ijm"))
+  ## if there is no differencing (i.e., difference.lag==0)
+  if(difference.lag==0)
+    text <- readLines(paste0(system.file(package="bemovi"), "/", "ImageJ_macros/Video_to_morphology_no_differencing.ijm"))
+  
+  
   
   ## use regular expression to insert input & output directory as well as difference lag
   text[grep("avi_input = ", text)] <- paste("avi_input = ", "'", video.dir, "';", sep = "")
