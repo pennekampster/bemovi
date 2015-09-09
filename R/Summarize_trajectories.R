@@ -96,6 +96,9 @@ morph_mvt <- as.data.frame(lapply(morph_mvt, function(X) unname(unlist(X))))
 
 # Add the information contained in video.descr.file
 morph_mvt <- merge(morph_mvt, video.descr.file, by = "file")
+morph_mvt$id <- as.character(morph_mvt$id)
+morph_mvt$file <- as.character(morph_mvt$file)
+
   
 #output summary data
 if (write==TRUE){save(morph_mvt, file = paste0(to.data, merged.data.folder,"Morph_mvt.RData"))}
