@@ -28,13 +28,17 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   
   load(file = paste(to.data,merged.data.folder, "Master.RData", sep = "/")) 
+  trajectory.data <- as.data.table(trajectory.data)
+  setkey(trajectory.data,file,frame)
+  
   file_names <- unique(trajectory.data$file)
   
   ## change path for output
   dir.create(paste0(to.data, temp.overlay.folder), showWarnings = F)
     for (i in 1:length(file_names)) {
     dir.create(paste0(to.data, temp.overlay.folder, file_names[i]), showWarnings = F)
-    trajectory.data_tmp <- subset(trajectory.data, file == file_names[i])
+    trajectory.data_tmp <- trajectory.data[file == file_names[i]]
+    setkey(trajectory.data_tmp,frame)
     j <- 1
     
     if (type == "traj") {
@@ -44,30 +48,30 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
         
         if (predict_spec==F){
         
-        print <- subset(trajectory.data_tmp, trajectory.data_tmp$frame <= j, select = c("X", "Y", "trajectory"))
+        print <- trajectory.data_tmp[frame <= j, .(X, Y, trajectory)]
         
         ## plot the particle(s) so long as there are some
-        if (length(print[, 1]) != 0) {
+        if (length(print[, X]) != 0) {
           plot(print$X, print$Y, xlim = c(0, as.numeric(width)), ylim = c(as.numeric(height), 0), col = "blue", pch = 15, cex = 1, asp = 1)
         }
         
         ## otherwise just plot the empty frame
-        if (length(print[, 1]) == 0) {
+        if (length(print[, X]) == 0) {
           plot(NA, NA, xlim = c(0, as.numeric(width)), ylim = c(as.numeric(height), 0), col = "blue", pch = 1, cex = 6, asp = 1)
         }
         }
         
         if (predict_spec==T){
           
-          print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame <= j, select=c("X","Y","trajectory","predict_spec"))
+          print <- trajectory.data_tmp[frame <= j, .(X, Y, trajectory,predict_spec)]
           
           ## plot the particle(s) so long as there are some
-          if (length(print[, 1]) != 0) {
+          if (length(print[, X]) != 0) {
             plot(print$X, print$Y, xlim=c(0, as.numeric(width)), ylim=c(as.numeric(height), 0),  col=as.factor(print$predict_spec), pch=15, cex=1, asp=1)
           }
           
           ## otherwise just plot the empty frame
-          if (length(print[, 1]) == 0) {
+          if (length(print[, X]) == 0) {
             plot(NA, NA, xlim = c(0, as.numeric(width)), ylim = c(as.numeric(height), 0), col = "blue", pch = 1, cex = 1, asp = 1)
           }
         }
@@ -85,32 +89,32 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
         
         if (predict_spec==F){
         
-        print <- subset(trajectory.data_tmp, trajectory.data_tmp$frame == j, select = c("X", "Y", "trajectory"))
+        print <- trajectory.data_tmp[frame == j, .(X, Y, trajectory)]
         
         ## plot the particle(s) so long as there are some
-        if (length(print[, trajectory, ]) != 0) {
+        if (length(print[, X, ]) != 0) {
           plot(print$X, print$Y, xlim = c(0, as.numeric(width)), ylim = c(as.numeric(height), 0), col = "blue", pch = 1, cex = 6, asp = 1)
           text(print$X, print$Y - 20, print$trajectory, cex = 2, col = "red")
         }
         
         ## otherwise just plot the empty frame
-        if (length(print[, trajectory,]) == 0) {
+        if (length(print[, X,]) == 0) {
           plot(NA, NA, xlim = c(0, as.numeric(width)), ylim = c(as.numeric(height), 0), col = "blue", pch = 1, cex = 6, asp = 1)
         }
         }
         
         if (predict_spec==T){
           
-          print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame == j, select=c("X","Y","trajectory","predict_spec"))
+          print <- trajectory.data_tmp[frame == j, .(X, Y, trajectory,predict_spec)]
                     
           ## plot the particle(s) so long as there are some
-          if (length(print[, trajectory, ]) != 0) {
+          if (length(print[, X, ]) != 0) {
             plot(print$X, print$Y, xlim=c(0,as.numeric(width)), ylim=c(as.numeric(height), 0), col=as.factor(print$predict_spec), pch=1, cex=6, asp=1)
             text(print$X, print$Y-20,print$trajectory,cex=2,col=as.numeric(print$predict_spec))
             }
           
           ## otherwise just plot the empty frame
-          if (length(print[, trajectory, ]) == 0) {
+          if (length(print[, X, ]) == 0) {
             plot(NA, NA, xlim = c(0, as.numeric(width)), ylim = c(as.numeric(height), 0), col = "blue", pch = 1, 
                  cex = 6, asp = 1)
           }
