@@ -41,7 +41,6 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   morphology.data <- as.data.table(morphology.data)
   morphology.data$frame <- morphology.data$Slice
   morphology.data$Slice <- NULL
-  morphology.data$file <- sub(".cxd | .avi", "", morphology.data$file)
   
   ## merge the two datasets
   merged1 <- merge(morphology.data, trajectory.data, by = c("X", "Y", "frame", "file"), all = T)
@@ -51,6 +50,11 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   setkey(merged1, file)
   setkey(file.sample.info, file)
   merged2 <- merge(merged1, file.sample.info, all = F)
+  
+  # check that file contains data, otherwise report error
+  if(nrow(merged2) == 0)
+    stop("The merged data has no observations. This is could be due to missing matches between filenames of the video description file and the particle.RData and trajectory.RData,
+         or due to the wrong file format of the video description file (should be a tab-delimited text file).")
   
   dir.create(paste0(to.data, merged.data.folder), showWarnings = F)
   # drop particles which are not part of trajectories
