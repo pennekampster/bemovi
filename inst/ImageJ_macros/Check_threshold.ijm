@@ -74,3 +74,47 @@ setBatchMode(false);
 setThreshold(10,255);
 run("Threshold...");
 }
+
+
+if (endsWith(list[i],"mov")){
+run("Bio-Formats", "open=["+avi_input+list[i]+"] autoscale color_mode=Default view=[Standard ImageJ] split_channels stack_order=Default");
+selectWindow("+avi_input+list[i]+ - C=2");
+close();
+selectWindow("+avi_input+list[i]+ - C=0");
+close();
+selectWindow("+avi_input+list[i]+ - C=1");
+
+run("8-bit");
+getDimensions(width, height, channels, slices, frames);
+slices=slices;
+frames=frames;
+width=width;
+height=height;
+channels=channels;
+run("Properties...", "channels=1 slices=1 frames="+frames+" unit=pixel pixel_width=1.0000 pixel_height=1.0000 voxel_depth=1.0000 frame=[0 sec] origin=0,0");
+vid1 = getTitle();
+run("Make Substack...", "  slices="+lag+"-"+frames+"");
+vid2 = getTitle();
+selectWindow(vid1);
+run("Make Substack...", "  slices="+frames-2*(lag-1)+"-"+frames-lag+"");
+vid3 = getTitle();
+run("Concatenate...", "  image1=["+vid2+"] image2=["+vid3+"] image3=[-- None --]");
+vid5 = getTitle();
+imageCalculator("Subtract create stack", vid1, vid5);
+vid4 = getTitle();
+//selectWindow(vid2);
+//close();
+//selectWindow(vid3);
+//close();
+selectWindow(vid5);
+close();
+selectWindow(vid4);
+close(vid1); // execute the macro till this line
+
+setBatchMode(false);
+// play with the min and max threshold
+setThreshold(10,255);
+run("Threshold...");
+}
+
+
