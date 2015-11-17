@@ -7,7 +7,7 @@
 create_overlays(to.data, merged.data.folder, raw.video.folder,
   temp.overlay.folder, overlay.folder, width, height, difference.lag,
   type = "traj", predict_spec = F, contrast.enhancement = 0, IJ.path,
-  memory = 512)
+  memory = 512, video.description.folder, video.description.file)
 }
 \arguments{
 \item{to.data}{path to the working directory}
@@ -37,9 +37,13 @@ remains plotted (type='traj').}
 \item{IJ.path}{path to ImageJ executable}
 
 \item{memory}{numeric value specifying the amount of memory available to ImageJ (defaults to 512)}
+
+\item{video.description.folder}{directory containing the video description file}
+
+\item{video.description.file}{name of the video description file}
 }
 \description{
 A function to overlay the extracted trajectories onto the original video, using plots created in R and then processed in
-ImageJ; two visualization types are available
+ImageJ; two visualization types are available. Width and height supplied as arguments, or read from video description file.
 }
 

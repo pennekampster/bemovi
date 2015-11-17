@@ -15,13 +15,15 @@ check_video_file_names <- function(to.data, raw.video.folder) {
   if(length(files)==0){stop("No videos in selected directory, or selected directory does not exist. Please check that the path to the project directory and folder name for raw videos are correct.")}
   
   ## check for unsupported video file format
-  unsupported.files <- files[-c(grep("\\.avi", files), grep("\\.cxd", files))]
-  if (length(unsupported.files) > 0) {
+  unsupported.temp <- c(grep("\\.avi", files), grep("\\.cxd", files), grep("\\.mov", files))
+  unsupported.files <- files[-unsupported.temp]
+  if (length(unsupported.files) > 0)
     print(paste("Unsupported video file:", unsupported.files))
-    }  else {
+  if (length(unsupported.files) == 0)
     print(paste("Video file types ok."))
-  }
- 
+  if(length(unsupported.temp)==0)
+    stop("All videos are of unsupported type.")
+  
   ## check for files with more than one period; I think this previously caused me a problem
   bad.filenames <- files[unlist(lapply(lapply(strsplit(files, "\\."), length), function(x) x > 2))]
   if (length(bad.filenames) > 0){

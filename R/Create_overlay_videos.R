@@ -1,7 +1,7 @@
 #' Function to create a new video with the extracted trajectories overlayed onto the original video
 #' 
 #' A function to overlay the extracted trajectories onto the original video, using plots created in R and then processed in 
-#' ImageJ; two visualization types are available
+#' ImageJ; two visualization types are available. Width and height supplied as arguments, or read from video description file.
 #' 
 #' @param to.data path to the working directory
 #' @param merged.data.folder directory where the global database is saved
@@ -18,10 +18,19 @@
 #' @param contrast.enhancement numeric value to increase the contrast of the original video
 #' @param IJ.path path to ImageJ executable 
 #' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
+#' @param video.description.folder directory containing the video description file
+#' @param video.description.file name of the video description file
 #' @export
 
 create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.overlay.folder, overlay.folder, 
-                                  width, height, difference.lag, type = "traj",  predict_spec=F, contrast.enhancement = 0, IJ.path, memory = 512) {
+                                  width, height, difference.lag, type = "traj",  predict_spec=F, contrast.enhancement = 0, IJ.path, memory = 512,
+                            video.description.folder, video.description.file) {
+  
+  file.sample.info <- as.data.table(read.table(paste(to.data, video.description.folder, video.description.file, sep = ""), sep = "\t", header = TRUE))
+  file.sample.info$file <- tolower(file.sample.info$file)
+  
+  if(sum(names(file.sample.info) %in% c("width", "height"))==2)
+    print("Raw video dimensions being read from video description file.")
   
   #trajectory.data<-trajectory<-ijmacs.folder<-NULL
   
@@ -33,16 +42,24 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
   
   file_names <- unique(trajectory.data$file)
   
+  num_frames <- with(trajectory.data, aggregate(frame, list(file=file), max))
+  
   ## change path for output
   dir.create(paste0(to.data, temp.overlay.folder), showWarnings = F)
     for (i in 1:length(file_names)) {
-    dir.create(paste0(to.data, temp.overlay.folder, file_names[i]), showWarnings = F)
-    trajectory.data_tmp <- trajectory.data[file == file_names[i]]
-    setkey(trajectory.data_tmp,frame)
-    j <- 1
+      
+      width <- file.sample.info$width[file.sample.info$file==file_names[i]]
+      height <- file.sample.info$height[file.sample.info$file==file_names[i]]
+      
+      dir.create(paste0(to.data, temp.overlay.folder, file_names[i]), showWarnings = F)
+      trajectory.data_tmp <- trajectory.data[file == file_names[i]]
+      setkey(trajectory.data_tmp,frame)
+      j <- 1
+      
+      num_frames_thisvid <- num_frames$x[num_frames$file==file_names[i]]
     
     if (type == "traj") {
-      while (j <= max(trajectory.data$frame)) {
+      while (j <= num_frames_thisvid) {
         jpeg(paste(to.data, temp.overlay.folder, file_names[i], "/", "frame_", j, ".jpg", sep = ""), width = as.numeric(width), height = as.numeric(height), quality = 100)
         par(mar = rep(0, 4), xaxs = c("i"), yaxs = c("i"))
         
@@ -82,7 +99,7 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
     }
     
     if (type == "label") {
-      while (j <= max(trajectory.data$frame)) {
+      while (j <= num_frames_thisvid) {
         jpeg(paste(to.data, temp.overlay.folder, file_names[i], "/", "frame_", 
                    j, ".jpg", sep = ""), width = as.numeric(width), height = as.numeric(height), quality = 100)
         par(mar = rep(0, 4), xaxs = c("i"), yaxs = c("i"))

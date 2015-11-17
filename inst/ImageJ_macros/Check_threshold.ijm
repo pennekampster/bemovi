@@ -78,12 +78,9 @@ run("Threshold...");
 
 if (endsWith(list[i],"mov")){
 run("Bio-Formats", "open=["+avi_input+list[i]+"] autoscale color_mode=Default view=[Standard ImageJ] split_channels stack_order=Default");
-selectWindow("+avi_input+list[i]+ - C=2");
+//vid1 = getTitle(["+avi_input+list[i]+"]);
 close();
-selectWindow("+avi_input+list[i]+ - C=0");
 close();
-selectWindow("+avi_input+list[i]+ - C=1");
-
 run("8-bit");
 getDimensions(width, height, channels, slices, frames);
 slices=slices;

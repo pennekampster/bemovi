@@ -43,6 +43,23 @@ run("RGB Color");
 run("Invert", "stack");
 }
 
+if (endsWith(list[i],"mov")){
+// Open stack with picture sequence from which trajectories were extracted (original gray scle images)
+run("Bio-Formats", "open=["+avi_input+replace(list2[i],"/","")+"] autoscale split_channels color_mode=Default view=[Standard ImageJ] stack_order=Default");
+close();
+close();
+run("Enhance Contrast...", "saturated=1 process_all");
+//vidtemp = getTitle();
+//run("Make Substack...", "  slices=1-116");
+vid2 = getTitle();
+//selectWindow(vidtemp);
+//close();
+selectWindow(vid2);
+run("RGB Color");
+run("Invert", "stack");
+}
+
+
 // merge both stacks into
 imageCalculator("AND create stack", vid2, vid1);
 run("Invert", "stack");
