@@ -10,7 +10,7 @@
 #' @param min_size minimum size for detection of particles
 #' @param max_size maximum size for detection of particles
 #' @param thresholds vector containing the min and max threshold values (defaults to c(10,255))
-#' @param IJ.path path to ImageJ executable 
+#' @param IJ.path path to ImageJ folder, containing the 'ij.jar' executable
 #' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
 #' @return saves the output of the ParticleAnalyzer function of ImageJ as a text file in the output directory and then assembles the data into a single database 
 #' called 'particle.RData'. This data.frame contains information about the following properties: the area (transversal cut), 
@@ -49,10 +49,10 @@ thresholds = c(10, 255), IJ.path, memory = 512) {
   
   ## run to process video files by calling ImageJ
   if (.Platform$OS.type == "unix") 
-    cmd <- paste0("java -Xmx", memory, "m -jar ", IJ.path," -ijpath /Applications/ImageJ -macro ","'", 
+    cmd <- paste0("java -Xmx", memory, "m -jar ", IJ.path, "/ij.jar", " -ijpath ", IJ.path, " -macro ", 
                   to.data, ijmacs.folder, "Video_to_morphology_tmp.ijm'")
   if (.Platform$OS.type == "windows")
-    cmd <- paste0("\"", IJ.path, "\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Video_to_morphology_tmp.ijm", "\"")
+   cmd <- paste0("\"", IJ.path, "\\ij.jar\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Video_overlay_tmp.ijm", "\"")
   
   system(cmd)
   
