@@ -152,7 +152,7 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
                   paste0("'", paste0(to.data, ijmacs.folder), "Video_overlay_tmp.ijm", "'"))
   
   if (.Platform$OS.type == "windows") 
-    cmd <- paste0("\"", IJ.path, "\\ij.jar\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Video_overlay_tmp.ijm", "\"")
+    cmd <- paste0("\"", IJ.path, "\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Video_overlay_tmp.ijm", "\"")
     
   ## run ImageJ macro
   system(cmd)

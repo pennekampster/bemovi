@@ -52,7 +52,7 @@ thresholds = c(10, 255), IJ.path, memory = 512) {
     cmd <- paste0("java -Xmx", memory, "m -jar ", IJ.path, "/ij.jar", " -ijpath ", IJ.path, " -macro ","'", 
                   to.data, ijmacs.folder, "Video_to_morphology_tmp.ijm'")
   if (.Platform$OS.type == "windows")
-   cmd <- paste0("\"", IJ.path, "\\ij.jar\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Video_overlay_tmp.ijm", "\"")
+   cmd <- paste0("\"", IJ.path,"\"", " -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Video_to_morphology_tmp.ijm", "\"")
   
   system(cmd)
   
