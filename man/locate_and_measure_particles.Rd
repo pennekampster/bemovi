@@ -24,7 +24,7 @@ compute the difference image}
 
 \item{thresholds}{vector containing the min and max threshold values (defaults to c(10,255))}
 
-\item{IJ.path}{path to ImageJ executable}
+\item{IJ.path}{path to ImageJ folder, containing the 'ij.jar' executable}
 
 \item{memory}{numeric value specifying the amount of memory available to ImageJ (defaults to 512)}
 }

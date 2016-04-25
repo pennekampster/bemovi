@@ -34,7 +34,7 @@ remains plotted (type='traj').}
 
 \item{contrast.enhancement}{numeric value to increase the contrast of the original video}
 
-\item{IJ.path}{path to ImageJ executable}
+\item{IJ.path}{path to ImageJ folder, containing the 'ij.jar' executable}
 
 \item{memory}{numeric value specifying the amount of memory available to ImageJ (defaults to 512)}
 }
