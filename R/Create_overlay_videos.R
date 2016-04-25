@@ -16,7 +16,7 @@
 #' remains plotted (type='traj').
 #' @param predict_spec logical If TRUE, the Master.RData file must have a column called predict_spec, indicating the species to which the trajectory belongs
 #' @param contrast.enhancement numeric value to increase the contrast of the original video
-#' @param IJ.path path to ImageJ executable 
+#' @param IJ.path path to ImageJ folder, containing the 'ij.jar' executable
 #' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
 #' @export
 
@@ -148,11 +148,11 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
   
   ## call IJ macro to merge original video with the trajectory data
   if (.Platform$OS.type == "unix") 
-    cmd <- paste0("java -Xmx", memory, "m -jar ", IJ.path, " -ijpath /Applications/ImageJ -macro ", 
+    cmd <- paste0("java -Xmx", memory, "m -jar ", IJ.path, "/ij.jar", " -ijpath ", IJ.path, " -macro ", 
                   paste0("'", paste0(to.data, ijmacs.folder), "Video_overlay_tmp.ijm", "'"))
   
   if (.Platform$OS.type == "windows") 
-    cmd <- paste0("\"", IJ.path, "\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Video_overlay_tmp.ijm", "\"")
+    cmd <- paste0("\"", IJ.path, "\\ij.jar\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Video_overlay_tmp.ijm", "\"")
     
   ## run ImageJ macro
   system(cmd)

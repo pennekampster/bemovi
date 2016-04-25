@@ -11,7 +11,7 @@
 #' @param vid_select video selected to find appropriate thresholds; default is the first video
 #' @param difference.lag numeric value specifying the offset between two frames of a video
 #' @param thresholds Numeric vector containing the min and max threshold values
-#' @param IJ.path path to ImageJ executable 
+#' @param IJ.path path to ImageJ folder, containing the ij.jar executable
 #' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
 #' @export
 
@@ -38,10 +38,10 @@ check_threshold_values <- function(to.data, raw.video.folder, ijmacs.folder, vid
   
   ## run to process video files by calling ImageJ
   if (.Platform$OS.type == "unix") 
-    cmd <- paste0("java -Xmx",memory ,"m -jar ", IJ.path, " -ijpath /Applications/ImageJ -macro ","'", 
+    cmd <- paste0("java -Xmx", memory, "m -jar ", IJ.path, "/ij.jar", " -ijpath ", IJ.path, " -macro ", "'",
                   to.data,  ijmacs.folder, "Check_threshold_tmp.ijm'")
   if (.Platform$OS.type == "windows") 
-    cmd <- paste0("\"", IJ.path,"\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "check_threshold_tmp.ijm", "\"")
+   cmd <- paste0("\"", IJ.path, "\\ij.jar\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Video_overlay_tmp.ijm", "\"")
     
 system(cmd)
 } 
