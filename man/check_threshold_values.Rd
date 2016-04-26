@@ -20,7 +20,7 @@ check_threshold_values(to.data, raw.video.folder, ijmacs.folder,
 
 \item{thresholds}{Numeric vector containing the min and max threshold values}
 
-\item{IJ.path}{path to ImageJ executable}
+\item{IJ.path}{path to ImageJ folder, containing the ij.jar executable}
 
 \item{memory}{numeric value specifying the amount of memory available to ImageJ (defaults to 512)}
 }
