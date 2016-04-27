@@ -5,14 +5,14 @@ citEntry(entry = "Article",
   author       = personList(as.person("Frank Pennekamp"), as.person("Nicolas Schtickzelle"), as.person("Owen L. Petchey")),
   journal      = "Ecology and Evolution",
   year         = "2015",
-  volume       = "",
-  number       = "",
-  pages        = "",
-  url          = "",
+  volume       = "5",
+  number       = "13",
+  pages        = "Pages 2584-2595",
+  url          = "http://onlinelibrary.wiley.com/doi/10.1002/ece3.1529/abstract",
 
   textVersion  =
   paste("Frank Pennekamp, Nicolas Schtickzelle Owen L. Petchey (2015).",
         "BEMOVI, software for extracting BEhaviour and MOrphology from VIdeos, illustrated with analyses of microbes.",
-        "Ecology and Evolution",
-        "URL ...")
+        "Ecology and Evolution,", "(2015)", "5:13", "Pages 2584-2595",
+        "http://onlinelibrary.wiley.com/doi/10.1002/ece3.1529/abstract")
 )
