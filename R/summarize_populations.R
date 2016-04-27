@@ -12,6 +12,8 @@
 #' @param video.description.file name of the video description file
 #' @return returns a data.table with the population densities as well as the aggregated morphology and movement information for each population (sample)
 #' @export
+#' @examples
+#' summarize_populations()
 
 summarize_populations <- function(traj.data, sum.data, write=FALSE, to.data, merged.data.folder, video.description.folder, video.description.file){
   
