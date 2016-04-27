@@ -1,3 +1,17 @@
+#' Function to calculate densities and summarize morphology and movement at the population (sample) level
+#' 
+#' Takes the data comprising the information for each frame and calculates summary statistics such as mean and sd (for all morphology metrics) and mean, sd and min/max 
+#' for some of the movement metrics along the trajectory. Values are rounded to the second decimal. 
+#' 
+#' @param traj.data dataframe with the information on morphology and movement for each frame (either "trajectoty.data" or "trajectory.data.filtered")
+#' @param sum.data data.table with the aggregated morphology and movement information for each trajectory ("morph_mvt")
+#' @param write logical argument to indicate whether aggregated information should be saved to disk (file name: "Population_Data.RData")
+#' @param to.data path to the working directory
+#' @param merged.data.folder directory where the global database is saved
+#' @param video.description.folder directory with the video description file
+#' @param video.description.file name of the video description file
+#' @return returns a data.table with the population densities as well as the aggregated morphology and movement information for each population (sample)
+#' @export
 
 summarize_populations <- function(traj.data, sum.data, write=FALSE, to.data, merged.data.folder, video.description.folder, video.description.file){
   
