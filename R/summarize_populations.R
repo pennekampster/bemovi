@@ -10,12 +10,13 @@
 #' @param merged.data.folder directory where the global database is saved
 #' @param video.description.folder directory with the video description file
 #' @param video.description.file name of the video description file
+#' @param total_frames length of video analysed in frames
 #' @return returns a data.table with the population densities, biovolume as well as the aggregated morphology and movement information for each population (sample)
 #' @export
 #' @examples
 #' summarize_populations()
 
-summarize_populations <- function(traj.data, sum.data, write=FALSE, to.data, merged.data.folder, video.description.folder, video.description.file){
+summarize_populations <- function(traj.data, sum.data, write=FALSE, to.data, merged.data.folder, video.description.folder, video.description.file, total_frames){
   
   # checks whether frames per second are specified
   if(!exists("fps") ) stop("frames per second not specified (fps)")

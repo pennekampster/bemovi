@@ -5,7 +5,8 @@
 \title{Function to calculate densities and summarize morphology and movement at the population (sample) level}
 \usage{
 summarize_populations(traj.data, sum.data, write = FALSE, to.data,
-  merged.data.folder, video.description.folder, video.description.file)
+  merged.data.folder, video.description.folder, video.description.file,
+  total_frames)
 }
 \arguments{
 \item{traj.data}{dataframe with the information on morphology and movement for each frame (either "trajectoty.data" or "trajectory.data.filtered")}
@@ -21,6 +22,8 @@ summarize_populations(traj.data, sum.data, write = FALSE, to.data,
 \item{video.description.folder}{directory with the video description file}
 
 \item{video.description.file}{name of the video description file}
+
+\item{total_frames}{length of video analysed in frames}
 }
 \value{
 returns a data.table with the population densities, biovolume as well as the aggregated morphology and movement information for each population (sample)
