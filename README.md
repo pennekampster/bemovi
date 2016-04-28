@@ -1,7 +1,7 @@
 Bemovi, software for extracting BEhaviour and MOrphology from VIdeos.
 =============================================================================
 
-This version of BEMOVI (eaf_dev; Emanuel A. Fronhofer, April 2016) is based on the originally published master branch. It includes a new function called "summarize_populations()" that generates a table with population (sample) level summaries of movement and morphology as well as an estimate of the population density.
+This version of BEMOVI (eaf_dev; Emanuel A. Fronhofer, April 2016) is based on the originally published master branch. It includes a new function called "summarize_populations()" that generates a table with population (sample) level summaries of movement and morphology as well as an estimate of the population density. It also includes a modified version of the "create_overlays()" function that now takes "trajectory.data" as an argument. This allows the user to choose whether overlays are created from the raw or the filtered trajectory data (before raw was the default).
 
 For the original paper see: Pennekamp, F.; Schtickzelle, N. & Petchey, O. L. BEMOVI, software for extracting behavior and morphology from videos, illustrated with analyses of microbes Ecol. Evol., Cold Spring Harbor Labs Journals, 2015, 5, 2584-2595. https://dx.doi.org/10.1002/ece3.1529
 
