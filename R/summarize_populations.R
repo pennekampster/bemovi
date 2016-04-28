@@ -10,7 +10,7 @@
 #' @param merged.data.folder directory where the global database is saved
 #' @param video.description.folder directory with the video description file
 #' @param video.description.file name of the video description file
-#' @return returns a data.table with the population densities as well as the aggregated morphology and movement information for each population (sample)
+#' @return returns a data.table with the population densities, biovolume as well as the aggregated morphology and movement information for each population (sample)
 #' @export
 #' @examples
 #' summarize_populations()
@@ -30,11 +30,21 @@ summarize_populations <- function(traj.data, sum.data, write=FALSE, to.data, mer
   
   help_cnt_rep <- which(is.element(pop_output$file,dimnames(as.matrix(rowMeans(pop_count_table)))[[1]]))
   
-  pop_output$counts <- NA
-  pop_output$counts[help_cnt_rep] <- as.numeric(rowMeans(pop_count_table,na.rm=T))
+  pop_output$indiv_per_frame <- 0
+  pop_output$indiv_per_frame[help_cnt_rep] <- as.numeric(apply(pop_count_table,1,sum,na.rm=T))/total_frames
 
-  pop_output$indiv_per_vol <- NA
-  pop_output$indiv_per_vol[help_cnt_rep] <- as.numeric(rowMeans(pop_count_table,na.rm=T))/measured_volume
+  pop_output$indiv_per_volume <- 0
+  pop_output$indiv_per_volume[help_cnt_rep] <- as.numeric(apply(pop_count_table,1,sum,na.rm=T))/total_frames /measured_volume
+  
+  # add the mean of total area per frame (bioarea by frame)
+  pop_count_table2 <- tapply(traj.data$Area,list(as.factor(traj.data$file),as.factor(traj.data$frame)),sum)
+  help_cnt_rep <- which(is.element(pop_output$file,dimnames(as.matrix(rowMeans(pop_count_table2)))[[1]]))
+  pop_output$bioarea_per_frame <- 0
+  pop_output$bioarea_per_frame[help_cnt_rep] <- as.numeric(apply(pop_count_table2,1,sum,na.rm=T))/total_frames 
+  
+  # add the mean of total area per volume (bioarea by volume; by Isabelle Gounand)
+  pop_output$bioarea_per_volume <- 0
+  pop_output$bioarea_per_volume[help_cnt_rep] <- as.numeric(apply(pop_count_table2,1,sum,na.rm=T))/total_frames/measured_volume
   
   # first get file from id
   sum.data$file <- sub("-.*$", "", sum.data$id )
