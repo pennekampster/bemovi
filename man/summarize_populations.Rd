@@ -23,7 +23,7 @@ summarize_populations(traj.data, sum.data, write = FALSE, to.data,
 \item{video.description.file}{name of the video description file}
 }
 \value{
-returns a data.table with the population densities as well as the aggregated morphology and movement information for each population (sample)
+returns a data.table with the population densities, biovolume as well as the aggregated morphology and movement information for each population (sample)
 }
 \description{
 Takes the data comprising the information for each frame and calculates summary statistics such as mean and sd (for all morphology metrics) and mean, sd and min/max 
