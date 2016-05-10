@@ -1,8 +1,9 @@
-#' Function to create a new video with the extracted trajectories overlayed onto the original video
+#' Function to create a new video with the extracted trajectories (filtered or raw) overlayed onto the original video
 #' 
 #' A function to overlay the extracted trajectories onto the original video, using plots created in R and then processed in 
 #' ImageJ; two visualization types are available
 #' 
+#' @param traj.data dataframe with the information on morphology and movement for each frame (either "trajectory.data" or "traj.data.filtered")
 #' @param to.data path to the working directory
 #' @param merged.data.folder directory where the global database is saved
 #' @param raw.video.folder directory with the raw video files 
@@ -20,35 +21,37 @@
 #' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
 #' @export
 
-create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.overlay.folder, overlay.folder, 
+create_overlays <- function(traj.data, to.data, merged.data.folder, raw.video.folder, temp.overlay.folder, overlay.folder, 
                                   width, height, difference.lag, type = "traj",  predict_spec=F, contrast.enhancement = 0, IJ.path, memory = 512) {
   
-  #trajectory.data<-trajectory<-ijmacs.folder<-NULL
+  #traj.data<-trajectory<-ijmacs.folder<-NULL
   
   video.dir <- paste(to.data, raw.video.folder, sep = "")
   
   load(file = paste(to.data,merged.data.folder, "Master.RData", sep = "/")) 
+  
   trajectory.data <- as.data.table(trajectory.data)
   setkey(trajectory.data,file,frame)
   
   file_names <- unique(trajectory.data$file)
+
   
   ## change path for output
   dir.create(paste0(to.data, temp.overlay.folder), showWarnings = F)
     for (i in 1:length(file_names)) {
     dir.create(paste0(to.data, temp.overlay.folder, file_names[i]), showWarnings = F)
-    trajectory.data_tmp <- trajectory.data[file == file_names[i]]
-    setkey(trajectory.data_tmp,frame)
+    traj.data_tmp <- subset(traj.data, file == file_names[i])
     j <- 1
     
     if (type == "traj") {
-      while (j <= max(trajectory.data$frame)) {
+      while (j <= max(traj.data$frame)) {
         jpeg(paste(to.data, temp.overlay.folder, file_names[i], "/", "frame_", j, ".jpg", sep = ""), width = as.numeric(width), height = as.numeric(height), quality = 100)
         par(mar = rep(0, 4), xaxs = c("i"), yaxs = c("i"))
         
         if (predict_spec==F){
         
-        print <- trajectory.data_tmp[frame <= j, .(X, Y, trajectory)]
+        print <- subset(traj.data_tmp, traj.data_tmp$frame <= j, select = c("X", "Y", "trajectory"))
+
         
         ## plot the particle(s) so long as there are some
         if (length(print[, X]) != 0) {
@@ -63,7 +66,8 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
         
         if (predict_spec==T){
           
-          print <- trajectory.data_tmp[frame <= j, .(X, Y, trajectory,predict_spec)]
+          print <- subset(traj.data_tmp,traj.data_tmp$frame <= j, select=c("X","Y","trajectory","predict_spec"))
+
           
           ## plot the particle(s) so long as there are some
           if (length(print[, X]) != 0) {
@@ -82,14 +86,14 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
     }
     
     if (type == "label") {
-      while (j <= max(trajectory.data$frame)) {
+      while (j <= max(traj.data$frame)) {
         jpeg(paste(to.data, temp.overlay.folder, file_names[i], "/", "frame_", 
                    j, ".jpg", sep = ""), width = as.numeric(width), height = as.numeric(height), quality = 100)
         par(mar = rep(0, 4), xaxs = c("i"), yaxs = c("i"))
         
         if (predict_spec==F){
         
-        print <- trajectory.data_tmp[frame == j, .(X, Y, trajectory)]
+        print <- subset(traj.data_tmp, traj.data_tmp$frame == j, select = c("X", "Y", "trajectory"))
         
         ## plot the particle(s) so long as there are some
         if (length(print[, X, ]) != 0) {
@@ -105,8 +109,9 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
         
         if (predict_spec==T){
           
-          print <- trajectory.data_tmp[frame == j, .(X, Y, trajectory,predict_spec)]
-                    
+
+          print <- subset(traj.data_tmp,traj.data_tmp$frame == j, select=c("X","Y","trajectory","predict_spec"))
+                   
           ## plot the particle(s) so long as there are some
           if (length(print[, X, ]) != 0) {
             plot(print$X, print$Y, xlim=c(0,as.numeric(width)), ylim=c(as.numeric(height), 0), col=as.factor(print$predict_spec), pch=1, cex=6, asp=1)
