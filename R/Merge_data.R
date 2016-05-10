@@ -18,7 +18,7 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   
   # read the file that gives the important information about each video
   file.sample.info <- as.data.table(read.table(paste(to.data, video.description.folder, video.description.file, sep = ""), sep = "\t", header = TRUE))
-  file.sample.info$file <- tolower(file.sample.info$file)
+  file.sample.info$file <- tolower(as.character(file.sample.info$file))
   
   ## load the two datasets
   load(paste0(to.data, particle.data.folder,"particle.RData"))
@@ -45,7 +45,7 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   ## merge the two datasets
   merged1 <- merge(morphology.data, trajectory.data, by = c("X", "Y", "frame", "file"), all = T)
   ## make the merge of the file names case insensitive
-  merged1 <- merged1[, file:=tolower(file)]
+  merged1 <- merged1[, file:=tolower(as.character(file))]
 
   setkey(merged1, file)
   setkey(file.sample.info, file)
