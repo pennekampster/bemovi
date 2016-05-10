@@ -1,3 +1,6 @@
+// make sure ImageJ options are set (e.g. save row numbers)
+run(“Input/Output…”, “jpeg=100 gif=-1 file=.txt copy_row save_column save_row”);
+
 setBatchMode(true);
 // input user information;
 avi_input = "C:/Users/Frank/Documents/PhD/Programming/franco/data/1 - raw/";
