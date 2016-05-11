@@ -16,9 +16,12 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   
   #id<-NULL
   
-  # read the file that gives the important information about each video
-  file.sample.info <- as.data.table(read.table(paste(to.data, video.description.folder, video.description.file, sep = ""), sep = "\t", header = TRUE))
-  file.sample.info$file <- tolower(as.character(file.sample.info$file))
+  # read the file that gives the important information about each video (specify the file variable to be character)
+  col_classes <- vector(mode = "character")
+  col_classes[1] <- "character"
+  names(col_classes) <- "file"
+  file.sample.info <- as.data.table(read.table(paste(to.data, video.description.folder, video.description.file, sep = ""), sep = "\t", colClasses = col_classes, header = TRUE))
+  
   
   ## load the two datasets
   load(paste0(to.data, particle.data.folder,"particle.RData"))
@@ -36,16 +39,18 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   trajectory.data$frame <- trajectory.data$frame + 1
   trajectory.data$X1 <- NULL
   trajectory.data$Y1 <- NULL
+  #trajectory.data$file <- tolower(trajectory.data$file)
     
   ## Prep for merging the morphology data
   morphology.data <- as.data.table(morphology.data)
   morphology.data$frame <- morphology.data$Slice
   morphology.data$Slice <- NULL
+  #morphology.data$file <- tolower(morphology.data$file)
   
   ## merge the two datasets
   merged1 <- merge(morphology.data, trajectory.data, by = c("X", "Y", "frame", "file"), all = T)
   ## make the merge of the file names case insensitive
-  merged1 <- merged1[, file:=tolower(as.character(file))]
+  #merged1 <- merged1[, file:=tolower(as.character(file))]
 
   setkey(merged1, file)
   setkey(file.sample.info, file)
