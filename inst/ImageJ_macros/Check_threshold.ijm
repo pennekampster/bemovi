@@ -1,8 +1,11 @@
+// make sure ImageJ options are set (e.g. save row numbers)
+run("Input/Output...", "jpeg=100 gif=-1 file=.txt copy_row save_column save_row");
+
 setBatchMode(true);
 
 // input user information;
-
 avi_input = '/Users/Frank/Documents/Postdoc/Temporary projects/test/1 - raw/';
+
 // choose the video to work on, remember that the numbering starts at 0 in ImageJ
 i = 0;
 lag = 10;
