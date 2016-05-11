@@ -4,7 +4,7 @@ title: Technical considerations and compatibility
 description: Hardware requirements
 ---
 
-Bemovi was tested on Windows 7 & 8, as well as Mac OS X and Ubuntu 14.04.
+Bemovi was tested on Windows 7, 8, and 10, as well as Mac OS X and Ubuntu 14.04.
 
 Two technical aspects require careful consideration before embarking
 on a significant project using bemovi (or any other project involving video analyses
