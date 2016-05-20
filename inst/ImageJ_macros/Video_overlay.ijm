@@ -3,11 +3,11 @@ run("Input/Output...", "jpeg=100 gif=-1 file=.txt copy_row save_column save_row"
 
 setBatchMode(true);
 
-avi_input = "C:/Users/Frank/Documents/PhD/Programming/franco/data/1 - raw/";
+video_input = "C:/Users/Frank/Documents/PhD/Programming/franco/data/1 - raw/";
 overlay_input = "C:/Users/Frank/Documents/PhD/Programming/franco/data/3 - overlay plots/";
 overlay_output = "C:/Users/Frank/Documents/PhD/Programming/franco/data/4 - overlays/";
 lag = 25
-list = getFileList(avi_input);
+list = getFileList(video_input);
 list2 = getFileList(overlay_input);
 
 for (i=0; i<lengthOf(list2); i++) {
@@ -25,7 +25,7 @@ vid1 = getTitle();
 
 if (endsWith(list[i],"avi")){
 // Open stack with picture sequence from which trajectories were extracted (original gray scale images)
-run("AVI...", "select=["+avi_input+replace(list2[i],"/",".avi")+"] first=1 last="+slices+"");
+run("AVI...", "select=["+video_input+replace(list2[i],"/",".avi")+"] first=1 last="+slices+"");
 run("Enhance Contrast...", "saturated=1 process_all");
 //run("RGB Color");
 run("Invert", "stack");
@@ -34,7 +34,7 @@ vid2 = getTitle();
 
 if (endsWith(list[i],"cxd")){
 // Open stack with picture sequence from which trajectories were extracted (original gray scle images)
-run("Bio-Formats", "open=["+avi_input+replace(list2[i],"/",".cxd")+"] autoscale color_mode=Default view=[Standard ImageJ] stack_order=Default");
+run("Bio-Formats", "open=["+video_input+replace(list2[i],"/",".cxd")+"] autoscale color_mode=Default view=[Standard ImageJ] stack_order=Default");
 run("Enhance Contrast...", "saturated=1 process_all");
 //vidtemp = getTitle();
 //run("Make Substack...", "  slices=1-116");
