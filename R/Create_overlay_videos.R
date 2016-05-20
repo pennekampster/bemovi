@@ -137,7 +137,7 @@ create_overlays <- function(traj.data, to.data, merged.data.folder, raw.video.fo
   if (.Platform$OS.type == "unix") 
     text <- readLines(paste0(system.file(package="bemovi"), "/","ImageJ_macros/Video_overlay.ijm"))
   
-  text[grep("avi_input = ", text)] <- paste("avi_input = ", "'", paste0(to.data, raw.video.folder), "';", sep = "")
+  text[grep("video_input = ", text)] <- paste("video_input = ", "'", paste0(to.data, raw.video.folder), "';", sep = "")
   text[grep("overlay_input = ", text)] <- paste("overlay_input = ", "'", paste0(to.data, temp.overlay.folder), "';", sep = "")
   text[grep("overlay_output = ", text)] <- paste("overlay_output = ", "'", paste0(to.data, overlay.folder), "';", sep = "")
   text[grep("lag =", text)] <- paste("lag = ", difference.lag, ";", sep = "") 

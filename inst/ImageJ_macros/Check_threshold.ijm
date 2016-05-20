@@ -4,16 +4,16 @@ run("Input/Output...", "jpeg=100 gif=-1 file=.txt copy_row save_column save_row"
 setBatchMode(true);
 
 // input user information;
-avi_input = '/Users/Frank/Documents/Postdoc/Temporary projects/test/1 - raw/';
+video_input = '/Users/Frank/Documents/Postdoc/Temporary projects/test/1 - raw/';
 
 // choose the video to work on, remember that the numbering starts at 0 in ImageJ
 i = 0;
 lag = 10;
 
-list = getFileList(avi_input);
+list = getFileList(video_input);
 
 if (endsWith(list[i],"avi")){
-run("AVI...", "select=["+avi_input+list[i]+"] convert");
+run("AVI...", "select=["+video_input+list[i]+"] convert");
 run("8-bit");
 getDimensions(width, height, channels, slices, frames);
 slices=slices;
@@ -44,7 +44,7 @@ run("Threshold...");
 }
 
 if (endsWith(list[i],"cxd")){
-run("Bio-Formats", "open=["+avi_input+list[i]+"] autoscale color_mode=Default view=[Standard ImageJ] stack_order=Default");
+run("Bio-Formats", "open=["+video_input+list[i]+"] autoscale color_mode=Default view=[Standard ImageJ] stack_order=Default");
 run("8-bit");
 getDimensions(width, height, channels, slices, frames);
 slices=slices;
