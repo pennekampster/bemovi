@@ -28,7 +28,7 @@ organise_particle_data <- function(to.data, particle.data.folder) {
   morphology.data <- as.data.frame(dd)
   
   # convert morphology to real dimensions
-  morphology.data$Area <-   morphology.data$Area*pixel_to_scale
+  morphology.data$Area <-   morphology.data$Area*pixel_to_scale^2
   morphology.data$Perimeter <- morphology.data$Perimeter*pixel_to_scale
   morphology.data$Major <- morphology.data$Major*pixel_to_scale
   morphology.data$Minor <-  morphology.data$Minor*pixel_to_scale
