@@ -41,8 +41,9 @@ calculate_mvt <- function(data,to.data,trajectory.data.folder,pixel_to_scale,fps
   data <- data[!is.na(data$trajectory),]
   
   #filter out duplicate positions, if available
-  data <- data[!(c(diff(X), FALSE) == 0 & c(diff(Y), FALSE) == 0)]
-  
+  #data <- data[data[,!(c(diff(X) == 0, F) & c(diff(Y) == 0, F))]]
+  data <- data[data[,!(c(diff(X) == 0, F) & c(diff(Y) == 0, F)), by = id]$V1]
+
   #subset dataset to only include relevant movement information
   data <- data[,list(file,X,Y,frame,id,trajectory)]
   
