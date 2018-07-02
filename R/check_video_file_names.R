@@ -7,8 +7,12 @@
 #' @return returns an error message and a list with unsupported files or names
 #' @export
 
-check_video_file_names <- function(to.data, raw.video.folder,
-                                   video.description.folder, video.description.file) {
+check_video_file_names <- function(
+  to.data, 
+  raw.video.folder,
+  video.description.folder, 
+  video.description.file
+) {
   
   error_flag = FALSE
   
