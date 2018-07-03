@@ -5,7 +5,8 @@
 \title{Function to link the particle coordinates through time}
 \usage{
 link_particles(to.data, particle.data.folder, trajectory.data.folder,
-  linkrange = 1, disp = 10, start_vid = 1, memory = 512)
+  linkrange = 1, disp = 10, start_vid = 1, memory = 512,
+  to.particlelinker)
 }
 \arguments{
 \item{to.data}{path to the working directory}
@@ -22,6 +23,8 @@ are taken into account when a trajectory is re-constructed}
 \item{start_vid}{numeric value to indicate whether the linking should be started with a video other than the first}
 
 \item{memory}{numeric value specifying the max amount of memory allocated to the ParticleLinker (defaults to 512)}
+
+\item{to.particlelinker}{path to ParticleLinker jar file}
 }
 \value{
 Returns a single text file per video containing the X- and Y-coordinates, the frame and a trajectory ID. The files are than automatically merged into a data.table
