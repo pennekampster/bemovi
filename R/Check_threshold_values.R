@@ -17,19 +17,19 @@
 
 check_threshold_values <- function(to.data, raw.video.folder, ijmacs.folder, vid_select = 0, difference.lag, thresholds, IJ.path, memory = 512) {
   
-  video.dir <- paste(to.data, raw.video.folder, sep = "")
+  video.dir <- file.path(to.data, raw.video.folder)
   ## generate the folders if not already existing
-  dir.create(paste0(to.data, ijmacs.folder), showWarnings = FALSE)
+  dir.create(file.path(to.data, ijmacs.folder), showWarnings = FALSE)
   
   ## copy master copy of ImageJ macro there for treatment
-  text <- readLines(paste(system.file(package="bemovi"), "/", "ImageJ_macros/Check_threshold.ijm", sep = ""))
+  text <- readLines(file.path(system.file(package="bemovi"), "/", "ImageJ_macros", "Check_threshold.ijm"))
   
   ## if there is differencing (i.e., difference.lag>0)
   if(difference.lag>0)
-    text <- readLines(paste(system.file(package="bemovi"), "/", "ImageJ_macros/Check_threshold.ijm", sep = ""))
+    text <- readLines(file.path(system.file(package="bemovi"), "/", "ImageJ_macros", "Check_threshold.ijm"))
   ## if there is no differencing (i.e., difference.lag==0)
   if(difference.lag==0)
-    text <- readLines(paste(system.file(package="bemovi"), "/", "ImageJ_macros/Check_threshold_no_differencing.ijm", sep = ""))
+    text <- readLines(file.path(system.file(package="bemovi"), "/", "ImageJ_macros", "Check_threshold_no_differencing.ijm"))
   
   
   
@@ -41,9 +41,9 @@ check_threshold_values <- function(to.data, raw.video.folder, ijmacs.folder, vid
     
   ## re-create ImageJ macro for batch processing of video files with ParticleTracker and put this in a subdirectory of the data folder
   if (.Platform$OS.type == "windows") {
-    writeLines(text, con = paste(to.data, ijmacs.folder, "Check_threshold_tmp.ijm", sep = ""))}
+    writeLines(text, con = file.path(to.data, ijmacs.folder, "Check_threshold_tmp.ijm"))}
   if (.Platform$OS.type == "unix") {
-    writeLines(text, con = paste(to.data, ijmacs.folder, "Check_threshold_tmp.ijm", sep = ""))}
+    writeLines(text, con = file.path(to.data, ijmacs.folder, "Check_threshold_tmp.ijm"))}
   
   ## run to process video files by calling ImageJ
   if (.Platform$OS.type == "unix") 

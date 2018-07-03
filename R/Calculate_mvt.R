@@ -24,7 +24,7 @@ calculate_mvt <- function(data,to.data,trajectory.data.folder,pixel_to_scale,fps
   if(!exists("pixel_to_scale")) stop("No pixel to real scale conversion provided. Please specify path in global options.")
 
   # output path
-  out.dir <- paste0(to.data,trajectory.data.folder)
+  out.dir <- file.path(to.data,trajectory.data.folder)
 
   # create unique ID consisting of trajectory ID and file
   id <- paste(data$file,data$trajectory,sep="-")
@@ -68,7 +68,7 @@ calculate_mvt <- function(data,to.data,trajectory.data.folder,pixel_to_scale,fps
 
   trajectory.data <- merge(data_full,mvt_summary,by=c("id","frame"), all.x=T)
 
-  save(trajectory.data, file = paste0(out.dir,"trajectory.RData"))
+  save(trajectory.data, file = file.path(out.dir,"trajectory.RData"))
 
 }
 
