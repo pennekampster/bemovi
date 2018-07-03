@@ -4,9 +4,15 @@
 #' and saves it to the directory where the single files are located
 #' @param to.data path to the working directory
 #' @param particle.data.folder directory to which the data is saved as a text file
+#' @param pixel_to_scale TODO
+#' 
 #' @export
 
-organise_particle_data <- function(to.data, particle.data.folder) {
+organise_particle_data <- function(
+  to.data, 
+  particle.data.folder,
+  pixel_to_scale
+) {
   
   #pixel_to_scale<-NULL
   

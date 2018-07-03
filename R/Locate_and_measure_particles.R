@@ -13,6 +13,7 @@
 #' @param IJ.path path to ImageJ folder, containing the 'ij.jar' executable
 #' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
 #' @param ijmacs.folder directory for the macro to for ImageJ 
+#' @param pixel_to_scale TODO
 #' 
 #' @return saves the output of the ParticleAnalyzer function of ImageJ as a text file in the output directory and then assembles the data into a single database 
 #' called 'particle.rds'. This data.frame contains information about the following properties: the area (transversal cut), 
@@ -30,7 +31,8 @@ locate_and_measure_particles <- function(
   thresholds = c(10, 255), 
   IJ.path, 
   memory = 512,
-  ijmacs.folder
+  ijmacs.folder,
+  pixel_to_scale
 ) {
   
   #ijmacs.folder<-NULL
@@ -93,6 +95,10 @@ cmd <- switch(
 
 system(cmd)
 
-organise_particle_data(to.data, particle.data.folder)
+organise_particle_data(
+  to.data = to.data, 
+  particle.data.folder = particle.data.folder,
+  pixel_to_scale = pixel_to_scale
+)
 
 }
