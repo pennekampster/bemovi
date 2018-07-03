@@ -33,6 +33,6 @@ organise_particle_data <- function(to.data, particle.data.folder) {
   morphology.data$Major <- morphology.data$Major*pixel_to_scale
   morphology.data$Minor <-  morphology.data$Minor*pixel_to_scale
   
-  save(morphology.data, file = file.path(IJ_output.dir, "particle.RData"))
+  saveRDS(morphology.data, file = file.path(IJ_output.dir, "particle.rds"))
 } 
 
