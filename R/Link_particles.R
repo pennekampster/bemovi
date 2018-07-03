@@ -11,6 +11,7 @@
 #' @param disp numeric value that specifies the maximum displacement of a given particle between two frames
 #' @param start_vid numeric value to indicate whether the linking should be started with a video other than the first
 #' @param to.particlelinker path to ParticleLinker jar file
+#' @param pixel_to_scale TODO
 #' 
 #' @return Returns a single text file per video containing the X- and Y-coordinates, the frame and a trajectory ID. The files are than automatically merged into a data.table
 #' with the movement metrics for each fix appended to the original data (NB: movement metrics often need two (e.g. step length), sometimes even 
@@ -27,7 +28,8 @@ link_particles <- function(
   disp = 10, 
   start_vid = 1, 
   memory = 512,
-  to.particlelinker
+  to.particlelinker,
+  pixel_to_scale
 ) {
 
   #Slice<-to.particlelinker<-java.path<-pixel_to_scale<-fps<-NULL
