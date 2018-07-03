@@ -6,7 +6,7 @@
 \usage{
 locate_and_measure_particles(to.data, raw.video.folder, particle.data.folder,
   difference.lag, min_size = 0, max_size = 10000, thresholds = c(10, 255),
-  IJ.path, memory = 512)
+  IJ.path, memory = 512, ijmacs.folder)
 }
 \arguments{
 \item{to.data}{path to the working directory}
@@ -27,6 +27,8 @@ compute the difference image. If 0, then no differencing applied.}
 \item{IJ.path}{path to ImageJ folder, containing the 'ij.jar' executable}
 
 \item{memory}{numeric value specifying the amount of memory available to ImageJ (defaults to 512)}
+
+\item{ijmacs.folder}{directory for the macro to for ImageJ}
 }
 \value{
 saves the output of the ParticleAnalyzer function of ImageJ as a text file in the output directory and then assembles the data into a single database 

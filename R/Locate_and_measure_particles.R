@@ -12,6 +12,8 @@
 #' @param thresholds vector containing the min and max threshold values (defaults to c(10,255))
 #' @param IJ.path path to ImageJ folder, containing the 'ij.jar' executable
 #' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
+#' @param ijmacs.folder directory for the macro to for ImageJ 
+#' 
 #' @return saves the output of the ParticleAnalyzer function of ImageJ as a text file in the output directory and then assembles the data into a single database 
 #' called 'particle.rds'. This data.frame contains information about the following properties: the area (transversal cut), 
 #' the mean, minimum and maximum of the grey value, the perimeter, width, length and angle with the dominant-axis of a fitted ellipse, and finally shape parameters such as
@@ -27,7 +29,8 @@ locate_and_measure_particles <- function(
   max_size=10000, 
   thresholds = c(10, 255), 
   IJ.path, 
-  memory = 512
+  memory = 512,
+  ijmacs.folder
 ) {
   
   #ijmacs.folder<-NULL
@@ -59,7 +62,7 @@ locate_and_measure_particles <- function(
 #   writeLines(text, con = paste(to.data, ijmacs.folder, "Video_to_morphology_tmp.ijm"))}
 
 ## create directory to store Particle Analyzer data
-dir.create(file.path(to.data, particle.data.folder), showWarnings = FALSE)
+  dir.create(file.path(to.data, particle.data.folder), showWarnings = FALSE)
 
 ## run to process video files by calling ImageJ
 
