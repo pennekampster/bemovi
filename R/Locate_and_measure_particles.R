@@ -44,8 +44,8 @@ locate_and_measure_particles <- function(
     text <- readLines(file.path(system.file(package="bemovi"), "ImageJ_macros", "Video_to_morphology_no_differencing.ijm"))
   }
   ## use regular expression to insert input & output directory as well as difference lag
-  text[grep("video_input = ", text)] <- paste("video_input = ", "'", video.dir, "';", sep = "")
-  text[grep("video_output = ", text)] <- paste("video_output = ", "'", file.path(to.data, particle.data.folder), "';", sep = "")
+  text[grep("video_input = ", text)] <- paste("video_input = ", "'", video.dir, "/';", sep = "")
+  text[grep("video_output = ", text)] <- paste("video_output = ", "'", file.path(to.data, particle.data.folder), "/';", sep = "")
   text[grep("lag = ", text)] <- paste("lag = ", difference.lag, ";", sep = "")
   text[grep("setThreshold", text)] <- paste("setThreshold(", thresholds[1], ",", thresholds[2], ");", sep = "")
   text[grep("size=", text)] <- paste('run("Analyze Particles...", "size=',min_size,'-',max_size,' circularity=0.00-1.00 show=Nothing clear stack");',sep = "")
