@@ -5,7 +5,7 @@
 \title{Function to filter trajectories based on movement and detection rate characteristics}
 \usage{
 filter_data(raw_data, net_filter, duration_filter, detect_filter,
-  median_step_filter)
+  median_step_filter, fps)
 }
 \arguments{
 \item{raw_data}{dataframe containing the rawdata: X- and Y-coordinates, frame, file and trajectory name, morphology and movement metrics}
@@ -17,6 +17,8 @@ filter_data(raw_data, net_filter, duration_filter, detect_filter,
 \item{detect_filter}{minimum detection rate to be considered a valid trajectory (a proportion between 0 and 1)}
 
 \item{median_step_filter}{threshold such that half of the step lengths are above the specified value}
+
+\item{fps}{Frames Per Second of the video}
 }
 \value{
 returns a dataset with all fixes of valid trajectories

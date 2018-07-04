@@ -6,7 +6,7 @@
 \usage{
 link_particles(to.data, particle.data.folder, trajectory.data.folder,
   linkrange = 1, disp = 10, start_vid = 1, memory = 512,
-  to.particlelinker, pixel_to_scale)
+  to.particlelinker, pixel_to_scale, fps)
 }
 \arguments{
 \item{to.data}{path to the working directory}
@@ -27,6 +27,8 @@ are taken into account when a trajectory is re-constructed}
 \item{to.particlelinker}{path to ParticleLinker jar file}
 
 \item{pixel_to_scale}{TODO}
+
+\item{fps}{Frames Per Second of the video}
 }
 \value{
 Returns a single text file per video containing the X- and Y-coordinates, the frame and a trajectory ID. The files are than automatically merged into a data.table
