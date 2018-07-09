@@ -4,9 +4,14 @@
 \alias{locate_and_measure_particles}
 \title{Function to extract morphological measurements and X- and Y-coordinates for moving particles}
 \usage{
-locate_and_measure_particles(to.data, raw.video.folder, particle.data.folder,
-  difference.lag, min_size = 0, max_size = 10000, thresholds = c(10, 255),
-  IJ.path, memory = 512, ijmacs.folder, pixel_to_scale)
+locate_and_measure_particles(to.data = par_to.data(),
+  raw.video.folder = par_raw.video.folder(),
+  particle.data.folder = par_particle.data.folder(),
+  difference.lag = par_difference.lag(), min_size = par_min_size(),
+  max_size = par_max_size(), thresholds = par_thresholds(),
+  IJ.path = par_IJ.path(), memory = par_memory(),
+  ijmacs.folder = par_ijmacs.folder(),
+  pixel_to_scale = par_pixel_to_scale())
 }
 \arguments{
 \item{to.data}{path to the working directory}

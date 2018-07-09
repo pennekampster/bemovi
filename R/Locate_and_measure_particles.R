@@ -22,17 +22,17 @@
 #' @export 
 
 locate_and_measure_particles <- function(
-  to.data, 
-  raw.video.folder, 
-  particle.data.folder, 
-  difference.lag, 
-  min_size=0, 
-  max_size=10000, 
-  thresholds = c(10, 255), 
-  IJ.path, 
-  memory = 512,
-  ijmacs.folder,
-  pixel_to_scale
+  to.data = par_to.data(), 
+  raw.video.folder = par_raw.video.folder(), 
+  particle.data.folder = par_particle.data.folder(), 
+  difference.lag = par_difference.lag(), 
+  min_size = par_min_size(), 
+  max_size = par_max_size(), 
+  thresholds = par_thresholds(), 
+  IJ.path = par_IJ.path(), 
+  memory = par_memory(),
+  ijmacs.folder = par_ijmacs.folder(),
+  pixel_to_scale = par_pixel_to_scale()
 ) {
   
   #ijmacs.folder<-NULL
@@ -41,12 +41,12 @@ locate_and_measure_particles <- function(
   
   ## copy master copy of ImageJ macro there for treatment
   ## if there is differencing (i.e., difference.lag>0)
-  if(difference.lag>0) {
-    text <- readLines(file.path(system.file(package="bemovi"), "ImageJ_macros", "Video_to_morphology.ijm"))
+  if (difference.lag > 0) {
+    text <- readLines(file.path(system.file(package = "bemovi"), "ImageJ_macros", "Video_to_morphology.ijm"))
   }
   ## if there is no differencing (i.e., difference.lag==0)
-  if(difference.lag==0) {
-    text <- readLines(file.path(system.file(package="bemovi"), "ImageJ_macros", "Video_to_morphology_no_differencing.ijm"))
+  if (difference.lag == 0) {
+    text <- readLines(file.path(system.file(package = "bemovi"), "ImageJ_macros", "Video_to_morphology_no_differencing.ijm"))
   }
   ## use regular expression to insert input & output directory as well as difference lag
   text[grep("video_input = ", text)] <- paste("video_input = ", "'", video.dir, "/';", sep = "")

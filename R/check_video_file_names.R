@@ -8,10 +8,10 @@
 #' @export
 
 check_video_file_names <- function(
-  to.data, 
-  raw.video.folder,
-  video.description.folder, 
-  video.description.file
+  to.data = par_to.data(), 
+  raw.video.folder = par_raw.video.folder(),
+  video.description.folder = par_video.description.folder(), 
+  video.description.file = par_video.description.file()
 ) {
   
   error_flag = FALSE
@@ -42,16 +42,16 @@ check_video_file_names <- function(
   
   ## check for files with more than one period; I think this previously caused me a problem
   bad.filenames <- files[unlist(lapply(lapply(strsplit(files, "\\."), length), function(x) x > 2))]
-  if (length(bad.filenames) > 0){
+  if (length(bad.filenames) > 0) {
     print(paste("Bad video filename (no periods please, except before extension:", bad.filenames))
-    error_flag=T
+    error_flag = TRUE
   } 
   
   ## check for files with hypens "-", as these cause problems
   bad.filenames <- files[grepl("-", files)]
-  if(length(bad.filenames)>0) {
+  if (length(bad.filenames) > 0) {
     print(paste("Bad video filename (no hyphens please):", bad.filenames))
-    error_flag=T
+    error_flag = TRUE
   }
   
   ## Check filenames match those in the video description file
@@ -69,13 +69,13 @@ check_video_file_names <- function(
       colClasses = col_classes,
       header = TRUE
     ))
-  vd_files <- unlist(strsplit(files, "\\."))[seq(1,length(files)*2, by=2)]
-  if(any(!file.sample.info$file %in% vd_files) | any(!vd_files %in% file.sample.info$file)) {
+  vd_files <- unlist(strsplit(files, "\\."))[seq(1,length(files)*2, by = 2)]
+  if (any(!file.sample.info$file %in% vd_files) | any(!vd_files %in% file.sample.info$file)) {
     print("You have a mismatch between the names of the video files, and the names of the files in the video description folder (though be aware that the file extension is ignored in this comparison).")
-    error_flag=T
+    error_flag = TRUE
   }
   
-  if(!error_flag)
+  if (!error_flag)
     print("File names seem appropriate and to match with those in the video description files.")
   
 } 

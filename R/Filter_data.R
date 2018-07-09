@@ -14,12 +14,12 @@
 #' @export
 
 filter_data <- function(
-  raw_data, 
-  net_filter, 
-  duration_filter, 
-  detect_filter, 
-  median_step_filter,
-  fps
+  raw_data = par_raw_data(), 
+  net_filter = par_net_filter(), 
+  duration_filter = par_duration_filter(), 
+  detect_filter = par_detect_filter(), 
+  median_step_filter = par_median_step_filter(),
+  fps = par_fps()
   ){
   
   #frame_<-fps<-net_disp<-id_<-detect<-N_frames<-duration<-max_net_disp<-median_step<-id<-NULL
@@ -54,7 +54,7 @@ filter_data <- function(
   
   # only retain those trajectories that fulfill specs
   filter_data <- raw_data[agg_data]
-  filter_data <- filter_data[,c("duration", "N_frames", "max_net_disp", "median_step", "detect", "frame_", "id_"):=NULL]
+  filter_data <- filter_data[,c("duration", "N_frames", "max_net_disp", "median_step", "detect", "frame_", "id_") := NULL]
   
   setkey(filter_data, file, id, frame)
   return(filter_data)

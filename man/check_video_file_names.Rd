@@ -4,8 +4,10 @@
 \alias{check_video_file_names}
 \title{Function to check that video files have extension cxd or avi, and that they are otherwise compatible.}
 \usage{
-check_video_file_names(to.data, raw.video.folder, video.description.folder,
-  video.description.file)
+check_video_file_names(to.data = par_to.data(),
+  raw.video.folder = par_raw.video.folder(),
+  video.description.folder = par_video.description.folder(),
+  video.description.file = par_video.description.file())
 }
 \arguments{
 \item{to.data}{path to the working directory}

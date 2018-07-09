@@ -15,11 +15,11 @@
 
 summarize_trajectories <- function(
   data, 
-  calculate.median=T, 
-  write=FALSE, 
-  to.data, 
-  merged.data.folder,
-  fps
+  calculate.median = TRUE, 
+  write = FALSE, 
+  to.data = par_to.data(), 
+  merged.data.folder = par_merged.data.folder(),
+  fps = par_fps()
 ){
 
 #id_<-id<-Mean<-Area<-Perimeter<-Major<-Minor<-AR<-rel_angle<-fps<-net_disp<-gross_disp<-step_speed<-video.description.folder<-video.description.file<-NULL  

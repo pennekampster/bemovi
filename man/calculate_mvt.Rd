@@ -4,7 +4,9 @@
 \alias{calculate_mvt}
 \title{A function to calculate movement metrics for each trajectory}
 \usage{
-calculate_mvt(data, to.data, trajectory.data.folder, pixel_to_scale, fps)
+calculate_mvt(data, to.data = par_to.data(),
+  trajectory.data.folder = par_trajectory.data.folder(),
+  pixel_to_scale = par_pixel_to_scale(), fps = par_fps())
 }
 \arguments{
 \item{data}{dataframe containing the X- and Y-coordinates, the frame and the trajectory ID}

@@ -16,18 +16,24 @@
 #' @import data.table 
 #' @export
 
-calculate_mvt <- function(data,to.data,trajectory.data.folder,pixel_to_scale,fps){
+calculate_mvt <- function(
+  data,
+  to.data = par_to.data(),
+  trajectory.data.folder = par_trajectory.data.folder(),
+  pixel_to_scale = par_pixel_to_scale(),
+  fps = par_fps()
+){
 
   #trajectory<-X<-Y<-frame_<-step_speed<-gross_disp<-net_disp<-abs_angle<-rel_angle<-NULL
   
-  if(!exists("fps")) stop("No fps information provided. Please specify path in global options.")
-  if(!exists("pixel_to_scale")) stop("No pixel to real scale conversion provided. Please specify path in global options.")
+  if (!exists("fps")) stop("No fps information provided. Please specify path in global options.")
+  if (!exists("pixel_to_scale")) stop("No pixel to real scale conversion provided. Please specify path in global options.")
 
   # output path
   out.dir <- file.path(to.data,trajectory.data.folder)
 
   # create unique ID consisting of trajectory ID and file
-  id <- paste(data$file,data$trajectory,sep="-")
+  id <- paste(data$file,data$trajectory,sep = "-")
   data <- as.data.table(cbind(data,id))
   data$id <- as.character(data$id)
   
@@ -55,18 +61,20 @@ calculate_mvt <- function(data,to.data,trajectory.data.folder,pixel_to_scale,fps
   data$Y <- data$Y * pixel_to_scale
   
   data$frame_ <- data$frame
-  mvt_summary <- data[,list(frame=frame_,
-                         step_length = round(step_length(X,Y),2),
-                         step_duration = step_duration(frame_)/fps,
-                         step_speed = round(step_length(X,Y)/(step_duration(frame_)/fps),2),
-                         gross_disp = round(cumsum(step_length(X,Y)),2),
-                         net_disp = round(net_displacement(X,Y),0),
-                         abs_angle = round(anglefun(diff(X),diff(Y)),2),
-                         rel_angle = round(rel.angle(anglefun(diff(X),diff(Y))),2)), by=id]
+  mvt_summary <- data[,list(
+    frame = frame_,
+    step_length = round(step_length(X,Y),2),
+    step_duration = step_duration(frame_)/fps,
+    step_speed = round(step_length(X,Y)/(step_duration(frame_)/fps),2),
+    gross_disp = round(cumsum(step_length(X,Y)),2),
+    net_disp = round(net_displacement(X,Y),0),
+    abs_angle = round(anglefun(diff(X),diff(Y)),2),
+    rel_angle = round(rel.angle(anglefun(diff(X),diff(Y))),2)), 
+    by = id]
 
   mvt_summary <- mvt_summary[ , list(id, frame, step_length, step_duration, step_speed, gross_disp, net_disp, abs_angle, rel_angle)]
 
-  trajectory.data <- merge(data_full,mvt_summary,by=c("id","frame"), all.x=T)
+  trajectory.data <- merge(data_full,mvt_summary,by = c("id","frame"), all.x = TRUE)
 
   saveRDS(trajectory.data, file = file.path(out.dir,"trajectory.rds"))
 

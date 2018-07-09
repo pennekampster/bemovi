@@ -12,7 +12,14 @@
 #' @return saves the global database Master.rds to the merged.data.folder
 #' @export
 
-merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, video.description.folder,video.description.file, merged.data.folder) {
+merge_data <- function(
+  to.data = par_to.data(), 
+  particle.data.folder = par_particle.data.folder(), 
+  trajectory.data.folder = par_trajectory.data.folder(), 
+  video.description.folder = par_video.description.folder(),
+  video.description.file = par_video.description.file(), 
+  merged.data.folder = par_merged.data.folder()
+) {
   
   #id<-NULL
   
@@ -57,7 +64,7 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   merged2 <- merge(merged1, file.sample.info, all = FALSE)
   
   # check that file contains data, otherwise report error
-  if(nrow(merged2) == 0)
+  if (nrow(merged2) == 0)
     stop("The merged data has no observations. This is could be due to missing matches between filenames of the video description file and the particle.rds and trajectory.rds,
          or due to the wrong file format of the video description file (should be a tab-delimited text file).")
   
