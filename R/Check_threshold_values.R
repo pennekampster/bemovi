@@ -15,30 +15,21 @@
 #' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
 #' @export
 
-check_threshold_values <- function(
-  to.data = par_to.data(), 
-  raw.video.folder = par_raw.video.folder(), 
-  ijmacs.folder = par_ijmacs.folder(), 
-  vid_select = 0, 
-  difference.lag = par_difference.lag(), 
-  thresholds = par_thresholds(), 
-  IJ.path = par_IJ.path(), 
-  memory = par_memory()
-) {
+check_threshold_values <- function(to.data, raw.video.folder, ijmacs.folder, vid_select = 0, difference.lag, thresholds, IJ.path, memory = 512) {
   
   video.dir <- file.path(to.data, raw.video.folder)
   ## generate the folders if not already existing
   dir.create(file.path(to.data, ijmacs.folder), showWarnings = FALSE)
   
   ## copy master copy of ImageJ macro there for treatment
-  text <- readLines(file.path(system.file(package = "bemovi"), "/", "ImageJ_macros", "Check_threshold.ijm"))
+  text <- readLines(file.path(system.file(package="bemovi"), "/", "ImageJ_macros", "Check_threshold.ijm"))
   
   ## if there is differencing (i.e., difference.lag>0)
-  if (difference.lag > 0)
-    text <- readLines(file.path(system.file(package = "bemovi"), "/", "ImageJ_macros", "Check_threshold.ijm"))
+  if(difference.lag>0)
+    text <- readLines(file.path(system.file(package="bemovi"), "/", "ImageJ_macros", "Check_threshold.ijm"))
   ## if there is no differencing (i.e., difference.lag==0)
-  if (difference.lag == 0)
-    text <- readLines(file.path(system.file(package = "bemovi"), "/", "ImageJ_macros", "Check_threshold_no_differencing.ijm"))
+  if(difference.lag==0)
+    text <- readLines(file.path(system.file(package="bemovi"), "/", "ImageJ_macros", "Check_threshold_no_differencing.ijm"))
   
   
   

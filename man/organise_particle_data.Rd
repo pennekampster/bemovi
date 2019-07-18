@@ -4,9 +4,7 @@
 \alias{organise_particle_data}
 \title{Function to merge the morphology and data on X- and Y-coordinates into one file for further processing}
 \usage{
-organise_particle_data(to.data = par_to.data(),
-  particle.data.folder = par_particle.data.folder(),
-  pixel_to_scale = par_pixel_to_scale())
+organise_particle_data(to.data, particle.data.folder, pixel_to_scale)
 }
 \arguments{
 \item{to.data}{path to the working directory}

@@ -4,8 +4,7 @@
 \alias{organise_link_data}
 \title{Function to merge the output of the ParticleLinker into one large database}
 \usage{
-organise_link_data(to.data = par_to.data(),
-  trajectory.data.folder = par_trajectory.data.folder())
+organise_link_data(to.data, trajectory.data.folder)
 }
 \arguments{
 \item{to.data}{path to the working directory}

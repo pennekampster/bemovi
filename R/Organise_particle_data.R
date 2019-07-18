@@ -9,9 +9,9 @@
 #' @export
 
 organise_particle_data <- function(
-  to.data = par_to.data(), 
-  particle.data.folder = par_particle.data.folder(),
-  pixel_to_scale = par_pixel_to_scale()
+  to.data, 
+  particle.data.folder,
+  pixel_to_scale
 ) {
   
   #pixel_to_scale<-NULL
@@ -19,10 +19,10 @@ organise_particle_data <- function(
   IJ_output.dir <- file.path(to.data, particle.data.folder)
   
   ## the macro file names
-  all.files <- dir(path = IJ_output.dir, pattern = "ijout", full.names = TRUE)
+  all.files <- dir(path = IJ_output.dir, pattern = "ijout", full.names=TRUE)
   ijout.files <- all.files[grep("ijout", all.files)]
-  mylist <- lapply(ijout.files, fread, header = TRUE)
-  mylist <- mylist[lapply(mylist,length) > 0]
+  mylist <- lapply(ijout.files, fread, header=TRUE)
+  mylist <- mylist[lapply(mylist,length)>0]
   dd <- rbindlist(mylist)
   dd$file <- gsub(".ijout.txt", "", rep(dir(path = IJ_output.dir, pattern = "ijout"), lapply(mylist, nrow)))
   ## change column names because R is replacing missing header with X causing confusion with real X and Y positions

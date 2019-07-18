@@ -20,25 +20,12 @@
 #' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
 #' @export
 
-create_overlays <- function(
-  to.data = par_to.data(), 
-  merged.data.folder = par_merged.data.folder(), 
-  raw.video.folder = par_raw.video.folder(), 
-  temp.overlay.folder = par_temp.overlay.folder(), 
-  overlay.folder = par_overlay.folder(), 
-  width = par_width(), 
-  height = par_height(), 
-  difference.lag = par_difference.lag(), 
-  type = "traj",  
-  predict_spec = FALSE, 
-  contrast.enhancement = 0, 
-  IJ.path = par_IJ.path(), 
-  memory = par_memory()
-) {
+create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.overlay.folder, overlay.folder, 
+                                  width, height, difference.lag, type = "traj",  predict_spec=F, contrast.enhancement = 0, IJ.path, memory = 512) {
   
   #trajectory.data<-trajectory<-ijmacs.folder<-NULL
   
-  # video.dir <- file.path(to.data, raw.video.folder)
+  video.dir <- file.path(to.data, raw.video.folder)
   
   trajectory.data <- readRDS(file = file.path(to.data,merged.data.folder, "Master.rds")) 
   file_names <- unique(trajectory.data$file)
@@ -55,7 +42,7 @@ create_overlays <- function(
         jpeg(file.path(to.data, temp.overlay.folder, file_names[i], paste("frame_", j, ".jpg") ), width = as.numeric(width), height = as.numeric(height), quality = 100)
         par(mar = rep(0, 4), xaxs = c("i"), yaxs = c("i"))
         
-        if (predict_spec == FALSE) {
+        if (predict_spec==F){
         
         print <- subset(trajectory.data_tmp, trajectory.data_tmp$frame <= j, select = c("X", "Y", "trajectory"))
         
@@ -70,21 +57,13 @@ create_overlays <- function(
         }
         }
         
-        if (predict_spec == TRUE) {
+        if (predict_spec==T){
           
-          print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame <= j, select = c("X","Y","trajectory","predict_spec"))
+          print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame <= j, select=c("X","Y","trajectory","predict_spec"))
           
           ## plot the particle(s) so long as there are some
           if (length(print[, 1]) != 0) {
-            plot(
-              print$X, print$Y, 
-              xlim = c(0, as.numeric(width)), 
-              ylim = c(as.numeric(height), 0),  
-              col = as.factor(print$predict_spec), 
-              pch = 15, 
-              cex = 1, 
-              asp = 1
-              )
+            plot(print$X, print$Y, xlim=c(0, as.numeric(width)), ylim=c(as.numeric(height), 0),  col=as.factor(print$predict_spec), pch=15, cex=1, asp=1)
           }
           
           ## otherwise just plot the empty frame
@@ -103,7 +82,7 @@ create_overlays <- function(
         jpeg(file.path(to.data, temp.overlay.folder, file_names[i], paste0("frame_", j, ".jpg")), width = as.numeric(width), height = as.numeric(height), quality = 100)
         par(mar = rep(0, 4), xaxs = c("i"), yaxs = c("i"))
         
-        if (predict_spec == FALSE) {
+        if (predict_spec==F){
         
         print <- subset(trajectory.data_tmp, trajectory.data_tmp$frame == j, select = c("X", "Y", "trajectory"))
         
@@ -119,23 +98,14 @@ create_overlays <- function(
         }
         }
         
-        if (predict_spec == TRUE){
+        if (predict_spec==T){
           
-          print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame == j, select = c("X","Y","trajectory","predict_spec"))
+          print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame == j, select=c("X","Y","trajectory","predict_spec"))
                     
           ## plot the particle(s) so long as there are some
           if (length(print[, trajectory, ]) != 0) {
-            plot(
-              print$X,
-              print$Y, 
-              xlim = c(0,as.numeric(width)), 
-              ylim = c(as.numeric(height), 0), 
-              col = as.factor(print$predict_spec), 
-              pch = 1, 
-              cex = 6, 
-              asp = 1
-              )
-            text(print$X, print$Y - 20,print$trajectory,cex = 2,col = as.numeric(print$predict_spec))
+            plot(print$X, print$Y, xlim=c(0,as.numeric(width)), ylim=c(as.numeric(height), 0), col=as.factor(print$predict_spec), pch=1, cex=6, asp=1)
+            text(print$X, print$Y-20,print$trajectory,cex=2,col=as.numeric(print$predict_spec))
             }
           
           ## otherwise just plot the empty frame
@@ -153,18 +123,16 @@ create_overlays <- function(
   
   ## copy master copy of ImageJ macro there for treatment
   if (.Platform$OS.type == "windows") 
-    text <- readLines(file.path(system.file(package = "bemovi"), "ImageJ_macros/Video_overlay.ijm"),warn = FALSE)
+    text <- readLines(file.path(system.file(package="bemovi"), "ImageJ_macros/Video_overlay.ijm"),warn = FALSE)
   if (.Platform$OS.type == "unix") 
-    text <- readLines(file.path(system.file(package = "bemovi"), "ImageJ_macros/Video_overlay.ijm"))
+    text <- readLines(file.path(system.file(package="bemovi"), "ImageJ_macros/Video_overlay.ijm"))
   
   text[grep("video_input = ", text)] <- paste("video_input = ", "'", file.path(to.data, raw.video.folder), "';", sep = "")
   text[grep("overlay_input = ", text)] <- paste("overlay_input = ", "'", file.path(to.data, temp.overlay.folder), "';", sep = "")
   text[grep("overlay_output = ", text)] <- paste("overlay_output = ", "'", file.path(to.data, overlay.folder), "';", sep = "")
   text[grep("lag =", text)] <- paste("lag = ", difference.lag, ";", sep = "") 
   text[grep("Enhance Contrast", text)] <- paste("run(\"Enhance Contrast...\", \"saturated=", contrast.enhancement, " process_all\");", sep = "")
-  if (predict_spec == TRUE) {
-    text[grep("RGB Color", text)] <- paste('run(\"RGB Color\");')
-  }
+  if (predict_spec==T){text[grep("RGB Color", text)] <- paste('run(\"RGB Color\");')}
 
     ## re-create ImageJ macro for batch processing of video files with ParticleTracker
   if (.Platform$OS.type == "windows") 

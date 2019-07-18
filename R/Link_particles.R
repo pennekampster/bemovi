@@ -22,21 +22,21 @@
 #' (e.g. Turch (1998): Quantitative Analysis of Movement: Measuring and Modeling Population Redistribution in Animals and Plants, Sinauer Associates, Sunderland).
 #' @export
 link_particles <- function(
-  to.data = par_to.data(), 
-  particle.data.folder = par_particle.data.folder(), 
-  trajectory.data.folder = par_trajectory.data.folder(), 
-  linkrange = par_linkrange(), 
-  disp = par_disp(), 
+  to.data, 
+  particle.data.folder, 
+  trajectory.data.folder, 
+  linkrange = 1, 
+  disp = 10, 
   start_vid = 1, 
-  memory = par_memory(),
-  to.particlelinker = par_to.particlelinker(),
-  pixel_to_scale = par_pixel_to_scale(),
-  fps = par_fps()
+  memory = 512,
+  to.particlelinker,
+  pixel_to_scale,
+  fps
 ) {
 
   #Slice<-to.particlelinker<-java.path<-pixel_to_scale<-fps<-NULL
   
-  if (!exists("to.particlelinker")) stop("Path to ParticleLinker not found. Please specify path in global options.")
+  if(!exists("to.particlelinker")) stop("Path to ParticleLinker not found. Please specify path in global options.")
   
   PA_output_dir <- file.path(to.data, particle.data.folder)
   traj_out.dir <- file.path(to.data, trajectory.data.folder)
@@ -85,7 +85,7 @@ link_particles <- function(
       
       if (.Platform$OS.type == "windows") {
         
-        if (!exists("java.path")) stop("Java path not found. Please specify path in global options.")
+        if(!exists("java.path")) stop("Java path not found. Please specify path in global options.")
         
       # previously hardcoded as "C:/Progra~2/java/jre7/bin/javaw.exe"
        cmd <- paste0(java.path, " -Xmx", memory,"m -Dparticle.linkrange=", linkrange, " -Dparticle.displacement=", disp," -jar",
@@ -112,11 +112,5 @@ link_particles <- function(
   data <- organise_link_data(to.data, trajectory.data.folder) 
   
   #calculate movement metrics for each fix and save to disk
-  calculate_mvt(
-    data,
-    to.data,
-    trajectory.data.folder,
-    pixel_to_scale,
-    fps
-  )
+  calculate_mvt(data,to.data,trajectory.data.folder,pixel_to_scale,fps)
 }

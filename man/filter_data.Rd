@@ -4,10 +4,8 @@
 \alias{filter_data}
 \title{Function to filter trajectories based on movement and detection rate characteristics}
 \usage{
-filter_data(raw_data = par_raw_data(), net_filter = par_net_filter(),
-  duration_filter = par_duration_filter(),
-  detect_filter = par_detect_filter(),
-  median_step_filter = par_median_step_filter(), fps = par_fps())
+filter_data(raw_data, net_filter, duration_filter, detect_filter,
+  median_step_filter, fps)
 }
 \arguments{
 \item{raw_data}{dataframe containing the rawdata: X- and Y-coordinates, frame, file and trajectory name, morphology and movement metrics}

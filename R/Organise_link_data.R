@@ -7,19 +7,16 @@
 #' from which the data was extracted to disk
 #' @export
 
-organise_link_data <- function(
-  to.data = par_to.data(), 
-  trajectory.data.folder = par_trajectory.data.folder()
-) {
+organise_link_data <- function(to.data, trajectory.data.folder) {
   
   here <- file.path(to.data, trajectory.data.folder)
   
   dir.create(here, showWarnings = F)
-  # df <- data.frame(frame = numeric(), X = numeric(), Y = numeric(), trajectory = numeric(), file = character())
-  files <- dir(here, pattern = ".ijout.txt", full.names = TRUE)
+  df <- data.frame(frame = numeric(), X = numeric(), Y = numeric(), trajectory = numeric(), file = character())
+  files <- dir(here, pattern = ".ijout.txt", full.names=T)
   
-  mylist <- lapply(files, fread, header = TRUE)
-  mylist <- mylist[lapply(mylist,length) > 0]
+  mylist <- lapply(files, fread, header=T)
+  mylist <- mylist[lapply(mylist,length)>0]
   data.full <- rbindlist(mylist)
   data.full$file <- gsub(".ijout.txt", "", gsub("ParticleLinker_", "", rep(dir(here, pattern = ".ijout.txt"), lapply(mylist, nrow))))
   data.full$y <- -data.full$y
