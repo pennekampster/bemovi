@@ -13,8 +13,6 @@
 #' @param total_frames length of video analysed in frames
 #' @return returns a data.table with the population densities, biovolume as well as the aggregated morphology and movement information for each population (sample)
 #' @export
-#' @examples
-#' summarize_populations()
 
 summarize_populations <- function(traj.data, sum.data, write=FALSE, to.data, merged.data.folder, video.description.folder, video.description.file, total_frames){
   
