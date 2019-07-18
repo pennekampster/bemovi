@@ -9,7 +9,7 @@
 
 organise_link_data <- function(to.data, trajectory.data.folder) {
   
-  here <- paste0(to.data, trajectory.data.folder)
+  here <- file.path(to.data, trajectory.data.folder)
   
   dir.create(here, showWarnings = F)
   df <- data.frame(frame = numeric(), X = numeric(), Y = numeric(), trajectory = numeric(), file = character())

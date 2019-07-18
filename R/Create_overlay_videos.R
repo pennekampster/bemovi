@@ -26,10 +26,9 @@ create_overlays <- function(traj.data, to.data, merged.data.folder, raw.video.fo
   
   #traj.data<-trajectory<-ijmacs.folder<-NULL
   
-  video.dir <- paste(to.data, raw.video.folder, sep = "")
+  video.dir <- file.path(to.data, raw.video.folder)
   
-  load(file = paste(to.data,merged.data.folder, "Master.RData", sep = "/")) 
-  
+  load(file = file.path(to.data,merged.data.folder, "Master.RData")) 
   trajectory.data <- as.data.table(trajectory.data)
   setkey(trajectory.data,file,frame)
   
@@ -37,15 +36,15 @@ create_overlays <- function(traj.data, to.data, merged.data.folder, raw.video.fo
 
   
   ## change path for output
-  dir.create(paste0(to.data, temp.overlay.folder), showWarnings = F)
+  dir.create(file.path(to.data, temp.overlay.folder), showWarnings = FALSE)
     for (i in 1:length(file_names)) {
-    dir.create(paste0(to.data, temp.overlay.folder, file_names[i]), showWarnings = F)
-    traj.data_tmp <- subset(traj.data, file == file_names[i])
+    dir.create(file.path(to.data, temp.overlay.folder, file_names[i]), showWarnings = FALSE)
+    trajectory.data_tmp <- subset(trajectory.data, file == file_names[i])
     j <- 1
     
     if (type == "traj") {
-      while (j <= max(traj.data$frame)) {
-        jpeg(paste(to.data, temp.overlay.folder, file_names[i], "/", "frame_", j, ".jpg", sep = ""), width = as.numeric(width), height = as.numeric(height), quality = 100)
+      while (j <= max(trajectory.data$frame)) {
+        jpeg(file.path(to.data, temp.overlay.folder, file_names[i], paste("frame_", j, ".jpg") ), width = as.numeric(width), height = as.numeric(height), quality = 100)
         par(mar = rep(0, 4), xaxs = c("i"), yaxs = c("i"))
         
         if (predict_spec==F){
@@ -86,9 +85,8 @@ create_overlays <- function(traj.data, to.data, merged.data.folder, raw.video.fo
     }
     
     if (type == "label") {
-      while (j <= max(traj.data$frame)) {
-        jpeg(paste(to.data, temp.overlay.folder, file_names[i], "/", "frame_", 
-                   j, ".jpg", sep = ""), width = as.numeric(width), height = as.numeric(height), quality = 100)
+      while (j <= max(trajectory.data$frame)) {
+        jpeg(file.path(to.data, temp.overlay.folder, file_names[i], paste0("frame_", j, ".jpg")), width = as.numeric(width), height = as.numeric(height), quality = 100)
         par(mar = rep(0, 4), xaxs = c("i"), yaxs = c("i"))
         
         if (predict_spec==F){
@@ -133,32 +131,35 @@ create_overlays <- function(traj.data, to.data, merged.data.folder, raw.video.fo
   
   ## copy master copy of ImageJ macro there for treatment
   if (.Platform$OS.type == "windows") 
-    text <- readLines(paste0(system.file(package="bemovi"), "/","ImageJ_macros/Video_overlay.ijm"),warn = FALSE)
+    text <- readLines(file.path(system.file(package="bemovi"), "ImageJ_macros/Video_overlay.ijm"),warn = FALSE)
   if (.Platform$OS.type == "unix") 
-    text <- readLines(paste0(system.file(package="bemovi"), "/","ImageJ_macros/Video_overlay.ijm"))
+    text <- readLines(file.path(system.file(package="bemovi"), "ImageJ_macros/Video_overlay.ijm"))
   
-  text[grep("video_input = ", text)] <- paste("video_input = ", "'", paste0(to.data, raw.video.folder), "';", sep = "")
-  text[grep("overlay_input = ", text)] <- paste("overlay_input = ", "'", paste0(to.data, temp.overlay.folder), "';", sep = "")
-  text[grep("overlay_output = ", text)] <- paste("overlay_output = ", "'", paste0(to.data, overlay.folder), "';", sep = "")
+  text[grep("video_input = ", text)] <- paste("video_input = ", "'", file.path(to.data, raw.video.folder), "';", sep = "")
+  text[grep("overlay_input = ", text)] <- paste("overlay_input = ", "'", file.path(to.data, temp.overlay.folder), "';", sep = "")
+  text[grep("overlay_output = ", text)] <- paste("overlay_output = ", "'", file.path(to.data, overlay.folder), "';", sep = "")
   text[grep("lag =", text)] <- paste("lag = ", difference.lag, ";", sep = "") 
   text[grep("Enhance Contrast", text)] <- paste("run(\"Enhance Contrast...\", \"saturated=", contrast.enhancement, " process_all\");", sep = "")
   if (predict_spec==T){text[grep("RGB Color", text)] <- paste('run(\"RGB Color\");')}
 
     ## re-create ImageJ macro for batch processing of video files with ParticleTracker
   if (.Platform$OS.type == "windows") 
-    writeLines(text, con = paste(to.data, ijmacs.folder, "Video_overlay_tmp.ijm", sep = ""))
+    writeLines(text, con = file.path(to.data, ijmacs.folder, "Video_overlay_tmp.ijm"))
   if (.Platform$OS.type == "unix") {
    # ijmacs.folder1 <- sub(raw.video.folder, ijmacs.folder, video.dir)
-    writeLines(text, con = paste(to.data, ijmacs.folder, "/Video_overlay_tmp.ijm", sep = ""))
+    writeLines(text, con = file.path(to.data, ijmacs.folder, "/Video_overlay_tmp.ijm"))
   }
   
   ## create directory to store overlays
-  dir.create(paste0(to.data, overlay.folder), showWarnings = F)
+  dir.create(file.path(to.data, overlay.folder), showWarnings = F)
   
   ## call IJ macro to merge original video with the trajectory data
   if (.Platform$OS.type == "unix") 
-    cmd <- paste0("java -Xmx", memory, "m -jar ", IJ.path, "/ij.jar", " -ijpath ", IJ.path, " -macro ", 
-                  paste0("'", paste0(to.data, ijmacs.folder), "Video_overlay_tmp.ijm", "'"))
+    cmd <- paste0(
+      "java -Xmx", memory, "m",
+      " -jar ", file.path(IJ.path, "ij.jar"), 
+      " -ijpath ", IJ.path, 
+      " -macro ", paste0("'", paste0(to.data, ijmacs.folder), "Video_overlay_tmp.ijm", "'"))
   
   if (.Platform$OS.type == "windows") 
     cmd <- paste0("\"", IJ.path, "\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Video_overlay_tmp.ijm", "\"")

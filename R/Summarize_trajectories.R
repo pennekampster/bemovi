@@ -7,11 +7,20 @@
 #' @param to.data path to the working directory
 #' @param merged.data.folder directory where the global database is saved
 #' @param write logical argument to indicate whether aggregated information should be saved to disk
+#' @param fps Frames Per Second of the video
+#' 
 #' @return returns a data.table with the aggregated morphology and movement information for each trajectory
 #' @import circular
 #' @export
 
-summarize_trajectories <- function(data, calculate.median=T, write=FALSE, to.data, merged.data.folder){
+summarize_trajectories <- function(
+  data, 
+  calculate.median=T, 
+  write=FALSE, 
+  to.data, 
+  merged.data.folder,
+  fps
+){
 
 #id_<-id<-Mean<-Area<-Perimeter<-Major<-Minor<-AR<-rel_angle<-fps<-net_disp<-gross_disp<-step_speed<-video.description.folder<-video.description.file<-NULL  
 
@@ -92,7 +101,7 @@ morph_mvt$file <- lapply(strsplit(as.character(morph_mvt$id), "\\-"), "[", 1)
 col_classes <- vector(mode = "character")
 col_classes[1] <- "character"
 names(col_classes) <- "file"
-video.descr.file <- read.delim(paste0(to.data, video.description.folder, video.description.file), colClasses = col_classes, stringsAsFactors=F)
+video.descr.file <- read.delim(file.path(to.data, video.description.folder, video.description.file), colClasses = col_classes, stringsAsFactors=F)
 
 #morph_mvt is not normal data.frame it's list of lists. Make it a "regular" data.frame:
 morph_mvt <- as.data.frame(lapply(morph_mvt, function(X) unname(unlist(X))))
@@ -104,7 +113,7 @@ morph_mvt$file <- as.character(morph_mvt$file)
 
   
 #output summary data
-if (write==TRUE){save(morph_mvt, file = paste0(to.data, merged.data.folder,"Morph_mvt.RData"))}
+if (write==TRUE){save(morph_mvt, file = file.path(to.data, merged.data.folder,"Morph_mvt.RData"))}
 return(as.data.frame(morph_mvt))
 
 }

@@ -4,18 +4,24 @@
 #' and saves it to the directory where the single files are located
 #' @param to.data path to the working directory
 #' @param particle.data.folder directory to which the data is saved as a text file
+#' @param pixel_to_scale TODO
+#' 
 #' @export
 
-organise_particle_data <- function(to.data, particle.data.folder) {
+organise_particle_data <- function(
+  to.data, 
+  particle.data.folder,
+  pixel_to_scale
+) {
   
   #pixel_to_scale<-NULL
   
-  IJ_output.dir <- paste(to.data, particle.data.folder, sep = "")
+  IJ_output.dir <- file.path(to.data, particle.data.folder)
   
   ## the macro file names
-  all.files <- dir(path = IJ_output.dir, pattern = "ijout", full.names=T)
+  all.files <- dir(path = IJ_output.dir, pattern = "ijout", full.names=TRUE)
   ijout.files <- all.files[grep("ijout", all.files)]
-  mylist <- lapply(ijout.files, fread, header=T)
+  mylist <- lapply(ijout.files, fread, header=TRUE)
   mylist <- mylist[lapply(mylist,length)>0]
   dd <- rbindlist(mylist)
   dd$file <- gsub(".ijout.txt", "", rep(dir(path = IJ_output.dir, pattern = "ijout"), lapply(mylist, nrow)))
@@ -33,6 +39,6 @@ organise_particle_data <- function(to.data, particle.data.folder) {
   morphology.data$Major <- morphology.data$Major*pixel_to_scale
   morphology.data$Minor <-  morphology.data$Minor*pixel_to_scale
   
-  save(morphology.data, file = paste(IJ_output.dir, "particle.RData", sep = "/"))
+  save(morphology.data, file = file.path(IJ_output.dir, "particle.RData"))
 } 
 

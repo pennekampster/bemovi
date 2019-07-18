@@ -20,12 +20,12 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   col_classes <- vector(mode = "character")
   col_classes[1] <- "character"
   names(col_classes) <- "file"
-  file.sample.info <- as.data.table(read.table(paste(to.data, video.description.folder, video.description.file, sep = ""), sep = "\t", colClasses = col_classes, header = TRUE))
+  file.sample.info <- as.data.table(read.table(file.path(to.data, video.description.folder, video.description.file), sep = "\t", colClasses = col_classes, header = TRUE))
   
   
   ## load the two datasets
-  load(paste0(to.data, particle.data.folder,"particle.RData"))
-  load(paste0(to.data, trajectory.data.folder,"trajectory.RData"))
+  load(file.path(to.data, particle.data.folder, "particle.RData"))
+  load(file.path(to.data, trajectory.data.folder, "trajectory.RData"))
   
   # Prep for merging the trajectory data 
   # Note that the next lines also swap the x and y
@@ -54,14 +54,14 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
 
   setkey(merged1, file)
   setkey(file.sample.info, file)
-  merged2 <- merge(merged1, file.sample.info, all = F)
+  merged2 <- merge(merged1, file.sample.info, all = FALSE)
   
   # check that file contains data, otherwise report error
   if(nrow(merged2) == 0)
     stop("The merged data has no observations. This is could be due to missing matches between filenames of the video description file and the particle.RData and trajectory.RData,
          or due to the wrong file format of the video description file (should be a tab-delimited text file).")
   
-  dir.create(paste0(to.data, merged.data.folder), showWarnings = F)
+  dir.create(file.path(to.data, merged.data.folder), showWarnings = FALSE)
   # drop particles which are not part of trajectories
   trajectory.data <- merged2[!is.na(merged2$id), ]
   
@@ -69,5 +69,5 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   
   ## create Master.RData
   
-  save(trajectory.data, file = paste0(to.data, merged.data.folder,"Master.RData"))
+  save(trajectory.data, file = file.path(to.data, merged.data.folder, "Master.RData"))
 } 
