@@ -9,7 +9,7 @@
 #' @param video.description.folder directory containing the video description file
 #' @param video.description.file name of the video description file
 #' @param merged.data.folder directory where the global database is saved
-#' @return saves the global database Master.rds to the merged.data.folder
+#' @return saves the global database Master.RData to the merged.data.folder
 #' @export
 
 merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, video.description.folder,video.description.file, merged.data.folder) {
@@ -24,8 +24,8 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   
   
   ## load the two datasets
-  morphology.data <- readRDS(file.path(to.data, particle.data.folder, "particle.rds"))
-  trajectory.data <- readRDS(file.path(to.data, trajectory.data.folder, "trajectory.rds"))
+  load(file.path(to.data, particle.data.folder, "particle.RData"))
+  load(file.path(to.data, trajectory.data.folder, "trajectory.RData"))
   
   # Prep for merging the trajectory data 
   # Note that the next lines also swap the x and y
@@ -58,7 +58,7 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   
   # check that file contains data, otherwise report error
   if(nrow(merged2) == 0)
-    stop("The merged data has no observations. This is could be due to missing matches between filenames of the video description file and the particle.rds and trajectory.rds,
+    stop("The merged data has no observations. This is could be due to missing matches between filenames of the video description file and the particle.RData and trajectory.RData,
          or due to the wrong file format of the video description file (should be a tab-delimited text file).")
   
   dir.create(file.path(to.data, merged.data.folder), showWarnings = FALSE)
@@ -67,7 +67,7 @@ merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, vi
   
   setkey(trajectory.data, file, id, frame)
   
-  ## create Master.rds
+  ## create Master.RData
   
-  saveRDS(trajectory.data, file = file.path(to.data, merged.data.folder, "Master.rds"))
+  save(trajectory.data, file = file.path(to.data, merged.data.folder, "Master.RData"))
 } 

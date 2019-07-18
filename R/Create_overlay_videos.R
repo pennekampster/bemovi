@@ -14,7 +14,7 @@
 #' @param type string indicating the visualization type (i.e. 'label' or 'traj'): either the overlay
 #' is showing the trajectory ID and outlines the detected particle (type='label') or the whole trajectory
 #' remains plotted (type='traj').
-#' @param predict_spec logical If TRUE, the Master.rds file must have a column called predict_spec, indicating the species to which the trajectory belongs
+#' @param predict_spec logical If TRUE, the Master.RData file must have a column called predict_spec, indicating the species to which the trajectory belongs
 #' @param contrast.enhancement numeric value to increase the contrast of the original video
 #' @param IJ.path path to ImageJ folder, containing the 'ij.jar' executable
 #' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
@@ -27,7 +27,7 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
   
   video.dir <- file.path(to.data, raw.video.folder)
   
-  trajectory.data <- readRDS(file = file.path(to.data,merged.data.folder, "Master.rds")) 
+  load(file = file.path(to.data,merged.data.folder, "Master.RData")) 
   file_names <- unique(trajectory.data$file)
   
   ## change path for output

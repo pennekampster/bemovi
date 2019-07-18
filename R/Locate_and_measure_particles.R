@@ -16,7 +16,7 @@
 #' @param pixel_to_scale TODO
 #' 
 #' @return saves the output of the ParticleAnalyzer function of ImageJ as a text file in the output directory and then assembles the data into a single database 
-#' called 'particle.rds'. This data.frame contains information about the following properties: the area (transversal cut), 
+#' called 'particle.RData'. This data.frame contains information about the following properties: the area (transversal cut), 
 #' the mean, minimum and maximum of the grey value, the perimeter, width, length and angle with the dominant-axis of a fitted ellipse, and finally shape parameters such as
 #' circularity, aspect ratio, roundness and solidity. For details of the morphological output, please refer to http://rsbweb.nih.gov/ij/docs/guide/146-30.html 
 #' @export 

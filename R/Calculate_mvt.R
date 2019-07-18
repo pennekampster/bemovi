@@ -68,7 +68,7 @@ calculate_mvt <- function(data,to.data,trajectory.data.folder,pixel_to_scale,fps
 
   trajectory.data <- merge(data_full,mvt_summary,by=c("id","frame"), all.x=T)
 
-  saveRDS(trajectory.data, file = file.path(out.dir,"trajectory.rds"))
+  save(trajectory.data, file = file.path(out.dir,"trajectory.RData"))
 
 }
 
