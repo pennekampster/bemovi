@@ -1,9 +1,12 @@
 #' Function to check that video files have extension cxd or avi, and that they are otherwise compatible.
 #' 
-#' Checks the files in the raw data for the supported avi and cxd file formats and that file names do not 
+#' Checks the files in the raw data and compares them to the files in the video description file for potential mismatches. 
+#' Checks for the supported avi and cxd file formats and that file names do not 
 #' contain periods except before the file type extension
 #' @param to.data path to the working directory 
 #' @param raw.video.folder directory with the raw video files
+#' @param video.description.folder directory with the video description file
+#' @param video.description.file names of the video description file
 #' @return returns an error message and a list with unsupported files or names
 #' @export
 
