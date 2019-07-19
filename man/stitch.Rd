@@ -20,5 +20,5 @@ STEP 4: search individuals in other trajectories
 STEP 5: replace new trajectories to use them for overlays
 }
 \author{
-Aurélie Garnier
+Aurelie Garnier
 }

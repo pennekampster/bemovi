@@ -32,7 +32,7 @@ create_overlays(traj.data, to.data, merged.data.folder, raw.video.folder,
 is showing the trajectory ID and outlines the detected particle (type='label') or the whole trajectory
 remains plotted (type='traj').}
 
-\item{predict_spec}{logical If TRUE, the Master.rds file must have a column called predict_spec, indicating the species to which the trajectory belongs}
+\item{predict_spec}{logical If TRUE, the Master.RData file must have a column called predict_spec, indicating the species to which the trajectory belongs}
 
 \item{contrast.enhancement}{numeric value to increase the contrast of the original video}
 

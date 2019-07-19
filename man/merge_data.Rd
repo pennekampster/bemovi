@@ -21,7 +21,7 @@ merge_data(to.data, particle.data.folder, trajectory.data.folder,
 \item{merged.data.folder}{directory where the global database is saved}
 }
 \value{
-saves the global database Master.rds to the merged.data.folder
+saves the global database Master.RData to the merged.data.folder
 }
 \description{
 Merges the morphology data, the trajectory data with the video descriptions, which can / should contain 

@@ -3,7 +3,6 @@
 %   R/summarize_populations.R
 \name{summarize_populations}
 \alias{summarize_populations}
-\alias{summarize_populations}
 \title{Function to extract population level parameters easily from BEMOVI output}
 \usage{
 summarize_populations(traj.data, sum.data, write = FALSE, to.data,
@@ -39,9 +38,6 @@ The function will extract population-level information from trajectory.data
 
 Takes the data comprising the information for each frame and calculates summary statistics such as mean and sd (for all morphology metrics) and mean, sd and min/max 
 for some of the movement metrics along the trajectory. Values are rounded to the second decimal.
-}
-\examples{
-summarize_populations()
 }
 \author{
 Emanuel Fronhofer

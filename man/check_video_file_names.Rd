@@ -11,11 +11,16 @@ check_video_file_names(to.data, raw.video.folder, video.description.folder,
 \item{to.data}{path to the working directory}
 
 \item{raw.video.folder}{directory with the raw video files}
+
+\item{video.description.folder}{directory with the video description file}
+
+\item{video.description.file}{names of the video description file}
 }
 \value{
 returns an error message and a list with unsupported files or names
 }
 \description{
-Checks the files in the raw data for the supported avi and cxd file formats and that file names do not 
+Checks the files in the raw data and compares them to the files in the video description file for potential mismatches. 
+Checks for the supported avi and cxd file formats and that file names do not 
 contain periods except before the file type extension
 }
