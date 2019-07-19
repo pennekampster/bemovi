@@ -68,33 +68,15 @@ locate_and_measure_particles <- function(
 
 ## run to process video files by calling ImageJ
 
-cmd <- switch(
-  Sys.info()[['sysname']],
-  Window = paste0(
-    file.path( IJ.path ),
-    " -macro ",  file.path(to.data, ijmacs.folder, "Video_to_morphology_tmp.ijm")
-  ),
-  Linux  = paste0(
-    "java", 
-    " -Xmx", memory, "m ", 
-    " -jar ", file.path( IJ.path, "ij.jar"), 
-    " -ijpath ", IJ.path, 
-    " -macro '", file.path(to.data, ijmacs.folder, "Video_to_morphology_tmp.ijm"), "'"
-  ),
-  Darwin = paste0(
-    # "java", 
-    # " -Xmx", memory, "m ", 
-    # " -jar ", file.path( IJ.path, "ij.jar"), 
-    # " -ijpath ", IJ.path, 
-    file.path( IJ.path, "ImageJ-macosx"),
-    " --headless",
-    " -macro '", file.path(to.data, ijmacs.folder, "Video_to_morphology_tmp.ijm"), "'"
-  ),
-  stop( "Unsupported Platform!" )
-)
-
-system(cmd)
-
+  ## run to process video files by calling ImageJ
+  if (.Platform$OS.type == "unix") 
+    cmd <- paste0("java -Xmx", memory, "m -jar ", IJ.path, "/ij.jar", " -ijpath ", IJ.path, " -macro ","'", 
+                  file.path(to.data, ijmacs.folder), "/Video_to_morphology_tmp.ijm'")
+  if (.Platform$OS.type == "windows")
+    cmd <- paste0("\"", IJ.path,"\"", " -macro ","\"", paste0(gsub("/", "\\\\", file.path(to.data, ijmacs.folder))), "Video_to_morphology_tmp.ijm", "\"")
+  
+  system(cmd)
+  
 organise_particle_data(
   to.data = to.data, 
   particle.data.folder = particle.data.folder,
