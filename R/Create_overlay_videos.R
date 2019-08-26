@@ -3,7 +3,6 @@
 #' A function to overlay the extracted trajectories onto the original video, using plots created in R and then processed in 
 #' ImageJ; two visualization types are available
 #' 
-#' @param traj.data dataframe with the information on morphology and movement for each frame (either "trajectory.data" or "traj.data.filtered")
 #' @param to.data path to the working directory
 #' @param merged.data.folder directory where the global database is saved
 #' @param raw.video.folder directory with the raw video files 
