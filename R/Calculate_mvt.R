@@ -14,11 +14,12 @@
 #' and the current fix and finally the relative angle (turning angle) and absolute angle (in radians). For details on these metrics, please refer to a dedicated textbook 
 #' (e.g. Turch (1998): Quantitative Analysis of Movement: Measuring and Modeling Population Redistribution in Animals and Plants, Sinauer Associates, Sunderland).
 #' @import data.table 
+#' @importFrom stats IQR median na.omit
 #' @export
 
 calculate_mvt <- function(data,to.data,trajectory.data.folder,pixel_to_scale,fps){
 
-  #trajectory<-X<-Y<-frame_<-step_speed<-gross_disp<-net_disp<-abs_angle<-rel_angle<-NULL
+  trajectory<-X<-Y<-frame_<-step_speed<-gross_disp<-net_disp<-abs_angle<-rel_angle<-NULL
   
   if(!exists("fps")) stop("No fps information provided. Please specify path in global options.")
   if(!exists("pixel_to_scale")) stop("No pixel to real scale conversion provided. Please specify path in global options.")

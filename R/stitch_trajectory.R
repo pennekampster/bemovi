@@ -84,10 +84,9 @@ for (i in 1:nrow(yes_new_tt2)) {
 # attribute a new identity
 new_tt2[,"new_id"] <- paste(new_tt2[,file], new_tt2[,new_trajectory], sep="-")
 
-library(plyr)
 ## STEP 3: summarise morphological information to search similar individuals
 # summarize information to find correspondance between trajectories of the same organisms...
-new_tt3 <- ddply(as.data.frame(new_tt2), .(new_id), summarize, 
+new_tt3 <- plyr::ddply(as.data.frame(new_tt2), .(new_id), summarize, 
             old_id = unique(id) ,    
             trajectory = unique(trajectory),
             file = unique(file),

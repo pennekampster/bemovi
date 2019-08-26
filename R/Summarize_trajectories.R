@@ -22,7 +22,7 @@ summarize_trajectories <- function(
   fps
 ){
 
-#id_<-id<-Mean<-Area<-Perimeter<-Major<-Minor<-AR<-rel_angle<-fps<-net_disp<-gross_disp<-step_speed<-video.description.folder<-video.description.file<-NULL  
+id_<-id<-Mean<-Area<-Perimeter<-Major<-Minor<-AR<-rel_angle<-fps<-net_disp<-gross_disp<-step_speed<-video.description.folder<-video.description.file<-NULL  
 
 # checks whether frames per second are specified
 if(!exists("fps") ) stop("frames per second not specified (fps)")

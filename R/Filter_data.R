@@ -22,7 +22,7 @@ filter_data <- function(
   fps
   ){
   
-  #frame_<-fps<-net_disp<-id_<-detect<-N_frames<-duration<-max_net_disp<-median_step<-id<-NULL
+  frame_<-fps<-net_disp<-id_<-detect<-N_frames<-duration<-max_net_disp<-median_step<-id<-NULL
   
   # filter out single coordinate detections
   raw_data <- raw_data[!is.na(raw_data$trajectory),]

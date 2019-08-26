@@ -18,12 +18,14 @@
 #' @param contrast.enhancement numeric value to increase the contrast of the original video
 #' @param IJ.path path to ImageJ folder, containing the 'ij.jar' executable
 #' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
+#' @importFrom grDevices dev.off jpeg
+#' @importFrom graphics frame par plot
 #' @export
 
 create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.overlay.folder, overlay.folder, 
                                   width, height, difference.lag, type = "traj",  predict_spec=F, contrast.enhancement = 0, IJ.path, memory = 512) {
   
-  #traj.data<-trajectory<-ijmacs.folder<-NULL
+  X<-trajectory<-ijmacs.folder<-NULL
   
   video.dir <- file.path(to.data, raw.video.folder)
   

@@ -34,7 +34,7 @@ link_particles <- function(
   fps
 ) {
 
-  #Slice<-to.particlelinker<-java.path<-pixel_to_scale<-fps<-NULL
+  Slice<-java.path<-NULL
   
   if(!exists("to.particlelinker")) stop("Path to ParticleLinker not found. Please specify path in global options.")
   

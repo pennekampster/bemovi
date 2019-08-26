@@ -10,11 +10,12 @@
 #' @param video.description.file name of the video description file
 #' @param merged.data.folder directory where the global database is saved
 #' @return saves the global database Master.RData to the merged.data.folder
+#' @importFrom utils head read.delim read.table write.table
 #' @export
 
 merge_data <- function(to.data, particle.data.folder, trajectory.data.folder, video.description.folder,video.description.file, merged.data.folder) {
   
-  #id<-NULL
+  id<-NULL
   
   # read the file that gives the important information about each video (specify the file variable to be character)
   col_classes <- vector(mode = "character")
