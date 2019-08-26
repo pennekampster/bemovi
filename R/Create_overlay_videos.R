@@ -21,7 +21,7 @@
 #' @param memory numeric value specifying the amount of memory available to ImageJ (defaults to 512)
 #' @export
 
-create_overlays <- function(traj.data, to.data, merged.data.folder, raw.video.folder, temp.overlay.folder, overlay.folder, 
+create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.overlay.folder, overlay.folder, 
                                   width, height, difference.lag, type = "traj",  predict_spec=F, contrast.enhancement = 0, IJ.path, memory = 512) {
   
   #traj.data<-trajectory<-ijmacs.folder<-NULL
@@ -44,12 +44,12 @@ create_overlays <- function(traj.data, to.data, merged.data.folder, raw.video.fo
     
     if (type == "traj") {
       while (j <= max(trajectory.data$frame)) {
-        jpeg(file.path(to.data, temp.overlay.folder, file_names[i], paste("frame_", j, ".jpg") ), width = as.numeric(width), height = as.numeric(height), quality = 100)
+        jpeg(file.path(to.data, temp.overlay.folder, file_names[i], paste0("frame_", j, ".jpg")), width = as.numeric(width), height = as.numeric(height), quality = 100)
         par(mar = rep(0, 4), xaxs = c("i"), yaxs = c("i"))
         
         if (predict_spec==F){
         
-        print <- subset(traj.data_tmp, traj.data_tmp$frame <= j, select = c("X", "Y", "trajectory"))
+        print <- subset(trajectory.data_tmp, trajectory.data_tmp$frame <= j, select = c("X", "Y", "trajectory"))
 
         
         ## plot the particle(s) so long as there are some
@@ -65,7 +65,7 @@ create_overlays <- function(traj.data, to.data, merged.data.folder, raw.video.fo
         
         if (predict_spec==T){
           
-          print <- subset(traj.data_tmp,traj.data_tmp$frame <= j, select=c("X","Y","trajectory","predict_spec"))
+          print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame <= j, select=c("X","Y","trajectory","predict_spec"))
 
           
           ## plot the particle(s) so long as there are some
@@ -91,7 +91,7 @@ create_overlays <- function(traj.data, to.data, merged.data.folder, raw.video.fo
         
         if (predict_spec==F){
         
-        print <- subset(traj.data_tmp, traj.data_tmp$frame == j, select = c("X", "Y", "trajectory"))
+        print <- subset(trajectory.data_tmp, trajectory.data_tmp$frame == j, select = c("X", "Y", "trajectory"))
         
         ## plot the particle(s) so long as there are some
         if (length(print[, X, ]) != 0) {
@@ -108,7 +108,7 @@ create_overlays <- function(traj.data, to.data, merged.data.folder, raw.video.fo
         if (predict_spec==T){
           
 
-          print <- subset(traj.data_tmp,traj.data_tmp$frame == j, select=c("X","Y","trajectory","predict_spec"))
+          print <- subset(trajectory.data_tmp,trajectory.data_tmp$frame == j, select=c("X","Y","trajectory","predict_spec"))
                    
           ## plot the particle(s) so long as there are some
           if (length(print[, X, ]) != 0) {
@@ -159,7 +159,7 @@ create_overlays <- function(traj.data, to.data, merged.data.folder, raw.video.fo
       "java -Xmx", memory, "m",
       " -jar ", file.path(IJ.path, "ij.jar"), 
       " -ijpath ", IJ.path, 
-      " -macro ", paste0("'", paste0(to.data, ijmacs.folder), "Video_overlay_tmp.ijm", "'"))
+      " -macro ", file.path("'", paste0(to.data, ijmacs.folder), "Video_overlay_tmp.ijm", "'"))
   
   if (.Platform$OS.type == "windows") 
     cmd <- paste0("\"", IJ.path, "\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Video_overlay_tmp.ijm", "\"")
