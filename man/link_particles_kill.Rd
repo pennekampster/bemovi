@@ -5,9 +5,16 @@
 \title{Modified function to link the particle coordinates through time; allows to specify a maximum amout of time for the
 tracking to be specified, otherwise the job will be terminated (UNIX only version!!!!)}
 \usage{
-link_particles_kill(to.data, particle.data.folder, trajectory.data.folder,
-  linkrange = 1, disp = 10, start_vid = 1, memory = 512,
-  kill_after = -1)
+link_particles_kill(
+  to.data,
+  particle.data.folder,
+  trajectory.data.folder,
+  linkrange = 1,
+  disp = 10,
+  start_vid = 1,
+  memory = 512,
+  kill_after = -1
+)
 }
 \arguments{
 \item{to.data}{path to the working directory}

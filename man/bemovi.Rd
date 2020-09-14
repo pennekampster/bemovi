@@ -3,7 +3,6 @@
 \docType{package}
 \name{bemovi}
 \alias{bemovi}
-\alias{bemovi-package}
 \title{Bemovi, software for extracting BEhaviour and MOrphology from VIdeos.}
 \description{
 bemovi provides functions to segment videos of organisms, identify individuals by tracking their paths through time and measure their traits (morphology and movement) as

@@ -9,8 +9,16 @@ This function creates an ImageJ macro that can be helpful for checking the thres
 then automatically opened in ImageJ. Depending on the video size, it might take some time to open the video and the thresholding menu. The default thresholds values 
 should be adjusted in the ImageJ macro, until appropriate values are found. These values should then be used in the R functions / script, e.g., when calling the Locate_and_measure_particles function.}
 \usage{
-check_threshold_values(to.data, raw.video.folder, ijmacs.folder,
-  vid_select = 0, difference.lag, thresholds, IJ.path, memory = 512)
+check_threshold_values(
+  to.data,
+  raw.video.folder,
+  ijmacs.folder,
+  vid_select = 0,
+  difference.lag,
+  thresholds,
+  IJ.path,
+  memory = 512
+)
 }
 \arguments{
 \item{to.data}{path to the working directory}

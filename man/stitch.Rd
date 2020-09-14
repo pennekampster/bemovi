@@ -4,8 +4,14 @@
 \alias{stitch}
 \title{Function to verify and stitch the trajectories of Link_particles}
 \usage{
-stitch(to.data, merged.data.folder, stitch.data.folder, accuracy = 0.5,
-  morphological_parameter, search_area = 20)
+stitch(
+  to.data,
+  merged.data.folder,
+  stitch.data.folder,
+  accuracy = 0.5,
+  morphological_parameter,
+  search_area = 20
+)
 }
 \description{
 in previous trajectory.data, we could find: one individuals with multiple trajectories or one trajectory for multiple individuals

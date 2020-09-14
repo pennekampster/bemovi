@@ -4,8 +4,14 @@
 \alias{summarize_trajectories}
 \title{Function to summarize the morphology, movement and their variability on the trajectory level}
 \usage{
-summarize_trajectories(data, calculate.median = T, write = FALSE,
-  to.data, merged.data.folder, fps)
+summarize_trajectories(
+  data,
+  calculate.median = T,
+  write = FALSE,
+  to.data,
+  merged.data.folder,
+  fps
+)
 }
 \arguments{
 \item{data}{dataframe with the information on morphology and movement for each frame}

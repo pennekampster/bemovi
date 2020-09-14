@@ -4,9 +4,18 @@
 \alias{link_particles}
 \title{Function to link the particle coordinates through time}
 \usage{
-link_particles(to.data, particle.data.folder, trajectory.data.folder,
-  linkrange = 1, disp = 10, start_vid = 1, memory = 512,
-  to.particlelinker, pixel_to_scale, fps)
+link_particles(
+  to.data,
+  particle.data.folder,
+  trajectory.data.folder,
+  linkrange = 1,
+  disp = 10,
+  start_vid = 1,
+  memory = 512,
+  to.particlelinker,
+  pixel_to_scale,
+  fps
+)
 }
 \arguments{
 \item{to.data}{path to the working directory}

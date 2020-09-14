@@ -4,8 +4,14 @@
 \alias{merge_data2}
 \title{Function to create global database containg morphology, trajectory, and video (e.g., experimental) information}
 \usage{
-merge_data2(to.data, particle.data.folder, trajectory.data.folder,
-  video.description.folder, video.description.file, merged.data.folder)
+merge_data2(
+  to.data,
+  particle.data.folder,
+  trajectory.data.folder,
+  video.description.folder,
+  video.description.file,
+  merged.data.folder
+)
 }
 \arguments{
 \item{to.data}{path to the working directory}

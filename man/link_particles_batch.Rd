@@ -6,9 +6,17 @@
 the original video. An overlap needs to be provided to allow stitching the short trajectories in each chunk 
 into trajectories spanning the whole video.}
 \usage{
-link_particles_batch(to.data, particle.data.folder, trajectory.data.folder,
-  linkrange = 1, disp = 10, start_vid = 1, memory = 512,
-  batch_size = 25, overlap = 5)
+link_particles_batch(
+  to.data,
+  particle.data.folder,
+  trajectory.data.folder,
+  linkrange = 1,
+  disp = 10,
+  start_vid = 1,
+  memory = 512,
+  batch_size = 25,
+  overlap = 5
+)
 }
 \arguments{
 \item{to.data}{path to the working directory}

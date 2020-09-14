@@ -5,10 +5,22 @@
 \title{Multicore version of the function to create a new video with the extracted trajectories overlayed 
 onto the original video (modifications of original function by Jason Griffiths)}
 \usage{
-create_overlays_mc(to.data, merged.data.folder, raw.video.folder,
-  temp.overlay.folder, overlay.folder, width, height, difference.lag,
-  type = "traj", predict_spec = F, contrast.enhancement = 0, IJ.path,
-  memory = 512, n.cores = "detect")
+create_overlays_mc(
+  to.data,
+  merged.data.folder,
+  raw.video.folder,
+  temp.overlay.folder,
+  overlay.folder,
+  width,
+  height,
+  difference.lag,
+  type = "traj",
+  predict_spec = F,
+  contrast.enhancement = 0,
+  IJ.path,
+  memory = 512,
+  n.cores = "detect"
+)
 }
 \arguments{
 \item{to.data}{path to the working directory}
