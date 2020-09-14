@@ -148,7 +148,8 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
     writeLines(text, con = file.path(to.data, ijmacs.folder, "Video_overlay_tmp.ijm"))
   if (.Platform$OS.type == "unix") {
    # ijmacs.folder1 <- sub(raw.video.folder, ijmacs.folder, video.dir)
-    writeLines(text, con = file.path(to.data, ijmacs.folder, "/Video_overlay_tmp.ijm"))
+    #writeLines(text, con = paste(to.data, ijmacs.folder, "Video_overlay_tmp.ijm", sep = ""))
+    writeLines(text, con = paste0("\"", file.path(to.data, ijmacs.folder), "Video_overlay_tmp.ijm", "\""))
   }
   
   ## create directory to store overlays
