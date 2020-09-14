@@ -50,8 +50,12 @@ check_threshold_values <- function(to.data, raw.video.folder, ijmacs.folder, vid
     cmd <- paste0("java -Xmx", memory, "m -jar ", IJ.path, "/ij.jar", " -ijpath ", IJ.path, " -macro ", "'",
                   to.data,  ijmacs.folder, "Check_threshold_tmp.ijm'")
   if (.Platform$OS.type == "windows") 
-   cmd <- paste0("\"", IJ.path,"\"", " -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Check_threshold_tmp.ijm", "\"")
+  # cmd <- paste0("\"", IJ.path,"\"", " -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Check_threshold_tmp.ijm", "\"")
     
+  cmd <- paste0("\"", java.path,"\"", " -jar ", "\"",IJ.path, "ij.jar", "\"", " -macro ", "\"", 
+                paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), 
+                "Check_threshold_tmp.ijm", "\"")
+  
 system(cmd)
 } 
 

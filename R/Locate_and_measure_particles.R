@@ -73,7 +73,11 @@ locate_and_measure_particles <- function(
     cmd <- paste0("java -Xmx", memory, "m -jar ", IJ.path, "/ij.jar", " -ijpath ", IJ.path, " -macro ","'", 
                   file.path(to.data, ijmacs.folder), "/Video_to_morphology_tmp.ijm'")
   if (.Platform$OS.type == "windows")
-    cmd <- paste0("\"", IJ.path,"\"", " -macro ","\"", paste0(gsub("/", "\\\\", file.path(to.data, ijmacs.folder))), "Video_to_morphology_tmp.ijm", "\"")
+ #   cmd <- paste0("\"", IJ.path,"\"", " -macro ","\"", paste0(gsub("/", "\\\\", file.path(to.data, ijmacs.folder))), "Video_to_morphology_tmp.ijm", "\"")
+
+  cmd <- paste0("\"", java.path,"\"", " -jar ", "\"",IJ.path, "ij.jar", "\"", " -macro ", "\"", 
+                paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), 
+                "Video_to_morphology_tmp.ijm", "\"")
   
   system(cmd)
   
