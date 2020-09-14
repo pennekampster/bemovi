@@ -22,7 +22,7 @@ filter_data <- function(
   fps
   ){
   
-  frame_<-fps<-net_disp<-id_<-detect<-N_frames<-duration<-max_net_disp<-median_step<-id<-NULL
+  frame_<-net_disp<-id_<-detect<-N_frames<-duration<-max_net_disp<-median_step<-id<-NULL
   
   # filter out single coordinate detections
   raw_data <- raw_data[!is.na(raw_data$trajectory),]
@@ -35,7 +35,7 @@ filter_data <- function(
   # aggregate data
   agg_data <-
     raw_data[, list(
-      duration = (max(frame_) - min(frame_) + 1) / fps,
+      duration = (max(frame_, na.rm=T) - min(frame_, na.rm=T) + 1) / fps,
       N_frames = length(net_disp) / fps,
       max_net_disp = max(sqrt(net_disp), na.rm =
                            T),
