@@ -37,12 +37,12 @@ close();
 selectWindow(vid4);
 close(vid1);
 
-setBatchMode(false);
+//setBatchMode(false);
 // play with the min and max threshold
-setOption("BlackBackground", true);
-setThreshold(10,255);
+//setOption("BlackBackground", true);
+//setThreshold(10,255);
 //run("Threshold...");
-run("Convert to Mask", "method=Default background=Dark black");
+//run("Convert to Mask", "method=Default background=Dark black");
 }
 
 if (endsWith(list[i],"cxd")){
@@ -74,10 +74,10 @@ close();
 selectWindow(vid4);
 close(vid1); // execute the macro till this line
 
-setBatchMode(false);
+//setBatchMode(false);
 // play with the min and max threshold
-setOption("BlackBackground", true);
-setThreshold(10,255);
+//setOption("BlackBackground", true);
+//setThreshold(10,255);
 //run("Threshold...");
-run("Convert to Mask", "method=Default background=Dark black");
+//run("Convert to Mask", "method=Default background=Dark black");
 }
