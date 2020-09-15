@@ -17,7 +17,7 @@
 
 check_threshold_values <- function(to.data, raw.video.folder, ijmacs.folder, vid_select = 0, difference.lag, thresholds, IJ.path, memory = 512) {
   
-  video.dir <- file.path(to.data, raw.video.folder)
+  video.dir <- paste0(to.data, raw.video.folder)
   ## generate the folders if not already existing
   dir.create(file.path(to.data, ijmacs.folder), showWarnings = FALSE)
   

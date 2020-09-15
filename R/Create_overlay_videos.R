@@ -22,10 +22,15 @@
 #' @importFrom graphics frame par plot
 #' @export
 
-create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.overlay.folder, overlay.folder, 
-                                  width, height, difference.lag, type = "traj",  predict_spec=F, contrast.enhancement = 0, IJ.path, memory = 512) {
+create_overlays <- function(to.data, 
+                            merged.data.folder, 
+                            raw.video.folder, 
+                            temp.overlay.folder, overlay.folder, 
+                                  width, height, difference.lag, 
+                            type = "traj",  predict_spec=F, 
+                            contrast.enhancement = 0, IJ.path, memory = 512) {
   
-  X<-trajectory<-ijmacs.folder<-NULL
+  X<-trajectory<-NULL
   
   video.dir <- file.path(to.data, raw.video.folder)
   
@@ -39,7 +44,7 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
   ## change path for output
   dir.create(file.path(to.data, temp.overlay.folder), showWarnings = FALSE)
     for (i in 1:length(file_names)) {
-    dir.create(file.path(to.data, temp.overlay.folder, file_names[i]), showWarnings = FALSE)
+    dir.create(paste0(to.data, temp.overlay.folder, file_names[i]), showWarnings = FALSE)
     trajectory.data_tmp <- subset(trajectory.data, file == file_names[i])
     j <- 1
     
@@ -136,16 +141,16 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
   if (.Platform$OS.type == "unix") 
     text <- readLines(file.path(system.file(package="bemovi"), "ImageJ_macros/Video_overlay.ijm"))
   
-  text[grep("video_input = ", text)] <- paste("video_input = ", "'", file.path(to.data, raw.video.folder), "';", sep = "")
-  text[grep("overlay_input = ", text)] <- paste("overlay_input = ", "'", file.path(to.data, temp.overlay.folder), "';", sep = "")
-  text[grep("overlay_output = ", text)] <- paste("overlay_output = ", "'", file.path(to.data, overlay.folder), "';", sep = "")
+  text[grep("video_input = ", text)] <- paste("video_input = ", "'", paste0(to.data, raw.video.folder), "';", sep = "")
+  text[grep("overlay_input = ", text)] <- paste("overlay_input = ", "'", paste0(to.data, temp.overlay.folder), "';", sep = "")
+  text[grep("overlay_output = ", text)] <- paste("overlay_output = ", "'", paste0(to.data, overlay.folder), "';", sep = "")
   text[grep("lag =", text)] <- paste("lag = ", difference.lag, ";", sep = "") 
   text[grep("Enhance Contrast", text)] <- paste("run(\"Enhance Contrast...\", \"saturated=", contrast.enhancement, " process_all\");", sep = "")
   if (predict_spec==T){text[grep("RGB Color", text)] <- paste('run(\"RGB Color\");')}
 
     ## re-create ImageJ macro for batch processing of video files with ParticleTracker
   if (.Platform$OS.type == "windows") 
-    writeLines(text, con = file.path(to.data, ijmacs.folder, "Video_overlay_tmp.ijm"))
+    writeLines(text, con = paste(to.data, ijmacs.folder, "Video_overlay_tmp.ijm", sep = ""))
   if (.Platform$OS.type == "unix") {
    # ijmacs.folder1 <- sub(raw.video.folder, ijmacs.folder, video.dir)
     writeLines(text, con = paste(to.data, ijmacs.folder, "Video_overlay_tmp.ijm", sep = ""))

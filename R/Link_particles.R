@@ -31,10 +31,11 @@ link_particles <- function(
   memory = 512,
   to.particlelinker,
   pixel_to_scale,
-  fps
+  fps,
+  java.path
 ) {
 
-  Slice<-java.path<-NULL
+  #Slice<-java.path<-NULL
   
   if(!exists("to.particlelinker")) stop("Path to ParticleLinker not found. Please specify path in global options.")
   
@@ -88,8 +89,9 @@ link_particles <- function(
         if(!exists("java.path")) stop("Java path not found. Please specify path in global options.")
         
       # previously hardcoded as "C:/Progra~2/java/jre7/bin/javaw.exe"
-       cmd <- paste0(java.path, " -Xmx", memory,"m -Dparticle.linkrange=", linkrange, " -Dparticle.displacement=", disp," -jar",
-                      gsub("/","\\\\", paste0(" \"" ,to.particlelinker,"/ParticleLinker.jar")),"\" ",
+       cmd <- paste0("\"", java.path, "\"", " -Xmx", memory,"m -Dparticle.linkrange=", 
+                     linkrange, " -Dparticle.displacement=", disp," -jar ",
+                      gsub("/","\\\\", paste0("\"" ,to.particlelinker,"/ParticleLinker.jar")),"\" ",
                       gsub("/","\\\\", paste0(" ","\"" ,dir,"\"")),
                       gsub("/","\\\\", paste0(" ","\"", traj_out.dir, "/ParticleLinker_", all.files[j], "\"")))
        
