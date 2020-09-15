@@ -24,9 +24,10 @@ channels=channels;
 run("Properties...", "channels=1 slices=1 frames="+slices+" unit=pixel pixel_width=1.0000 pixel_height=1.0000 voxel_depth=1.0000 frame=[0 sec] origin=0,0");
 
 setBatchMode(false);
-// play with the min and max threshold
+setOption("BlackBackground", true);
 setThreshold(10,255);
-run("Threshold...");
+//run("Threshold...");
+run("Convert to Mask", "method=Default background=Dark black");
 }
 
 if (endsWith(list[i],"cxd")){
@@ -43,7 +44,8 @@ run("Properties...", "channels=1 slices=1 frames="+frames+" unit=pixel pixel_wid
 // execute the macro till this line
 
 setBatchMode(false);
-// play with the min and max threshold
+setOption("BlackBackground", true);
 setThreshold(10,255);
-run("Threshold...");
+//run("Threshold...");
+run("Convert to Mask", "method=Default background=Dark black");
 }
