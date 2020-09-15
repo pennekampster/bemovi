@@ -148,8 +148,8 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
     writeLines(text, con = file.path(to.data, ijmacs.folder, "Video_overlay_tmp.ijm"))
   if (.Platform$OS.type == "unix") {
    # ijmacs.folder1 <- sub(raw.video.folder, ijmacs.folder, video.dir)
-    #writeLines(text, con = paste(to.data, ijmacs.folder, "Video_overlay_tmp.ijm", sep = ""))
-    writeLines(text, con = paste0("\"", file.path(to.data, ijmacs.folder), "Video_overlay_tmp.ijm", "\""))
+    writeLines(text, con = paste(to.data, ijmacs.folder, "Video_overlay_tmp.ijm", sep = ""))
+    #writeLines(text, con = file.path(to.data, ijmacs.folder, "Video_overlay_tmp.ijm"))
   }
   
   ## create directory to store overlays
@@ -161,7 +161,7 @@ create_overlays <- function(to.data, merged.data.folder, raw.video.folder, temp.
       "java -Xmx", memory, "m",
       " -jar ", file.path(IJ.path, "ij.jar"), 
       " -ijpath ", IJ.path, 
-      " -macro ", file.path("'", paste0(to.data, ijmacs.folder), "Video_overlay_tmp.ijm", "'"))
+      " -macro ", paste0("'", to.data, ijmacs.folder, "Video_overlay_tmp.ijm", "'"))
   
   if (.Platform$OS.type == "windows") 
    # cmd <- paste0("\"", IJ.path, "\""," -macro ","\"", paste0(gsub("/", "\\\\", paste0(to.data, ijmacs.folder))), "Video_overlay_tmp.ijm", "\"")
